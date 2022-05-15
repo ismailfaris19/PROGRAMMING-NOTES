@@ -1,0 +1,369 @@
+REACT NOTES:
+
+~ Steps to create and start react app,
+       > npx create-react-app my-app
+       > cd my-app
+       > npm start
+
+~ rsf - type this for get functional react component.
+  rafc - type this for get arrow functional react component.
+  rcc - type this for get react class component.
+
+~ React is a JS library for building UI. It runs on the SPA, but can be used to build Full Stack Apps by communicating with server/API (Eg: MERN Stack)
+
+~ It was created by Jordan Walke.
+
+~ Why would I use React:
+    * Structure the "view" layer of our application.
+    * Reusable components with their own state.
+    * JSX(Javascript Syntax Extension)  - dynamic markup.
+    * Interactive UIs with virtual DOM.
+    * Performance & Testing.
+    * Very popular.
+
+~ React's primary tasks:
+    - work with DOM/browser to render UI to the page.
+    - manage state for us between render cycles.
+    - keep the UI updated whenever state changes occur.
+
+~ What can't React handle on it's own?
+    - (Out)side effects!
+        + localStorage
+        + API/database interactions
+        + Subscriptions (eg. web sockets)
+        + Syncing 2 different internal states together
+
+~ components render/return JSX(Javascript Syntax Extension).
+
+~ In index.html, div tag with root id is the container for entire application.
+
+~ In index.js, ReactDOM.render(<HTML element we want to pass>, <get root element by id or className or querySelector>)
+
+~ React help us to separate webpage into multiple parts and it's name is web components.
+
+~ In JSX, All the elements must be inside one parent element.
+
+~ JSX - Javascript XML.
+
+~ we have to import react for using JSX syntax in JS file.
+
+~ we have to import react-dom for get access dom elements in JSX.
+
+~ we have to use pascalCase for our component. Eg: function GetNote(){}
+
+~ if we have export default function, we may use any for that function to import but keep same name for better understanding.
+
+~ We have to import our styles, images, etc,. inside the component. not inside the HTML file.
+
+~ We have to import the image and add to HTML elements inside the component. It prevents from broken link.
+            Eg: import <custom-image-name> from '<image-path-from-that-component>';
+                <img src={<custom-image-name>} alt=""/>
+
+~ Components in Function Type:
+        export const Header = () => {
+            return (
+                <div>
+                    <h1>MY header</h1>
+                </div>
+            )
+        }
+
+~ Components in Class Type:
+        export default class Header extends React.Component {
+            render() {
+                <div>
+                    <h1>MY header</h1>
+                </div>
+            }
+        }
+
+~ Components can take in props:
+        <Header title="My title"/>
+
+~ state - which is an object that determines how a component renders and behaves.
+
+~ App or global state refers to the state that is available to the entire UI, not just the single component.
+
+~ React Hooks - functions that let us hooks into the React state and lifecycle features from function components.
+        a) useState - return a stateful value and function to update it.
+        b) useEffect - Perform side effects in function components.
+        c) useContext, useReducer, useRef.
+        d) we can create our own custom hooks also.
+
+~ get movie API from https://www.themoviedb.org/
+
+~ Steps for movie API: after SignUp and SignIn >>  Dashboard will open >> click G icon in top right corner >> select settings to open settings >> select API >> from the API Key(v3 auth) input field, copy the API Key for our use.
+
+~ script property in package.json file contains start for start the server, build for build a app, test for testing and eject for run other library and package behind the scene.
+
+~ In react, we have to add all the html elements inside one parent HTML element.
+
+~ In HTML, it is class but in react, it was className.
+
+~ In JS, it is ${<something>} but in react, it was {<something>}.
+
+~ import './App.css'; // to import CSS in react.
+
+~ import Header from './components/Header'; // import <function-name> from '<file-path>';
+
+~ <Header /> - we have to declare inside a parent element of App functions return statement. // <<function-name>/>
+
+~ import React from 'react'; // import react for using classes.
+
+~ props declaration:
+        <Header /> - it will take default prop or empty value.
+        <Header title="hello"/> - declaration type for string and it will take prop value as "hello".
+        <Header title={1}/> - declaration type for Number and it will take prop value as 1.
+        <Header title={true}/> - declaration type for boolean and it will take prop value as true.
+
+~ // we can set type of prop and set isRequired
+Header.propTypes = {
+    title: PropTypes.string.isRequired
+}
+
+~ // we can set default props's properties
+// Header.defaultProps = {
+//     title: 'Ismail'
+// }
+
+~ Inline styles:
+    <h1 style={{ textShadow: '2px 1px 2px red', backgroundColor:'#ccc' }}>TASK TRACKER {title}</h1> // for inline styles
+                        // (or)
+    <h1 style={headerStyle}>TASK TRACKER {title}</h1>
+    const headerStyle =  {
+    textShadow: '2px 1px 2px red', 
+    backgroundColor:'#ccc' 
+    }
+
+~ for build/deploy our appliction - npm run build
+
+~ for run our built appliction locally - npm install -g serve
+                                         serve -s build -p 8000
+
+~ install json server - npm i json-server
+
+~ In package.json's scripts property, we have to add "server": "json-server --watch db.json --port 5000"
+
+~ run json server - npm run server
+
+~ In react, embed values inside HTML element,
+        Eg: <h1>Hello {name}</h1> // in content
+            <img src={img-path} /> // in attributes
+
+~ Props in react: In HTML, it called as attribute but in react, it called as property(props). Make a component reusable.
+        Eg: <Header name="amazon" since={1999} /> // name and since are props with value which we passed to components
+
+            export default Header(props (or) {name, since}){ // here we get the prop's value and use it in our function component
+                <h1>{props.name} since {props.since}.</h1>
+                        (or)
+                <h1>{name} since {since}.</h1>
+            }
+
+~ When we passing values in props, we need to know,
+        string => name = "faris"
+        Boolean => isOk = {true}
+        Number => total = {100}
+        Array => marks = {[98, 99, 97, 95, 98]}
+
+~ Simple ternary operator in React:
+        Eg: <div>
+                {props.name && <h1>Name: {props.name}</h1>} // { True && it will execute }
+            </div>
+
+~ if use JS syntax in JSX, it will be the format for that:
+        Eg: <img src={`../images/${props.src}`} /> // <img src={<JS syntax>} />
+
+~ If the image is placed inside the 'src' folder, use the following:
+        Eg: <img src={require('../logo.png')} />
+            <img src={require(`../images/${props.img}`)} />
+                (or)
+  we can import image and use it in our html element and we don't need to worry about path:
+        Eg: import FirstImage from '../images/image1.png';
+            export default function Card() {
+                return (
+                    <div>
+                        <img src={FirstImage} alt="" className="card-image" />
+                    </div>
+                )
+            }
+        
+~ Better we have to put images in public folder and set img src path from where the index.html presents.
+
+~ In JS => const element = `<h1>hello</h1>` // we can't directly use HTML elements
+  In JSX => const element = <h1>hello</h1>  // we can directly use HTML elements
+            Eg: const arr = [ <h1>hello</h1>, <h1>hi</h1>, <h1>bye</h1> ];
+
+~ JSX will converts the array of HTML elements to separate separate HTML elements to render in webpage.
+    export default function App(){
+        const arr = [ <h1>hello</h1>, <h1>hi</h1>, <h1>bye</h1> ];
+        return (
+            <div>
+                {arr} 
+                // here it take this array arr as 
+                // <h1>hello</h1>
+                // <h1>hi</h1>
+                // <h1>bye</h1>
+            </div>
+        )
+    }
+
+~ In react, .map() is used for convert an array of raw data into an array of JSX elements that can be displayed on the page.
+
+~ steps to add event listener in react:
+    (i) <button className="form--btn" onClick={function(){
+                console.log("hello!");
+        }}> Get Meme Template</button>
+
+    (ii)function btnClick(){
+                console.log("hello!");
+        } 
+
+        <button className="form--btn" onClick={btnClick()}>Get Meme Template</button>
+
+    (iii)function btnClick(){
+                console.log("hello!");
+        } 
+
+        <button className="form--btn" onClick={btnClick}>Get Meme Template</button>
+
+~ props - we can't change the value because they are immutable. We should not change the value of props.
+
+~ State - refers to values that are managed by the component. We can change values and they are mutable.
+
+~ React.useState() - will returns an empty array. Eg: [null, f()].
+  React.useState("No") -> ["No", f()]
+
+~ const [name, setName] = React.useState(); // here, get array by  name and set new value by setName
+  console.log(name); // get name
+  setName("ismail"); // set name // pass new value
+
+~ if we pass callback inside the setName, it must return anything. This callback will recieve yje old value as parameter.
+    Eg: setName(function() { // pass callback function
+            return "ismail";
+        })
+
+        setName(function(getCount) {
+            return getCount + 1;
+        })
+
+~ Way to use ternary inside react:
+  const isCorrect = true;
+    return (
+      <div className="App">
+        <h1>{isCorrect ? "Yes" : "No"}</h1>
+      </div>
+    );
+
+
+~ We can only pass data(state) from parent to child component but we can't pass data(state) from child to parent component or in between sibling components.
+
+~ we can't change the state of parent component so we have to create separate state for child component pass the parent component's state as an prop in it. It won't affects the state of parent component.
+
+~ We can't update the state which contains array of objects. we have to create a new array of objects, make any change we want and assign it to that state.
+        Eg:     setSquares( prevSquares => {
+                return prevSquares.map(square => {
+                    return square.id === id ?  { ...square, on: !square.on} : square
+                });
+                })
+
+~ When we handle forms in react, 
+    - object key name and html input field name must be same. 
+    - We have to assign the input field value as object's key which is similar to the input field name.
+    - In JS, all the details gather after submit but in ReactJS, parallely store on a local state.
+    - checkbox type uses checked property and other type uses value property.
+    - onSubmit handler to submit the form. 
+
+~ In fetch, If we set like this -> fetch("https://swapi.dev/api/people").then(res => res.json()).then(data => setStarWarsData(data)), component will be rendering again and again. In this place, we have to use useEffect.
+        Eg: React.useEffect(()=>{
+                fetch("https://swapi.dev/api/people")
+                .then(res => res.json())
+                .then(data => setStarWarsData(data))
+            })
+
+~ useEffect() will run after the return statement is rendered in our web page.
+
+~ It contains two parameters such as function and dependency array. It won't run the effect when the values of the dependencies in the array stay the same between renders.
+    Eg: React.useEffect(function(){}, [])
+
+~ If any changes made in any HTML element in an particular component, that particular component and it's whole properties such as useEffect, etc, will render whenever we made any changes.
+
+~ If we want to set the value only once, we don't need value in an dependency array.
+
+~ when we set the state inside our React.useEffect(),
+        Eg: React.useEffect(() => {
+            fetch("https://swapi.dev/api/people")
+            .then(res => res.json())
+            .then(data => setStarWarsData(data)) // After the first render, it will re-render the page for set value to state
+            }, [])  // mostly we have leave it as empty array
+
+~ we have to end the functionality of the component after end up the render using useEffect,
+        Eg: React.useEffect(() => 
+            // It will run when this component render
+            function monitorWindow(){
+                setWindowWidth(window.innerWidth);
+            }
+            window.addEventListener('resize', monitorWindow)
+            // It will run when the component end rendering and it will restrict from side effects. 
+            return () => {
+                window.removeEventListener('resize', monitorWindow);          
+            }, [])
+
+~ If we want to run any state only once, we have write in this below manner,
+        Eg: const [notes, setNotes] = React.useState(
+                 function(){
+                    return  console.log("hello"); // it will run only once, we may make many changes we want
+                }
+            )
+
+~ We can use hooks in function component only, not in class because class does the same what the hooks does.
+
+~ We can't use hooks inside a child elements of parent function such as conditional statements, loops, functions, etc. So, It must be inside parent function and outside of the child elements.
+
+~ we have to modifify state using pevious value parameter of setState function.
+        Eg: const [notes, setNotes] = React.useState(4)
+            setNotes( notes + 1 ) // is wrong way
+            setNotes( prevNote => prevNote + 1) // is correct way
+
+~ useState() will manage the state and re-render the component whenever state changes.
+
+~ Example structure of React Router:
+        Eg: <BrowserRouter>
+                <div className="App">
+                    <Header />
+                </div>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/*" element={<NotFound />} /> // for invalid path
+                </Routes>
+            </BrowserRouter>
+
+~ when we recieved any path which we didn't mentioned earlier have to redirect to one specific page. I mean wrong url path.
+        Eg: <Route element={<NotFound />} />
+
+~ basename - we can use basename inside the BrowserRouter to specify our separate url path.  
+        Eg: <BrowserRouter basename="/tutorial"> // our url be like http://localhost:3000/tutorial/
+
+~ forceRefresh - we can use forceRefresh inside the BrowserRouter to refresh the page forcely when we redirect from one page to another page.
+        Eg: <BrowserRouter forceRefresh>
+
+~ getUserConfirmation - we can use getUserConfirmation inside the BrowserRouter to show some message in dialog box to user when we redirect from one page to another page.
+        Eg: <BrowserRouter getUserConfirmation={
+            (message, callback) => {
+                callback(window.confirm())
+            }
+        }>
+
+~ Link - Import it from react-router-dom. It is used for redirect from one page to another page without refresh the website.
+         we can use href inside the Link Tag.
+        Eg: <Link to="/profile">Profile</Link>
+
+~ Possible exports from react-router-dom:
+    BrowserRouter, HashRouter, Link, MemoryRouter, NavLink, Navigate, 
+    Outlet, Route, Router, Routes, UNSAFE_LocationContext, UNSAFE_NavigationContext, 
+    UNSAFE_RouteContext, createRoutesFromChildren, createSearchParams, 
+    generatePath, matchPath, matchRoutes, renderMatches, resolvePath, 
+    unstable_HistoryRouter, useHref, useInRouterContext, useLinkClickHandler, 
+    useLocation, useMatch, useNavigate, useNavigationType, useOutlet, 
+    useOutletContext, useParams, useResolvedPath, useRoutes, useSearchParams

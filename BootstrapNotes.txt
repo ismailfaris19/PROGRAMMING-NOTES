@@ -1,0 +1,340 @@
+~ Bootstrap Colors:
+        # Primary - blue 
+        # Secondary - gray
+        # Success - green
+        # Danger - red
+        # Warning - yellow
+        # Info - light blue
+        # List - white
+        # Dark - black
+
+~ Bootstrap Breakpoints:
+                      (max-width)
+        # small - sm - >=576px
+        # Medium - md - >=768px
+        # Large - lg - >=992px
+        # Extra large - xl - >=1200px
+        # Extra extra large - xxl - >=1400px
+
+~ Bootstrap Containers:
+        # container -> 100% - 540px - 720px - 960px - 1140px - 1320px
+        # container-sm -> 100% - 540px - 720px - 960px - 1140px - 1320px
+        # container-md -> 100% - 100% - 720px - 960px - 1140px - 1320px
+        # container-lg -> 100% - 100% - 100% - 960px - 1140px - 1320px
+        # container-xl -> 100% - 100% - 100% - 100% - 1140px - 1320px
+        # container-xxl -> 100% - 100% - 100% - 100% - 100% - 1320px
+        # container-fluid -> 100% - 100% - 100% - 100% - 100% - 100%
+
+~ Bootstrap Grid:
+        # .col -> auto
+        # .col-sm -> 540px
+        # .col-md -> 720px
+        # .col-lg -> 960px
+        # .col-xl -> 1140px
+        # .col-xxl -> 1320px
+
+~ Bootstrap Columns: 
+    @ Vertical alignments:
+        # row align-items-start - align row of columns at top.
+        # row align-items-center - align row of columns at center.
+        # row align-items-end - align row of columns at bottom.
+        # col align-self-start - align single column at top.
+        # col align-self-center - align single column at center.
+        # col align-self-end - align single column at bottom.
+    @ Horizontal alignments:
+        # row justify-content-start - align set of coloumns at right.
+        # row justify-content-center - align set of coloumns at center.
+        # row justify-content-end - align set of coloumns at left.
+        # row justify-content-around - The remaining space is distributed around the set of coloumns.
+        # row justify-content-between - The remaining space is distributed between the set of coloumns.
+        # row justify-content-evenly - The remaining space is evenly(same space) distributed the set of coloumns.
+
+~ Gutter and Padding:
+        # Gutter or margin(g): horizontal and vertical spacing between columns. Spacing size is 1 to 5. Eg: g-2
+        # Padding(p): horizontal and vertical space inside a column or element.  Spacing size is 1 to 5. Eg: p-3
+
+~ Spacing:
+        @ property: 
+                # m - for classes that set margin
+                # p - for classes that set padding
+        @ sides:
+                # t - for classes that set margin-top or padding-top
+                # b - for classes that set margin-bottom or padding-bottom
+                # l - for classes that set margin-left or padding-left
+                # r - for classes that set margin-right or padding-right
+                # x - for classes that set both *-left and *-right
+                # y - for classes that set both *-top and *-bottom
+                # blank - for classes that set a margin or padding on all 4 sides of the element
+        @ size:
+                # 0 - for classes that eliminate the margin or padding by setting it to 0
+                # 1 - (by default) for classes that set the margin or padding to $spacer * .25
+                # 2 - (by default) for classes that set the margin or padding to $spacer * .5
+                # 3 - (by default) for classes that set the margin or padding to $spacer
+                # 4 - (by default) for classes that set the margin or padding to $spacer * 1.5
+                # 5 - (by default) for classes that set the margin or padding to $spacer * 3
+                # auto - for classes that set the margin to auto
+
+~ Border:
+        @ Border position: 
+                # border - all sides
+                # border-top - top
+                # border-start - left
+                # border-end - right
+                # border-bottom - bottom
+        @ Remove borders:
+                # border-0 - all sides
+                # border-top-0 - top
+                # border-start-0 - left
+                # border-end-0 - right
+                # border-bottom-0 - bottom
+        @ Border colors:
+                # border border-primary
+                # border border-secondary
+                # border border-success
+                # border border-danger
+                # border border-warning
+                # border border-info
+                # border border-light
+                # border border-dark
+                # border border-white
+        @ Border width: 
+                # border border-1
+                # border border-2
+                # border border-3
+                # border border-4
+                # border border-5
+        @ Border radius:
+                # rounded - border-radius on all side.
+                # rounded-top - border-radius on top.
+                # rounded-end - border-radius on right.
+                # rounded-bottom - border-radius on bottom.
+                # rounded-start - border-radius on left.
+                # rounded-circle - set border-radius to make round structure.
+                # rounded-pill - set border-radius to make pill structure.
+        @ Border radius sizes:
+                # rounded-0 
+                # rounded-1 
+                # rounded-2 
+                # rounded-3 
+
+~ Flex(.d-flex):
+        @ Row:
+                # flex-row - normal order in row.
+                # flex-row-reverse - reverse order in row.
+        @ Column:
+                # flex-column - normal order in column.
+                # flex-column-reverse - reverse order in column.
+        @ Justify content:
+                # d-flex justify-content-start - right
+                # d-flex justify-content-end - left
+                # d-flex justify-content-center - center
+                # d-flex justify-content-between - in between space
+                # d-flex justify-content-around - in between space and right & left space
+                # d-flex justify-content-evenly - same space in between and right & left
+        @ Align items:
+                # d-flex align-items-start - top
+                # d-flex align-items-end - bottom
+                # d-flex align-items-center - center
+                # d-flex align-items-baseline - baseline
+                # d-flex align-items-stretch - stretch
+        @ Align self:
+                # align-self-start - self align to top
+                # align-self-end - self align to bottom
+                # align-self-center - self align to center
+                # align-self-baseline - self align to baseline
+                # align-self-stretch - self align to stretch
+        @ Align Content:
+                # align-content-start - if elements assigned in two or more lines, rows are aligned to top.
+                # align-content-end - if elements assigned in two or more lines, rows are aligned to bottom.
+                # align-content-center - if elements assigned in two or more rows, rows are aligned to center. 
+                # align-content-between - if elements assigned in two or more rows, rows are aligned to based on space between rows.
+                # align-content-around - if elements assigned in two or more rows, rows are aligned based on space around.
+                # align-content-stretch - if elements assigned in two or more rows, rows are stretched the whole space.
+        @ Fill:
+                # flex-fill - a series of sibling elements to force them into widths equal to their content (or equal widths if their content does not surpass their border-boxes) while taking up all available horizontal space.
+        @ Grow:
+                # .flex-grow-1 - in flex container, elements uses all available space it can, while allowing the remaining two flex items their necessary space.
+        @ Shrink:
+                # .flex-shrink-1 - the second flex item with .flex-shrink-1 is forced to wrap its contents to a new line, “shrinking” to allow more space for the previous flex item with .w-100.
+        @ Auto Margin: 
+                # me-auto - in row-wise flex container,  pushing siblings to the right.
+                # ms-auto - in row-wise flex container,  pushing siblings to the left.
+                # mb-auto - in column-wise flex container, pushing siblings to the bottom.
+                # mt-auto - in column-wise flex container, pushing siblings to the top
+        @ wrap:
+                # d-flex flex-nowrap - no wrap.
+                # d-flex flex-wrap - wrap the elements based on width.
+                # d-flex flex-wrap-reverse - wrap the elements based on width in reverse order.
+        @ Order: 
+                # Change the visual order of specific flex items with a handful of order utilities. We only provide options for making an item first or last, as well as a reset to use the DOM order. As order takes any integer value from 0 to 5, add custom CSS for any additional values needed. Eg: order-3
+                # Additionally there are also responsive .order-first and .order-last classes that change the order of an element
+
+~ Sizing:
+        # width(w): size in percentage from 1 to 100 but 25%, 50%, 75% and 100% is default. Eg: w-25
+        # height(h): size in percentage from 1 to 100 but 25%, 50%, 75% and 100% is default. Eg: h-25
+        # max-width(w): size in percentage from 1 to 100 but 25%, 50%, 75% and 100% is default. Eg: mw-25
+        # max-height(h): size in percentage from 1 to 100 but 25%, 50%, 75% and 100% is default. Eg: mh-25
+
+~ Headings: 
+        # Headings are based on DOM heading tags such as .h1, .h2, .h3, .h4, .h5, .h6.
+
+~ Display headings: 
+        # Display headings are based on 6 different sizes from 1 to 6. Eg: display-4.
+
+~ Lead:
+        # Make a paragraph stand out by adding .lead.
+
+~ Inline text elements:
+        # .mark will apply the same styles as <mark>.
+        # .small will apply the same styles as <small>.
+        # .text-decoration-underline will apply the same styles as <u>.
+        # .text-decoration-line-through will apply the same styles as <s>.
+
+~ Blockquote:
+        # The HTML spec requires that blockquote attribution be placed outside the <blockquote>. When providing attribution, wrap your <blockquote> in a <figure> and use a <figcaption> or a block level element (e.g., <p>) with the .blockquote-footer class. Be sure to wrap the name of the source work in <cite> as well.
+
+~ Font size:
+        # Font size are based on 6 different sizes from 1 to 6. Eg: fs-4.
+
+~ Font weight and italics:
+        # fst-normal - text to normal font
+        # fst-italic - text to italic font
+        # fw-normal - text to normal font
+        # fw-bold - text to bold font
+        # fw-bolder - text to too bolder font
+        # fw-light - text to light(thin) font
+        # fw-lighter - text to too lighter(too thin) font
+
+~ Line height:
+        # lh - line height based on different sizes from 1 to 2. Eg: lh-1.
+        # lh-sm - set line height to small.
+        # lh-lg - set line height to large.
+        # lh-base - set line height to normal.
+
+~ Text alignment:
+        # text-start - align left
+        # text-end - align right
+        # text-center - align center
+
+~ Text wrapping:
+        # text-wrap - it will automatically break the statement based on width.
+        # text-nowrap - it won't allow statement to break.
+        # text-break - it will break the word based on width.
+        # text-truncate - it will truncate the truncate statement based on width. Eg output: Praeterea iter est q...
+
+~ Overflow:
+        # overflow-auto - it will create vertical scrollbar when text overflow.
+        # overflow-hidden - it will hide the text when text overflow.
+        # overflow-visible - it will show the text even when text overflow.
+        # overflow-scrollbar - it will create vertical and horizontal scrollbar when text overflow.
+
+~ Text transform:
+        # text-lowercase - text will be lowercase.
+        # text-uppercase - text will be uppercase.
+        # text-capitalize - text will be capitalize.
+
+~ Text reset: 
+        # Reset a text or link’s color with .text-reset, so that it inherits the color from its parent.
+
+~ Text decoration:
+        # text-decoration-underline - text will be underlined.
+        # text-decoration-line - through - line on a text.
+        # text-decoration-none - remove text decoration from the text.
+
+~ Image:
+        # img-fluid - Images in Bootstrap are made responsive with .img-fluid. This applies max-width: 100%; and height: auto;
+        # img-thumbnail - you can use .img-thumbnail to give an image a rounded 1px border appearance.
+        # float-start - align image to left.
+        # float-end - align image to right.
+        # mx-auto d-block - align image to center.
+
+~ Opacity:
+        # opacity levels are based on 4 different values such as 25, 50, 75 and 100. Eg: opacity-50.
+
+~ Table: 
+        # to give background color of table, row and column.
+            Eg: <!-- On tables -->
+                <table class="table-primary">...</table>
+                <table class="table-secondary">...</table>
+                <table class="table-success">...</table>
+                <table class="table-danger">...</table>
+                <table class="table-warning">...</table>
+                <table class="table-info">...</table>
+                <table class="table-light">...</table>
+                <table class="table-dark">...</table>
+
+                <!-- On rows -->
+                <tr class="table-primary">...</tr>
+                <tr class="table-secondary">...</tr>
+                <tr class="table-success">...</tr>
+                <tr class="table-danger">...</tr>
+                <tr class="table-warning">...</tr>
+                <tr class="table-info">...</tr>
+                <tr class="table-light">...</tr>
+                <tr class="table-dark">...</tr>
+
+                <!-- On cells (`td` or `th`) -->
+                <tr>
+                   <td class="table-primary">...</td>
+                   <td class="table-secondary">...</td>
+                   <td class="table-success">...</td>
+                   <td class="table-danger">...</td>
+                   <td class="table-warning">...</td>
+                   <td class="table-info">...</td>
+                   <td class="table-light">...</td>
+                   <td class="table-dark">...</td>
+                </tr>
+        # .table-striped - to add zebra-striping to any table row within the <tbody>.
+            Eg: <table class="table table-striped">
+                ...
+                </table>
+                <table class="table table-dark table-striped">
+                ...
+                </table>
+                <table class="table table-success table-striped">
+                ...
+                </table>
+        # .table-hover- to enable a hover state on table rows within a <tbody>.
+             Eg: <table class="table table-hover">
+                 ...
+                 </table>
+                 <table class="table table-dark table-hover">
+                 ...
+                 </table>
+        # table-bordered - to set border to table.
+             Eg: <table class="table table-bordered border-primary">
+                 ...
+                 </table>
+
+        # table-borderless - to remove border from table.
+             Eg: <table class="table table-borderless">
+                 ...
+                 </table>
+
+~ Position: 
+        @ values:
+                # position-static
+                # position-relative
+                # position-absolute
+                # position-fixed
+                # position-sticky
+        @ Properties:
+                # top - for the vertical top position
+                # start - for the horizontal left position (in LTR)
+                # bottom - for the vertical bottom position
+                # end - for the horizontal right position (in LTR)
+        @ Position: 
+                # 0 - for 0 edge position
+                # 50 - for 50% edge position
+                # 100 - for 100% edge position
+
+~ Translate: 
+        # translate-middle - use translate property to move the element to middle position in x-axis and y-axis.
+        # translate-middle-x - use translate property to move the element to middle position in x-axis.
+        # translate-middle-y - use translate property to move the element to middle position in y-axis.
+
+~ Shadow: 
+        # shadow - normal shadow.
+        # shadow-none - no shadow.
+        # shadow-sm - small shadow.
+        # shadow-lg - large shadow.

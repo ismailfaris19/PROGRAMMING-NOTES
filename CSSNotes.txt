@@ -1,0 +1,390 @@
+~ CSS selectors:
+      @ BASIC
+        # Universal -> Eg: * -> Select all elements.
+        # Type -> Eg: div -> Select all the elements of that type.
+        # Class -> Eg: .btn -> Select elements with that class.
+        # Id -> Eg: #btn--click -> Select all the elements with that id.
+      @ COMBINATION
+        # Descendant -> Eg: div a -> Select elements that are descendants of the first element. i.e. Select anchors that are inside a div
+        # Direct child -> Eg: div > a -> Select elements that are direct children of the first element.
+        # General sibling -> Eg: div ~ a -> Select elements that are siblings of the first element and come after the first element. i.e. Select all anchors that comes after the div
+        # Adjacent Sibling -> Eg: div + a -> Select elements that are siblings of the first element and come directly after the first element.
+        # Or -> Eg: div, a -> Select elements that match any selector in the list. i.e. Selects all anchors and all divs
+        # And -> Eg: div.btn -> Select elements that match all the selector combinations.
+      @ ATTRIBUTE
+        # Has -> Eg: [a] -> Select elements that have that attribute.
+        # Exact -> Eg: [a = "1"] ->   Select elements that have that attribute with that value.
+        # Starts With -> Eg: [a^="1"] -> Select elements that have that attribute with the value starts with that number.
+        # Ends With -> Eg: [a$="1"] -> Select elements that have that attribute with the value ends with that number.
+        # Substring -> Eg: [a*="1"] -> Select elements that have that attribute with the value contains that number anywhere.
+      @ PSEUDO ELEMENT 
+        # Before -> Eg: div::before -> Creates an empty element directly before the children of selected element.
+        # After -> Eg: div::after -> Creates an empty element directly after the children of selected element.
+      @ PSEUDO CLASS STATE
+        # Hover -> Eg: button:hover -> Select elements that are hovered by the mouse.
+        # Focus -> Eg: button:focus -> Select elements that are focused. i.e. Focus is set by either tabbing to an element or clicking an element such as a button or anchor tag
+        # Required -> Eg: input:required -> Select inputs with the required attribute.
+        # Checked -> Eg: input:checked -> Select checkboxes/radio buttons that are checked.
+        # Disabled -> Eg: input:disabled -> Select inputs with the disabled attribute.
+      @ PSEUDO CLASS POSITION
+        # First Child -> Eg: a:first-child -> select elements that are the first child inside a container. In that example, this must be the first child and type must be anchor. 
+        # Last Child -> Eg: a:last-child -> select elements that are the last child inside a container. In that example, this must be the last child and type must be anchor. 
+        # Nth Child -> Eg: a:nth-child(2n) -> select elements that are the nth child inside a container based on the formula. i.e. element in even position
+        # Nth Last Child -> Eg: a:nth-last-child(3) -> select elements that are the nth child inside a container based on the formula counting from the end. i.e. element that are the third to last child
+        # Only Child -> Eg: a:only-child -> select elements that are only child inside a container.
+        # First Of Type -> Eg: a:first-of-type -> select elements that are the first of a type inside a container. In that example, it may be in any position from top and type must be anchor.
+        # Last Of Type -> Eg: a:last-of-type -> select elements that are the last of a type inside a container. In that example, it may be in any position from bottom and type must be anchor.
+        # Nth Of Type -> Eg: a:nth-of-type(2n) -> select elements that are the nth of a type inside a container based on the formula
+        # Nth Last Of Type -> Eg: a:nth-last-of-type(2) -> select elements that are the nth of a type inside a container based on the formula counting from the end. i.e. second to last anchor
+        # Only Of Type -> Eg: a:only-of-type -> select elements that are only of a type inside a container.
+        # Not -> a:not(.btn) -> select all elements that do not match the selector inside a not selector.
+
+~ CSS Variables: The var() function is used to insert the value of a CSS variable.
+      Eg: :root {
+            --height: 100px; // set value to the variable type 1.
+          }
+
+          div{
+            height: var(--height); // get value of the variable.
+            width: var(--width, 10px); // set value of the variable type 2.
+          }
+
+          div{
+            --height: 120px; // set value to the variable type 3.
+          }
+
+~ background: 
+        # background-color -> set background color.
+        # background-image -> set background image.
+        # background-position -> set background position. Eg: background-position: center (or) right top
+        # background-repeat -> set background repeat or no repeat. Eg: background-repeat: repeat (or) no-repeat (or) repeat-x(for repeat horizontally) (or) repeat-y(for repeat vertically)
+        # background-attachment -> set background as scrollable or fixed. Eg: background-attachment: fixed (or) scroll
+        # background-clip -> set background to cover border or padding or content. Eg: background-clip: border-box (or) padding-box (or) content-box
+        # background-origin -> set background to cover border or padding or content. Eg: background-origin: border-box (or) padding-box (or) content-box
+        # background-blend-mode -> combine two backgrounds. Eg: background-blend-mode: difference;
+        # shorthand -> all in one. Eg: background: #ffffff url("img_tree.png") no-repeat right top;
+
+~ margin: top right bottom left Eg: 10px 20px 10px 30px (or) top right&left bottom Eg: 10px 20px 10px (or) top&bottom right&left Eg: 25px 50px;
+
+~ margin: auto; // for centerize the element
+
+~ padding: top right bottom left Eg: 10px 20px 10px 30px (or) top right&left bottom Eg: 10px 20px 10px (or) top&bottom right&left Eg: 25px 50px;
+
+~ padding-block - this property is used to set size for padding bottom and padding top.
+
+~ border-radius: top-left top-right bottom-right bottom-left Eg: 10px 20px 10px 30px (or) top-left&bottom-right top-right&bottom-left Eg: 10px 20px
+
+~ border: width style color (same as border-top, border-right, border-bottom and border-left).
+    Eg: border-style: dotted;
+        border-style: dashed;
+        border-style: solid;
+        border-style: double;
+        border-style: groove;
+        border-style: ridge;
+        border-style: inset;
+        border-style: outset;
+        border-style: none;
+        border-style: hidden;
+        border-style: dotted dashed solid double; // top right bottom left
+
+~ box-shadow: [horizontal offset] [vertical offset] [blur radius] [optional spread radius] [color];
+    Eg: box-shadow: 0 3px 10px rgb(0 0 0 / 0.2); // shadow in right, left and bottom side
+        box-shadow: 0 0 5px 5px red; // shadow in all the four side
+        box-shadow: 0.5rem 0.5rem black, -0.5rem -0.5rem #ccc; // left & top different shadow color and right & bottom different shadow color.
+        box-shadow: 0 8px 8px -4px lightblue; // shadow an bottom side only
+        box-shadow: 0 0 50px #ccc; // shodow for round shaped elements
+        box-shadow: 0 -5px 3px -3px black, 0 5px 3px -3px black; // shadow for bottom and top
+        box-shadow: inset 0 0 10px #000000; // for add shadow inside the element a not a outside
+
+~ list-style-type:none; - for remove bullets from the Unordered List.
+
+~ .add-title:focus{ outline: none; } - to remove ouline of input elements or button.
+
+~ outline: width type color;
+
+~ outline-offset: space-size; // space inside a outline
+
+~ text-align: center (or) justify (or) left (or) right; // align text to the right
+
+~ text-align-last: center (or) justify (or) left (or) right; // align last line of the text content.
+
+~ direction: rtl; unicode-bidi: bidi-override; // for mirror effect of text.
+
+~ vertical-align: baseline (or) text-top (or) text-bottom (or) sub (or) super; // align text vertically.
+
+~ text-decoration: overline (or) line-through (or) underline // draw a line over a text
+
+~ text-transform: uppercase (or) lowercase (or) capitalize // to format the text
+
+~ text-indent: 50px; // for set text indentation.
+
+~ letter-spacing: 10px; // for set space between letters.
+
+~ line-height: 0.8px; // for set space between lines.
+
+~ word-spacing: 10px; // for set space between words.
+
+~ white-space: nowrap; // it convert whole paragraphs to single line.
+
+~ text-shadow: 2px 2px 5px black (or) 1px 1px 2px black, 0 0 25px blue (or) 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue; // for set text shadow size and color.
+
+~ font-family: monospace (or) sans-serif (or) serif (or) cursive (or) fantasy; // for set font family
+
+~ font-style: normal (or) italic (or) oblique // set font style
+
+~ font-weight: bold (or) normal // for set font width
+
+~ font-variant: normal (or) small-caps; // it convert to uppercase and if it already uppercase, it will rise the height.
+
+~ font-size: 100% (or) 40px (or) 2.5em (or) 10vw; // set a font size. here em means [value in pixel/16] Eg: 40/16 = 2.5. Here, if we declare in size vw it will alterate the size based on screen width.
+
+~ font: font-style font-variant font-weight font-size/line-height font-family // shorthand of font property. Eg: font: italic small-caps bold 12px/30px Georgia, serif;
+
+~ @import url('https://fonts.googleapis.com/css?family=Cinzel|Fauna+One'); // for import url inside css to use online css properties.
+
+~ for fa icons - <script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+
+~ for bootstrap icons - <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+~ for google icons - <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+~ Links:
+    /* unvisited link */
+    a:link {
+        color: red;
+    }
+
+    /* visited link */
+    a:visited {
+        color: green;
+    }
+
+    /* mouse over link */
+    a:hover {
+        color: hotpink;
+    }
+
+    /* selected link */
+    a:active {
+        color: blue;
+    }
+
+~ cursor: auto 
+          (or) crosshair 
+          (or) default 
+          (or) e-resize 
+          (or) help 
+          (or) move 
+          (or) n-resize
+          (or) ne-resize
+          (or) nw-resize
+          (or) pointer
+          (or) progress
+          (or) s-resize
+          (or) se-resize
+          (or) sw-resize
+          (or) text
+          (or) w-resize
+          (or) wait // for set cursor style
+
+~ list-style-type: none (or) circle (or) square (or) upper-roman (or) upper-alpha; // for set bullet type
+
+~ list-style-image: url("<image url>"); // set bullet as image
+
+~ list-style-position: outside (or) inside; // for set second line of same bullet list comes under the bullet or after the bullet.
+
+~ list-style: type position image; Eg: square inside url("../image/b1.png");
+
+~ border-collapse: collapse; // for remove borders from table elements
+
+~ width: 50% // To create a HTML element that should only span half the page
+
+~ td{ text-align: center (or) right (or) left (or);} // to align text inside a table cell horizontally.
+
+~ td{ vertical-align: middle (or) bottom (or) top;} // to align text inside a table cell vertically.
+
+~ tr:nth-child(even) {background-color: #f2f2f2;} // to set style for even numbered child
+
+~ Add a container element (like <div>) with overflow-x:auto around the <table> element to make it responsive. A responsive table will display a horizontal scroll bar if the screen is too small to display the full content.
+
+~ Display: 
+        # block: <div>, <h1> - <h6>, <p>, <form>, <header>, <footer>, <section>
+        # inline: <span>, <a>, <img>
+        # inline-block: // it allows to set a width and height on the iinline elements and does not add a line-break after the element, so the element can sit next to other elements
+        # none: // display nothing
+        # flex: //This is where CSS3 Flexbox comes in handy - as it can automatically stretch boxes to be as long as the longest box
+
+~ visibility:hidden; // also hides an element. However, the element will still take up the same space as before. The element will be hidden, but still affect the layout:
+
+~ Using max-width instead of width, in this situation, will improve the browser's handling of small windows. This is important when making a site usable on small devices.
+
+~ position: static; // HTML elements are positioned static by default. An element with position: static; is not positioned in any special way; it is always positioned according to the normal flow of the page.
+
+~ position: relative; // is positioned relative to its normal position. Setting the top, right, bottom, and left properties of a relatively-positioned element will cause it to be adjusted away from its normal position. Other content will not be adjusted to fit into any gap left by the element
+
+~ position: fixed; is positioned relative to the viewport, which means it always stays in the same place even if the page is scrolled. The top, right, bottom, and left properties are used to position the element. A fixed element does not leave a gap in the page where it would normally have been located.
+
+~ position: absolute; is positioned relative to the nearest positioned ancestor (instead of positioned relative to the viewport, like fixed). However; if an absolute positioned element has no positioned ancestors, it uses the document body, and moves along with page scrolling.
+
+~ position: sticky; is positioned based on the user's scroll position. A sticky element toggles between relative and fixed, depending on the scroll position. It is positioned relative until a given offset position is met in the viewport - then it "sticks" in place (like position:fixed).
+
+~ z-index: -1 (or) 1; // The z-index property specifies the stack order of an element (which element should be placed in front of, or behind, the others). Eg: -1 for behind and 1 for front.
+
+~ overflow: visible (or) hidden (or) scroll (or) auto; // specifies whether to clip the content or to add scrollbars when the content of an element is too big to fit in the specified area.
+        # visible - Default. The overflow is not clipped. The content renders outside the element's box
+        # hidden - The overflow is clipped, and the rest of the content will be invisible.
+        # scroll - The overflow is clipped, and a scrollbar is added to see the rest of the content.
+        # auto - Similar to scroll, but it adds scrollbars only when necessary.
+
+~ float: none (or) inherit (or) left (or) right; // it is used for positioning and formatting content e.g. let an image float left to the text in a container.
+        # left - The element floats to the left of its container.
+        # right - The element floats to the right of its container.
+        # none - The element does not float (will be displayed just where it occurs in the text). This is default.
+        # inherit - The element inherits the float value of its parent.
+
+~ clear: none (or) inherit (or) left (or) right (or) both; When we use the float property, and we want the next element below (not on right or left), we will have to use the clear property.
+        # none - The element is not pushed below left or right floated elements. This is default
+        # left - The element is pushed below left floated elements
+        # right - The element is pushed below right floated elements
+        # both - The element is pushed below both left and right floated elements
+        # inherit - The element inherits the clear value from its parent 
+
+~ If a floated element is taller than the containing element, it will "overflow" outside of its container. We can then add a clearfix hack to solve this problem.
+
+~ Center the element horizontally and vertically.
+        # .center { // Center Align Elements
+          margin: auto;
+          width: 50%;
+        }
+
+        # .center { // Center Align Text
+          text-align: center;
+        }
+
+        # img { // Center an Image
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 40%;
+        }
+
+        # .right { // Left and Right Align - Using position
+          position: absolute;
+          right: 0px;
+          width: 300px;
+          border: 3px solid #73AD21;
+          padding: 10px;
+        }
+
+        # .right { // Left and Right Align - Using float
+          float: right;
+          width: 300px;
+          border: 3px solid #73AD21;
+          padding: 10px;
+        }
+
+        # .center { Center Vertically - Using padding
+          padding: 70px 0;
+          border: 3px solid green;
+        }
+
+        # .center { // both vertically and horizontally
+          padding: 70px 0;
+          border: 3px solid green;
+          text-align: center;
+        }
+
+        # .center { // Center Vertically - Using line-height
+          line-height: 200px;
+          height: 200px;
+          border: 3px solid green;
+          text-align: center;
+        }
+
+        /* If the text has multiple lines, add the following: */
+        .center p {
+          line-height: 1.5;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        # .center { // Center Vertically - Using position & transform
+          height: 200px;
+          position: relative;
+          border: 3px solid green;
+        }
+
+        .center p {
+          margin: 0;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+
+        # .center { // Center Vertically - Using Flexbox
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 200px;
+          border: 3px solid green;
+        }
+
+~ The ::marker CSS pseudo-element selects the marker box of a list item, which typically contains a bullet or number. It works on any element or pseudo-element set to display: list-item, such as the <li> and <summary> elements.
+        Eg: li::marker { // it will change the color bullets in the list.
+              color: blue;
+              font-size: 1.2em;
+            }
+
+~ transform: 
+      # rotate(): rotate the element and value must be in degrees.
+          1) rotate() & rotateZ() -> rotate in 360 degree. rotate() and rotateZ() are same.
+          2) rotateX() -> rotate in backward or frontward.
+          3) rotateY() -> rotate in rotate in right or left.
+      # scale(): increase or decrease the size of values and value must be in positive integers.
+          1) scale() -> for the height and width size.
+          2) scale(X, Y) -> for the different height and width size.
+          3) scaleX() -> for the height size.
+          4) scaleY() -> for the width size.
+          5) scaleZ() -> for the three dimensions.
+      # translate(): move element to right, left, top and bottom. Value value must be in pixels(negative or positive).
+          1) translate() -> for move element to right or left.
+          2) translate(X, Y) -> for move element to right or left and top or bottom.
+          3) translateX() -> for move element to right or left.
+          4) translateY() -> for move element to top or bottom.
+          5) translateZ() -> for the three dimensions.
+      # skew(): bend the elements and value must be in degree.
+          1) skew() -> bend the element in x-axis
+          2) skew(X, Y) -> bend the element in x-axis and y-axis
+          3) skewX() -> bend the element in x-axis
+          4) skewY() -> bend the element in y-axis
+      # All in one: all the transform properties in same place.
+          Eg: transform: rotate(30deg) scale(.75) translateY(-10px)
+
+~ transition: transition effects of elements.
+    Syntax:- transition: <transition-element-property> <transition-speed> <transition-effect> <transition-delay>;
+      # transition-element-property -> put the name of the CSS property which we want to give transition effect. Eg: transform
+      # transition-speed -> specify the speed of the transition. Eg: 1s
+      # transition-effect -> specify the moving effect which we want to use there. Eg: ease
+      # transition-delay -> specify the delay to apply the effect. Eg: 1s
+    Eg: transition: transform 1s ease-in 1s; // single property
+        transition: transform 1s, width 2s; // more than one properties
+
+~ animation: make animation on DOM elements.
+    Syntax:- animation: <animation-name> <animation-speed> <animation-effect> <animation-delay> <animation-fill-mode> <animation-direction> <animation-repeat-count>;
+      # animation-name -> specify the name of the animation. Eg: move-box
+      # animation-speed -> specify the speed of the animation. Eg: 1s
+      # animation-effect -> specify the moving effect which we want to use there. Eg: ease
+      # animation-fill-mode -> specify the fill mode to stop the element where animation starts or ends. Eg: forwards or backwards
+      # animation-delay -> specify the delay to apply the effect. Eg: 1s
+      # animation-direction -> specify the direction of the animation. Eg: alternate
+      # animation-repeat-count -> specify the number of times the animation will repeat. Eg: 3 or infinite.
+      # animation-play-state -> it must be set to passed or runnin the animation. Eg: paused or running
+    Eg: animation: move-box 1s ease-in forwards 1s 3 alternate;
+        animation-play-state: paused;
+
+~ overflow-wrap: break-word; // wrap the overflow words in the sentence based on width.
+
+~ word-wrap: break-word; // wrap the words in the sentence based on width.
+
+~ flex-wrap: wrap (or) no-wrap; // wrap the elements in the flex-container
