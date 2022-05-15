@@ -1,0 +1,130 @@
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////  TYPESCRIPT  ////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+
+# It's a super set of javascript.
+
+# Strong typing(datatype is optional), object oriented features, compile time errors not a runtime, great tooling
+
+# typescript was translated to javascript by browser engine so browser can understand easily.
+
+# Install typescript : npm install -g typescript
+  check version: tsc --version
+  translate from Ts to Js: tsc <TS-filename> (new JS file create with same name)
+
+# All Js codes are acceptable in Ts.
+
+# Declare variable syntax: let <var-name> or let <var-name> : <data-type>
+
+# class in typescript must have only one constructor. It will be parameterized or empty constructor.
+
+# In typescript, three access modifiers are public, private, and protected.
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+/////////////  ANGULAR  ////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+
+# Create new app: ng new <app-name>
+
+# Run a app: ng serve --open // run app in http://localhost:4200
+
+# Test a app: ng test
+
+# Build for production: ng build
+
+# Generate component: ng generate component <component-name> 
+									(or) 
+					  ng g c <component-name>
+
+# Generate module: ng generate module <module-name>
+									(or) 
+				   ng g m <module-name>
+
+# Generate component under pre-defined module: ng generate component <module-name>/<component-name>
+																	(or)
+											   ng g c <module-name>/<component-name>
+
+# Generate service: ng generate service <service-name>
+								(or)
+					ng g s <service-name>
+
+# Generate service under pre-defined module with folder name: ng generate service <module-name>/<service-folder-name>/<service-name>
+																	(or)
+											 				  ng g s <module-name>/<service-folder-name>/<service-name>
+
+# module - it contains one or more components.
+
+# selector - it is the name of the component which will be used in another components as tag. Eg: selector: 'about-component' // in that component
+																								  <about-component> // in other components
+
+# templateUrl - it is the name of the HTML template which contains DOM elements for the component. Eg: 
+
+# app.component.ts	- The component class code, written in TypeScript.
+
+# app.component.html - The component template, written in HTML.
+
+# app.component.css - The component's private CSS styles.
+
+# <app-root> - The first component to load and the container for the other components.
+
+# *ngFor - loop over the array to print elements in a web page.
+		Eg: <div *ngFor="let product of products">
+				<h3>
+					{{ product.name }}
+				</h3>
+			</div>
+
+# Structure of component:
+		Eg: import { Component, OnInit } from '@angular/core';
+
+			@Component({
+			selector: 'app-product-alerts',
+			templateUrl: './product-alerts.component.html',
+			styleUrls: ['./product-alerts.component.css']
+			})
+
+			export class ProductAlertsComponent implements OnInit {
+
+			constructor() { }
+
+			ngOnInit() {
+			}
+
+			}
+
+# In app.module.ts, enter component names in declarations array and enter module names inside imports array.
+		Eg: @NgModule({
+			declarations: [
+				AppComponent,
+				AboutComponent,
+				ContactComponent
+			],
+			imports: [
+				BrowserModule,
+				AppRoutingModule,
+				CustomerModule
+			],
+			providers: [],
+			bootstrap: [AppComponent]
+			})
+
+# In app-routing.module.ts, we have to import the components which we want to make routing.
+		Eg: import {HomeComponent} from './home/home.component';
+
+			const routes: Routes = [{
+				path: 'home',
+				component: HomeComponent
+			},
+			{
+				path: '',
+				component: HomeComponent
+			}];
+
+# To install and setup Bootstrap:
+		$ npm install --save boostrap@3
+		$ in angular.json -> above "src/styles.css" -> enter "node_modules/bootstrap/dist/css/bootstrap.min.css"
