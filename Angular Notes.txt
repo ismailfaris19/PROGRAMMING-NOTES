@@ -13,6 +13,7 @@
 # Install typescript : npm install -g typescript
   check version: tsc --version
   translate from Ts to Js: tsc <TS-filename> (new JS file create with same name)
+  then run: node <translated JS-filename>
 
 # All Js codes are acceptable in Ts.
 
