@@ -132,20 +132,28 @@
 																	(or)
 											 				  ng g s <module-name>/<service-folder-name>/<service-name>
 
+
 # module - it contains one or more components.
+
 
 # selector - it is the name of the component which will be used in another components as tag. Eg: selector: 'about-component' // in that component
 																								  <about-component> // in other components
 
+
 # templateUrl - it is the name of the HTML template which contains DOM elements for the component. Eg: 
+
 
 # app.component.ts	- The component class code, written in TypeScript.
 
+
 # app.component.html - The component template, written in HTML.
+
 
 # app.component.css - The component's private CSS styles.
 
+
 # <app-root> - The first component to load and the container for the other components.
+
 
 # *ngFor - loop over the array to print elements in a web page.
 		Eg: <div *ngFor="let product of products">
@@ -153,6 +161,7 @@
 					{{ product.name }}
 				</h3>
 			</div>
+
 
 # Structure of component:
 		Eg: import { Component, OnInit } from '@angular/core';
@@ -172,6 +181,7 @@
 
 			}
 
+
 # In app.module.ts, enter component names in declarations array and enter module names inside imports array.
 		Eg: @NgModule({
 			declarations: [
@@ -188,6 +198,7 @@
 			bootstrap: [AppComponent]
 			})
 
+
 # In app-routing.module.ts, we have to import the components which we want to make routing.
 		Eg: import {HomeComponent} from './home/home.component';
 
@@ -199,6 +210,7 @@
 				path: '',
 				component: HomeComponent
 			}];
+
 
 # In app-routing.module.ts, we don't need to import module for routing between modules.
 		Eg:	const routes: Routes = [
@@ -222,9 +234,11 @@
 			{ path: '', redirectTo: 'module-one', pathMatch: 'full' }
 			];
 
+
 # To install and setup Bootstrap:
 		$ npm install --save boostrap@3
 		$ in angular.json -> above "src/styles.css" -> enter "node_modules/bootstrap/dist/css/bootstrap.min.css"
+
 
 # To install and setup dataTables:
 		$ install those libraries,
@@ -233,6 +247,7 @@
 			> npm install datatables.net-dt --save
 			> npm install @types/jquery --save-dev 
 			> npm install @types/datatables.net --save-dev
+			
 		$ paste this below content in Angular.json,
 			> "styles": [
 				"src/styles.css",
@@ -244,6 +259,7 @@
 				"node_modules/bootstrap/dist/js/bootstrap.js",
 				"node_modules/datatables.net/js/jquery.dataTables.min.js"
 				]
+
 		$ In component.ts file, paste and change some content,
 			> Add this line above @Component and remove import statement to paste this, 	
 					import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
@@ -260,7 +276,9 @@
 		$ In component.html, add this "#dataTable" in table tag.
 					Eg: <table class="table table-striped p-1" #dataTable></table>
 
+
 # we don't need to put let (or) const (or) function keywords inside the class
+
 
 # Interpolation: 
 		$ to use dynamic values inside the HTML template
@@ -269,16 +287,19 @@
 		$ interpolation inside the HTML tags: Eg: <input type="text" placeholder="{{ input_placeholder }}" // input_placeholder is an variable inside the.
 		$ interpolation returns only string format.
 
+
 # Property binding:
 		$ syntax : [attribute-name] = " <expression> "
 		$ we can use expression inside the HTML Tag.
 		$ it will return the same value we pass in class file.
 		$ angular can't understand the aria and colspan attributes. so in this place we have to use property binding.
 
+
 # Class binding: 
 		$ syntax : [class] = " <variable-name> " or  [ngClass] = " <variable-name> "
 		$ we can add dynamic classes inside the tag.
 		$ if we use object name in that variable name it will add the properties as classname which returns true.
+
 
 # Style binding:
 		$ syntax : [style.<property-name>.<value-type-if-needed>] = " <value> " 
@@ -296,6 +317,7 @@
 		}" // in ngStyle we can only use object type
 		$ property-name must be in camel case
 
+
 # Event binding:
 		$ syntax: (<Event-name>)="<function-name>"
 		$ we can control and get data from webpage using this events
@@ -305,6 +327,7 @@
 				console.log(e)
 			}
 
+
 # Two way binding:
 		$ Syntax: [(ngModel)] = "<variable-name>" // set as attribute in html tags
 		$ we have to import FormsModule in app.module.ts
@@ -312,19 +335,22 @@
 		$ before two way binding, we have to update the value in elements again.
 		$ Eg: Google translate
 
+
 # Angular Forms:
 	$ we have to import FormsModule and ReactiveFormsModule in the modules where we use forms and app.module.
 		@ FormControl - all input tags
 			> we have to create a variable for each input tag and set attribute in tag.
 			> import Validators for validation.
 				Eg: email = new FormControl("hello@example.com", [Validators.required, Validators.minLength, Validators.maxLength]);
-					[formControl] = "email" // this is variable name
+					<input type="text" name="email" [formControl] = "email"> // this is variable name
+			> Inside FormGroup in HTML, it must be enter as formControlName instead of [formControl]
 			> Eg: in constructor, this.email.valueChanges.subscribe(data => {
 									console.log(data); // single value
 								  }) // get values which we enter in a input field
 			> Eg: in constructor, this.email.statusChanges.subscribe(ValidOrInvalid => {
 									console.log(ValidOrInvalid);
 								  }) // get invalid or valid status
+
 		@ FormGroup - form tag
 			> We have to create a variable for formgroup and passess value as a object in it.
 			> import Validators for validation for each properties in an formgroup.
@@ -333,11 +359,13 @@
 						email: new FormControl("", [Validators.required]),
 					});
 					<form class="form" [formGroup]="createForm" (ngSubmit)="onSubmit()">
-						<label class="mb-2" for="name">Name</label>
-						<input type="name" class="form-control" id="name" formControlName = "name">
-						<label class="mb-2" for="email">Email</label>
-						<input type="email" class="form-control" id="email" formControlName = "email">
+						<label for="name">Name</label>
+						<input type="name" id="name" formControlName = "name">
+						<label for="email">Email</label>
+						<input type="email"  id="email" formControlName = "email">
+						<button type="submit">save</button>
 					</form>
+			> We have to use form control in every input fields so then only formgroup can validate the values.
 			> We have to add ngSubmit attribute with function name in form tag to submit a data as a object form. 
 				Eg: (ngSubmit)="onSubmit()".
 			> We can the whole value and valid or invalid after submitting the form.
@@ -369,5 +397,123 @@
 				Eg: this.createForm.removeControl('nationality')
 			> contains() - checks if there is any enabled control for the specified control name.
 				Eg: this.createForm.contains('nationality')
+			> get() - we can access the single property inside a form group.
+				Eg: this.createForm.get('nationality')
 
-	
+		@ FormArray - it is array like structure and it may contains FormGroup and FormControl.
+			> Eg : fa = new FormArray([])
+					<div [formArrayName] = "fa" *ngFor="let item of fa.controls; let i = index">
+						<label for="mobile">Mobile {{ i + 1 }}</label>
+						<input type="text" id="mobile" [formControlName] = "i">
+						<small class="text-danger" *ngIf="mobileArray.controls[i].errors">*Mobile number is required</small>
+					</div> 
+			> Inside FormGroup in HTML, it must be enter as formArrayName instead of [formArray]
+			> push() - using this method to push FormGroup or FormControl inside the array. Eg: this.fa.push(new FormControl('123'))
+			> controls - used to get the form array elements. Eg: this.fa.controls
+
+		@ FormBuilder - create and pass object without using form control and form group. Without any change in HTML.
+			> It has three methods such as,
+				-> group({}) - To create a form group.
+				-> control('') - To create a form control.
+				-> array([]) - To create a form array.
+			> The below example shows the form builder structure(form array + form control).
+				Eg: In component.ts, 
+					    createForm : FormGroup;
+						constructor(private fb: FormBuilder) { 
+							this.createForm = this.fb.group({ // this used to create form group
+							name: this.fb.control('', [Validators.required]), // this line
+							email: ['', [Validators.required]], // and this lines are same to create form control
+							mobile: this.fb.array([]) // this is used to create form array
+							})
+							this.createForm.valueChanges.subscribe(data => {
+							console.log(data);
+							})
+						}
+						get mobileArray(){
+							return this.createForm.get('mobile') as FormArray;
+						}
+						viewFormArray(){
+							const mobileController = this.fb.control('+91-', Validators.required)
+							this.mobileArray.push(mobileController);
+							console.log(
+							this.mobileArray.controls
+							)
+						}
+						onSubmit() {
+							console.log(this.createForm.value);
+							console.log(this.createForm.valid);
+						}
+					In component.html,
+						<form class="form d-flex flex-column" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+							<label for="name">Name</label>
+							<input type="name" id="name" formControlName = "name">
+							<label for="email">Email</label>
+							<input type="email" id="email" formControlName = "email">
+							<div formArrayName = "mobile" *ngFor="let contact of mobileArray.controls; let i = index">
+								<label for="mobile">Mobile {{ i + 1 }}</label>
+								<input type="text" id="mobile" [formControlName] = "i">
+								<small class="text-danger" *ngIf="mobileArray.controls[i].errors">*Mobile number is required</small>
+							</div> 
+							<button type="submit">save</button>
+						</form>
+						<button (click) = "viewFormArray()">view</button>
+			> The below example shows the form builder structure(form array + form group).
+				Eg: In component.ts,
+						createForm : FormGroup;
+						constructor(private fb: FormBuilder) { 
+							this.createForm = this.fb.group({ // this used to create form group
+							name: this.fb.control('', [Validators.required]), // this line
+							email: ['', [Validators.required]], // and this lines are same to create form control
+							address: this.fb.array([]) // this is used to create form array
+							})
+							this.createForm.valueChanges.subscribe(data => {
+							console.log(data); // print createForm object value changes
+							})
+						}
+						get addressArray(){
+							return this.createForm.get('address') as FormArray; // Type conversion
+						}
+						viewFormArray(){
+							const addressGroup = this.fb.group({
+							doorno: ['', Validators.required],
+							street: ['', Validators.required]
+							})
+							this.addressArray.push(addressGroup); // add value
+							console.log(
+							this.addressArray.controls // print the array
+							)
+						}
+						removeAddress(index:number){
+							this.addressArray.removeAt(index) // remove value at this particular index
+						}
+						onSubmit() {
+							console.log(this.createForm.value);
+							console.log(this.createForm.valid);
+						}
+					In component.html, 
+						<form class="form d-flex flex-column" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+							<label for="name">Name</label>
+							<input type="name" id="name" formControlName = "name">
+							<label for="email">Email</label>
+							<input type="email" id="email" formControlName = "email">
+							<ul class="form d-flex flex-column" formArrayName = "address">
+								<li class="form d-flex flex-column"  *ngFor="let address of addressArray.controls; let i = index" [formGroupName]="i">
+									<label for="address">Address {{ i + 1 }}</label>
+									<input type="text" placeholder="Door No." formControlName = "doorno">
+									<small class="text-danger" *ngIf="addressArray.controls[i].get('doorno')?.touched && addressArray.controls[i].get('doorno')?.errors">*Door number is required</small> // touched is used for check click inside a input field and then click outside input field without enter anything.
+									<input type="text" placeholder="Street" formControlName = "street">
+									<small class="text-danger" *ngIf="addressArray.controls[i].get('street')?.touched && addressArray.controls[i].get('street')?.errors">*Street is required</small>
+									<button (click)="removeAddress(i)">Remove Address</button>
+								</li>
+							</ul>
+							<button type="submit">save</button>
+						</form>
+						<button (click) = "viewFormArray()">Add Address</button>
+						
+
+# Using "as" keyword to do type conversion. In below example, we converted from formcontrol to formarray.
+	Eg: this.createForm.get('mobile') as FormArray 
+
+# Input field events:
+	$ touched - this event occurs when user click inside a input field and then click outside input field without enter anything.
+	$ dirty - this event occurs when user type in a input field
