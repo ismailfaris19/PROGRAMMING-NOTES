@@ -113,31 +113,31 @@
 # Build for production: ng build
 
 # Generate component: ng generate component <component-name> 
-									(or) 
-					  ng g c <component-name>
+				(or) 
+		      ng g c <component-name>
 
 # Generate module: ng generate module <module-name>
-									(or) 
-				   ng g m <module-name>
+			  (or) 
+	           ng g m <module-name>
 
 # Generate component under pre-defined module: ng generate component <module-name>/<component-name>
-																	(or)
-											   ng g c <module-name>/<component-name>
+								(or)
+					       ng g c <module-name>/<component-name>
 
 # Generate service: ng generate service <service-name>
-								(or)
-					ng g s <service-name>
+				(or)
+		    ng g s <service-name>
 
 # Generate service under pre-defined module with folder name: ng generate service <module-name>/<service-folder-name>/<service-name>
-																	(or)
-											 				  ng g s <module-name>/<service-folder-name>/<service-name>
+										 (or)
+							      ng g s <module-name>/<service-folder-name>/<service-name>
 
 
 # module - it contains one or more components.
 
 
 # selector - it is the name of the component which will be used in another components as tag. Eg: selector: 'about-component' // in that component
-																								  <about-component> // in other components
+												  <about-component> // in other components
 
 
 # templateUrl - it is the name of the HTML template which contains DOM elements for the component. Eg: 
@@ -158,7 +158,7 @@
 # *ngFor - loop over the array to print elements in a web page.
 		Eg: <div *ngFor="let product of products">
 				<h3>
-					{{ product.name }}
+				{{ product.name }}
 				</h3>
 			</div>
 
