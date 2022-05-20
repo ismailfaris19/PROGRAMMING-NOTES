@@ -1,5 +1,80 @@
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////  NODEJS  ////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+
+# NodeJs is a JS runtime built on chrome's V8 JavaScript engine, chakra engine in microsoft and spider monkey in firefox.
+
+# Single threaded but highly scalable(can handle multiple request), very fast and open source.
+
+# 1) node version check : node -v
+  2) npm version check: npm -v
+  3) run node server: node index
+  4) create package.json: npm init (click enter for all)
+  5) install all node modules: npm install
+  6) install separate node module: npm i <module-name>
+
+# we have the vscode extension to check the APIs. That is "REST Client" extension is used to check the API. After installing the extension, we have to create "api.http" file inside our folder.
+
+# In api.http file, we will use request method name, request url and HTTP version. 
+	Syntax: <Request-Method> <Request-URL> <HTTP-Version>
+	Eg: GET http://localhost:3500/ HTTP/1.1
+
+# then click "Send Request" to check the response. Separate the API call using "###" for multiple requests.
+  
+# if we console the module, it will print :
+		Module {
+			id: '.',
+			path: 'D:\\Exercises\\NodeJS\\NodeJS-Demo\\demo',
+			exports: {},
+			filename: 'D:\\Exercises\\NodeJS\\NodeJS-Demo\\demo\\test.js',
+			loaded: false,
+			children: [],
+			paths: [
+				'D:\\Exercises\\NodeJS\\NodeJS-Demo\\demo\\node_modules',
+				'D:\\Exercises\\NodeJS\\NodeJS-Demo\\node_modules',     
+				'D:\\Exercises\\NodeJS\\node_modules',
+				'D:\\Exercises\\node_modules',
+				'D:\\node_modules'
+			]
+		}
+
+# > Example import: let num = require('./demo/test');
+  < Example export: let a = 15 // set variable
+  				    module.exports = a // export the variable
+				    exports.sayAge = () => { // export the function
+				  	return a
+				    }
+					module.exports = { // for two or more exports
+						a,
+						sayAge
+					}
+
+# if we want to import any node module, we don't need to give full path so we just gave the module name.
+
+# if we want to import any file, we have to give full path.
+
+# assign express pre-defined function to this variable
+	Eg: const express = require('express');
+
+# assign the return type of the above function. it returns the object which contains many methods.
+	Eg: const app = express();
+
+# app.use() - 
+
+# app.listen(<port>, () => <some statement>) - to run the application in localhost with manually specified port.
+
+# app.get('<path>', (req, res) => <response>) - to get the resources from server
+
+# app.post('<path>', (req, res) => <response>) - to add new resource in server
+
+# app.put('<path>', (req, res) => <response>) - to update the resource in server
+
+# app.delete('<path>', (req, res) => <response>) - to remove the resource from server
+
+/////////////////////////////////////////////////////////////////////////////////
+
 /////////////  TYPESCRIPT  ////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +88,6 @@
 # Install typescript : npm install -g typescript
   check version: tsc --version
   translate from Ts to Js: tsc <TS-filename> (new JS file create with same name)
-  then run: node <translated JS-filename>
 
 # All Js codes are acceptable in Ts.
 
@@ -126,6 +200,174 @@
 				component: HomeComponent
 			}];
 
+# In app-routing.module.ts, we don't need to import module for routing between modules.
+		Eg:	const routes: Routes = [
+			{
+				path: 'module-one',
+				loadChildren: () =>
+				import(`./moduleOne/module-one.module`).then((m) => m.ModuleOneModule),
+			},
+			{
+				path: 'module-two',
+				loadChildren: () =>
+				import(`./moduleTwo/module-two.module`).then((m) => m.ModuleTwoModule),
+			},
+			{
+				path: 'module-three',
+				loadChildren: () =>
+				import(`./moduleThree/module-three.module`).then(
+					(m) => m.ModuleThreeModule
+				),
+			},
+			{ path: '', redirectTo: 'module-one', pathMatch: 'full' }
+			];
+
 # To install and setup Bootstrap:
 		$ npm install --save boostrap@3
 		$ in angular.json -> above "src/styles.css" -> enter "node_modules/bootstrap/dist/css/bootstrap.min.css"
+
+# To install and setup dataTables:
+		$ install those libraries,
+			> npm install jquery --save
+			> npm install datatables.net --save 
+			> npm install datatables.net-dt --save
+			> npm install @types/jquery --save-dev 
+			> npm install @types/datatables.net --save-dev
+		$ paste this below content in Angular.json,
+			> "styles": [
+				"src/styles.css",
+				"node_modules/datatables.net-dt/css/jquery.dataTables.min.css",
+				"node_modules/bootstrap/dist/css/bootstrap.css"
+				],
+				"scripts": [
+				"node_modules/jquery/dist/jquery.min.js",
+				"node_modules/bootstrap/dist/js/bootstrap.js",
+				"node_modules/datatables.net/js/jquery.dataTables.min.js"
+				]
+		$ In component.ts file, paste and change some content,
+			> Add this line above @Component and remove import statement to paste this, 	
+					import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+					declare var $: (arg0: any) => any;
+			> Class must implements OnInit and AfterViewInit,
+					export class ListUsersComponent implements OnInit, AfterViewInit{}
+			> Paste this below content inside the class, 
+					Before the constructor:	@ViewChild('dataTable', { static: false }) table: any;
+						                    dataTable: any; 
+					After the constructor: ngAfterViewInit(): void {
+												this.dataTable = $(this.table.nativeElement);
+												this.dataTable.DataTable();
+											}	
+		$ In component.html, add this "#dataTable" in table tag.
+					Eg: <table class="table table-striped p-1" #dataTable></table>
+
+# we don't need to put let (or) const (or) function keywords inside the class
+
+# Interpolation: 
+		$ to use dynamic values inside the HTML template
+		$ we can access the variable inside the class in component.ts
+		$ Eg: {{ num }}, {{ myFunction() }} // in the template
+		$ interpolation inside the HTML tags: Eg: <input type="text" placeholder="{{ input_placeholder }}" // input_placeholder is an variable inside the.
+		$ interpolation returns only string format.
+
+# Property binding:
+		$ syntax : [attribute-name] = " <expression> "
+		$ we can use expression inside the HTML Tag.
+		$ it will return the same value we pass in class file.
+		$ angular can't understand the aria and colspan attributes. so in this place we have to use property binding.
+
+# Class binding: 
+		$ syntax : [class] = " <variable-name> " or  [ngClass] = " <variable-name> "
+		$ we can add dynamic classes inside the tag.
+		$ if we use object name in that variable name it will add the properties as classname which returns true.
+
+# Style binding:
+		$ syntax : [style.<property-name>.<value-type-if-needed>] = " <value> " 
+		(or) 
+		[style] ="'<property-name> : <value>'" 
+		(or) 
+		[style] = "{
+			<property-name> : <value>,
+			<property-name> : <value>
+		}"
+		(or)
+		[ngStyle] = "{
+			<property-name> : <value>,
+			<property-name> : <value>
+		}" // in ngStyle we can only use object type
+		$ property-name must be in camel case
+
+# Event binding:
+		$ syntax: (<Event-name>)="<function-name>"
+		$ we can control and get data from webpage using this events
+		$ Eg: <button (click)="functionClick()">
+		$ we can use e to get value and more details.
+			Eg: function functionClick(e: any) {
+				console.log(e)
+			}
+
+# Two way binding:
+		$ Syntax: [(ngModel)] = "<variable-name>" // set as attribute in html tags
+		$ we have to import FormsModule in app.module.ts
+		$ we can change the value dynamically in webpage. whenever change the value, it will automatically change and render in webpage. 
+		$ before two way binding, we have to update the value in elements again.
+		$ Eg: Google translate
+
+# Angular Forms:
+	$ we have to import FormsModule and ReactiveFormsModule in the modules where we use forms and app.module.
+		@ FormControl - all input tags
+			> we have to create a variable for each input tag and set attribute in tag.
+			> import Validators for validation.
+				Eg: email = new FormControl("hello@example.com", [Validators.required, Validators.minLength, Validators.maxLength]);
+					[formControl] = "email" // this is variable name
+			> Eg: in constructor, this.email.valueChanges.subscribe(data => {
+									console.log(data); // single value
+								  }) // get values which we enter in a input field
+			> Eg: in constructor, this.email.statusChanges.subscribe(ValidOrInvalid => {
+									console.log(ValidOrInvalid);
+								  }) // get invalid or valid status
+		@ FormGroup - form tag
+			> We have to create a variable for formgroup and passess value as a object in it.
+			> import Validators for validation for each properties in an formgroup.
+				Eg: createForm = new FormGroup({
+						name: new FormControl("", [Validators.required]),
+						email: new FormControl("", [Validators.required]),
+					});
+					<form class="form" [formGroup]="createForm" (ngSubmit)="onSubmit()">
+						<label class="mb-2" for="name">Name</label>
+						<input type="name" class="form-control" id="name" formControlName = "name">
+						<label class="mb-2" for="email">Email</label>
+						<input type="email" class="form-control" id="email" formControlName = "email">
+					</form>
+			> We have to add ngSubmit attribute with function name in form tag to submit a data as a object form. 
+				Eg: (ngSubmit)="onSubmit()".
+			> We can the whole value and valid or invalid after submitting the form.
+				Eg: onSubmit() {
+						console.log(this.createForm.value);
+						console.log(this.createForm.valid);
+					}
+			> Eg: in constructor, this.createForm.valueChanges.subscribe(data => {
+									console.log(data); // value is object type
+								  }) // get values which we enter in a input field of this form
+
+			> Eg: in constructor, this.createForm.statusChanges.subscribe(ValidOrInvalid => {
+									console.log(ValidOrInvalid);
+								  }) // it check all the validators in a form and retire invalid or valid status
+			> patchValue() - set single value to the form group.
+				Syntax: this.<formgroup-name>.patchValue({
+					<formcontrol-name> : <value>
+				})
+			> setValue() - set more than one values to the form group.
+				Syntax: this.<formgroup-name>.setValue({
+					<formcontrol-name> : <value>,
+					<formcontrol-name> : <value>
+				})
+			> setControl - this is replaces existing control.
+				Eg: this.createForm.setControl('nationality', this.formBuilder.control('', [Validators.required]))
+			> addControl() - adds a control and updates its value and validity. we may use any abstract control in it.
+				Eg: this.createForm.addControl('nationality', new FormControl('', [Validators.required]))
+			> removeControl() - remove a control from the form group.
+				Eg: this.createForm.removeControl('nationality')
+			> contains() - checks if there is any enabled control for the specified control name.
+				Eg: this.createForm.contains('nationality')
+
+	
