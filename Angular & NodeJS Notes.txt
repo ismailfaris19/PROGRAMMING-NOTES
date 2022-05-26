@@ -106,38 +106,46 @@
 
 # Create new app: ng new <app-name>
 
+
 # Run a app: ng serve --open // run app in http://localhost:4200
+
 
 # Test a app: ng test
 
+
 # Build for production: ng build
 
+
 # Generate component: ng generate component <component-name> 
-				(or) 
-		      ng g c <component-name>
+									(or) 
+					  ng g c <component-name>
+
 
 # Generate module: ng generate module <module-name>
-			  (or) 
-	           ng g m <module-name>
+									(or) 
+				   ng g m <module-name>
+
 
 # Generate component under pre-defined module: ng generate component <module-name>/<component-name>
-								(or)
-					       ng g c <module-name>/<component-name>
+																	(or)
+											   ng g c <module-name>/<component-name>
+
 
 # Generate service: ng generate service <service-name>
-				(or)
-		    ng g s <service-name>
+								(or)
+					ng g s <service-name>
+
 
 # Generate service under pre-defined module with folder name: ng generate service <module-name>/<service-folder-name>/<service-name>
-										 (or)
-							      ng g s <module-name>/<service-folder-name>/<service-name>
+																	(or)
+											 				  ng g s <module-name>/<service-folder-name>/<service-name>
 
 
 # module - it contains one or more components.
 
 
 # selector - it is the name of the component which will be used in another components as tag. Eg: selector: 'about-component' // in that component
-												  <about-component> // in other components
+																								  <about-component> // in other components
 
 
 # templateUrl - it is the name of the HTML template which contains DOM elements for the component. Eg: 
@@ -158,7 +166,7 @@
 # *ngFor - loop over the array to print elements in a web page.
 		Eg: <div *ngFor="let product of products">
 				<h3>
-				{{ product.name }}
+					{{ product.name }}
 				</h3>
 			</div>
 
@@ -235,6 +243,47 @@
 			];
 
 
+# In <other-module-name>-routing-module.ts, we need to import modeules and components which we want to work with.
+		Eg: import { NgModule } from '@angular/core';
+			import { Routes, RouterModule } from '@angular/router';
+
+			import { ListSkillsComponent } from './list-skills/list-skills.component';
+			import { ViewSkillsComponent } from './view-skills/view-skills.component';
+			import { AddSkillsComponent } from './add-skills/add-skills.component';
+			import { EditSkillsComponent } from './edit-skills/edit-skills.component';
+
+			const routes: Routes = [
+			{
+				path: '',
+				component: ListSkillsComponent,
+				children: [{ path: 'skills', component: ListSkillsComponent }]
+			},
+			{
+				path: 'viewskill/:id',
+				component: ViewSkillsComponent,
+				children: [{ path: 'skills', component: ViewSkillsComponent }]
+			},
+			{
+				path: 'addskill',
+				component: AddSkillsComponent,
+				children: [{ path: 'skills', component: AddSkillsComponent }]
+			},
+			{
+				path: 'editskill/:id',
+				component: EditSkillsComponent,
+				children: [{ path: 'skills', component: EditSkillsComponent }]
+			}
+			];
+
+
+			@NgModule({
+				imports: [RouterModule.forChild(routes)],
+				exports: [RouterModule],
+			})
+
+			export class SkillsRoutingModule {}
+
+
 # To install and setup Bootstrap:
 		$ npm install --save boostrap@3
 		$ in angular.json -> above "src/styles.css" -> enter "node_modules/bootstrap/dist/css/bootstrap.min.css"
@@ -277,6 +326,40 @@
 					Eg: <table class="table table-striped p-1" #dataTable></table>
 
 
+# To install and setup toaster: [beautify alert message module in angular]
+		$ Install the toaser using npm: npm i ngx-toastr
+		$ Install animation module for toaster: npm install @angular/animations --save
+		$ In angular.json: "styles": [
+										"styles.scss",
+										"node_modules/ngx-toastr/toastr.css"
+										]
+		$ In app.module.ts: import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // import module
+							imports: [ BrowserAnimationsModule ] // add module name
+		$ In module.ts: import { ToastrModule } from 'ngx-toastr'; // import module
+						imports: [ ToastrModule ] // add module name
+		$ In component.ts: import { ToastrService } from 'ngx-toastr'; // import service
+						   constructor( private toastr: ToastrService ) // create instance
+
+
+# To install and setup font awesome:
+		$ npm command : ng add @fortawesome/angular-fontawesome
+		$ after click enter : select Free Solid Icons, Free Regular Icons, Free Brands Icons by click space bar and using down & up arrow to move up and down.
+		$ after complete installation add import statement in app.module.ts and modules where we use: 
+			In module.ts,
+				> import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+				> imports [ FontAwesomeModule ]
+		$ import the fontawesome in components to use icons.
+			In component.ts,
+				> import { faTrashCan, faEye, faEdit } from '@fortawesome/free-regular-svg-icons'; // for normal icon
+											(or)
+				> import { faTrashCan, faEye, faEdit } from '@fortawesome/free-solid-svg-icons'; // for bold icons
+											(or)
+				> import { faYoutube } from '@fortawesome/free-brands-svg-icons'; // for brand icons
+				> faYoutube = faYoutube // assign this to variable for later use in html
+			In component.html,
+				> <fa-icon [icon]="faYoutube"></fa-icon>  // to add in our HTML file and we may add styles in it
+
+
 # we don't need to put let (or) const (or) function keywords inside the class
 
 
@@ -284,8 +367,10 @@
 		$ to use dynamic values inside the HTML template
 		$ we can access the variable inside the class in component.ts
 		$ Eg: {{ num }}, {{ myFunction() }} // in the template
-		$ interpolation inside the HTML tags: Eg: <input type="text" placeholder="{{ input_placeholder }}" // input_placeholder is an variable inside the.
 		$ interpolation returns only string format.
+		$ interpolation inside the HTML tags: Eg: <input type="text" placeholder="{{ input_placeholder }}" // input_placeholder is an variable which is from ts file.
+		$ <a routerLink="/users/viewuser/{{user.id}}" routerLinkActive="active"> // interpolation inside links
+		$ <button (click)="onSubmit(user.id)"> // interpolation inside methods
 
 
 # Property binding:
@@ -399,6 +484,7 @@
 				Eg: this.createForm.contains('nationality')
 			> get() - we can access the single property inside a form group.
 				Eg: this.createForm.get('nationality')
+			> this.<formGroup-name>.reset() - to reset the form.
 
 		@ FormArray - it is array like structure and it may contains FormGroup and FormControl.
 			> Eg : fa = new FormArray([])
@@ -514,6 +600,153 @@
 # Using "as" keyword to do type conversion. In below example, we converted from formcontrol to formarray.
 	Eg: this.createForm.get('mobile') as FormArray 
 
+
 # Input field events:
 	$ touched - this event occurs when user click inside a input field and then click outside input field without enter anything.
 	$ dirty - this event occurs when user type in a input field
+
+
+# Decorators :  @Input() - This decorator is used to recieve the data from parent component.
+				@Output() - This decorator is used to send the data from child component to parent component.
+				@Component() - This decorator is used to specify the selector name, template(HTML file) URL and Style(CSS file) URL.
+
+
+# @Input:
+	Eg: In parent component.ts,
+			name = 'Developer!' // inside parent class
+		In parent component.html, 
+			<app-child name="{{ name }}"></app-child> // passing attribute name must be same as child component's varibale name which has Input decorator
+								(or)
+			<app-child parentToChild="{{ name }}"></app-child> // passing attribute name must be same as child component's Input decorator's parameter name.
+		In child component.ts,
+			@Input() name: string; // inside child class
+						(or)
+			@Input('parentToChild') name: string; // inside child class
+		In child component.html, 
+			<p>Hello {{ name }}</p> // name inside interpolation must be same as variable name in child component.ts
+
+
+# @Output:
+	Eg: In child component.ts, 
+			@Output() childToParent: EventEmitter<any> = new EventEmitter<any>(); // (without default name as parameter) this is the way we pass the value to child component to parent component.
+												// (or)
+			@Output('chldToParnt') childToParent: EventEmitter<any> = new EventEmitter<any>(); // (with default name as parameter) this is the way we pass the value to child component to parent component.
+			sendDataToParent(){ // this function is called when we press button
+				this.childToParent.emit('Programmer!') // this statement is used to pass value for the emitter
+			}
+		In child component.html,
+			<p>Hello {{ name }}</p> // name inside interpolation must be same as variable name in child component.ts
+		In parent component.html,
+			<app-child parentToChild="{{ name }}" (childToParent)="receiveDataFromchild($event)"></app-child> // passing attribute name must be same as child component's varibale name which has Output decorator. $event is used to get the value which we passed from child component.
+												// (or)
+			<app-child parentToChild="{{ name }}" (chldToParnt)="receiveDataFromchild($event)"></app-child> // passing attribute name must be same as child component's Output decorator's parameter name. $event is used to get the value which we passed from child component.
+		In parent component.ts, 
+  			name = 'Developer!';
+			receiveDataFromchild(event:any){
+				this.name = event
+			}
+
+
+# CRUD Operation using HttpClientModule and HttpClient:
+	> We have to import the HttpClientModule in specific module.ts file.
+	> We have to import the HttpClient in specific component where we do CRUD operations.
+	> Syntax of API call, this.<instance-name>.<HTTP-method>("<URL>").subscribe(data => <any operations using that data>)
+	> Examples: 
+	@ Without service.ts:
+		Eg: In module.ts, 
+				import { HttpClientModule } from '@angular/common/http'; // import the HttpClientModule to use the HttpClient in our components
+				@NgModule({
+				declarations: [
+					AppComponent
+				],
+				imports: [
+					BrowserModule,
+					AppRoutingModule,
+					FormsModule,
+					ReactiveFormsModule,
+					HttpClientModule // we have to add the HttpClientModule in imports array.
+				],
+				providers: [],
+				bootstrap: [AppComponent]
+				})
+			In component.ts,
+				import { HttpClient } from '@angular/common/http'; // import HttpClient in a component where we make API call
+				export class AppComponent {
+					todo:any; // we will pass value as object datatype that's why mentioned it as any datatype.
+					constructor(private http: HttpClient){ // create instance with HttpClient datatype
+						this.http.get("https://jsonplaceholder.typicode.com/todos/1").subscribe(data => this.todo = JSON.stringify(data)); // use instance to use get method and use subscribe method to assign the value to the variable
+					}
+				}
+			In component.html,
+				<p>{{ todo }}</p>
+	@ With service.ts:
+		> We have to create <module-name>.service.ts file inside our specific module folder.
+		Eg: In module.ts, 
+				import { HttpClientModule } from '@angular/common/http'; // import the HttpClientModule to use the HttpClient in our components
+				import { AppService } from './app.service'; // import the service file in module.ts
+				@NgModule({
+					declarations: [
+						AppComponent
+					],
+					imports: [
+						BrowserModule,
+						AppRoutingModule,
+						FormsModule,
+						ReactiveFormsModule,
+						HttpClientModule // we have to add the HttpClientModule in imports array.
+					],
+					providers: [AppService], // we have to add service file name in providers array.
+					bootstrap: [AppComponent]
+				})
+			In service.ts,
+				import { Injectable } from '@angular/core'; // In service.ts file, we don't need to use @Component decorator so we use @Injectable decorators to use this file in components
+				import { HttpClient } from '@angular/common/http'; // we have to import HttpClient to do CRUD operations
+				@Injectable() // just call the @Injectable Decorator
+				export class AppService {
+					constructor(private http: HttpClient){  } // specify the instance name in constructor.
+					getTodo(todoId: number = 1){ // specify the method here and we will call later
+						return this.http.get(`https://jsonplaceholder.typicode.com/todos/${todoId}`)
+					}
+				}
+			In component.ts,
+				import { AppService } from './app.service' // import the service file to use in a component
+				export class AppComponent {
+					todo:any; // we will pass value as object datatype that's why mentioned it as any datatype.
+					constructor(private AppService: AppService){ // create instance with service name as datatype because we have specified HttpClient in service file.
+						this.AppService.getTodo(1).subscribe(data => this.todo = JSON.stringify(data)); // use instance name to use get method and use subscribe method to assign the value to the variable
+					}
+				}
+			In component.html,
+				<p>{{ todo }}</p>
+
+
+# *ngIf - for conditional statement inside the HTML template
+		Eg: <small *ngIf="mobileArray.controls[i].errors">hello</small> // it will show this element when it is true.
+
+
+# *ngFor - for loop inside the HTML template
+		Eg: <tr *ngFor="let user of Users"> // it will loop over the array to print the list of elements
+              <th>{{user.id}}</th>
+              <td>{{user.name}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.role}}</td>
+			</tr>
+
+
+# RouterLink - add router link in anchor tag to move from one component to another component without refreshing the page.
+		Eg: In component.html,
+				<a routerLink="/users routerLinkActive="active"></a>
+
+
+# Location - use this to move from one component to another component without load the page.
+		Eg: In component.ts,
+				import { Location } from '@angular/common'; // import the location where we want.
+				constructor(private location: Location) { } // add inside the constructor
+				this.location.back(); // to use this back() to move to previous component.
+
+
+# ActivatedRoute - use this to get value from URL.
+		Eg: In component.ts,
+				import { ActivatedRoute } from '@angular/router'; // import this in a component where we value from URL.
+				constructor(private route: ActivatedRoute) { } // set instance variable for ActivatedRoute
+				this.id = this.route.snapshot.params['id']; // here we get value from URL and set to variable
