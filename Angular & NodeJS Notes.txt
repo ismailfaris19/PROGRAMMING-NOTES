@@ -126,6 +126,11 @@
 				   ng g m <module-name>
 
 
+# Generate module with routing.ts file: ng g module <module-name> --routing
+														(or)
+										ng g m <module-name> --routing
+
+
 # Generate component under pre-defined module: ng generate component <module-name>/<component-name>
 																	(or)
 											   ng g c <module-name>/<component-name>
@@ -739,14 +744,34 @@
 
 
 # Location - use this to move from one component to another component without load the page.
+		> location.go("<URL>") -> we can declare the URL manually to move to any components which we want. The location.go() add the URL to the browser history
+		> location.replaceState() -> used to change the current URL to a new given URL. It replaces the top item in the history with the newly added one.
+		> location.back() -> move to previous component.
+		> location.forward() -> move to next component.
+		> location.path() -> to get the current path.
 		Eg: In component.ts,
 				import { Location } from '@angular/common'; // import the location where we want.
 				constructor(private location: Location) { } // add inside the constructor
 				this.location.back(); // to use this back() to move to previous component.
 
+# Location Service + Router :
+		> The Angular router has an events method that returns an observable that we can subscribe to in order to listen for changes in the navigation. Let’s say that we want to listen to changes in the url and set an isRoot member variable to true if the user in at the root path.
+		Eg: In component.ts,
+				isRoot: boolean;
+				ngOnInit() {
+				this.router.events.subscribe(event => {
+					if (this.location.path() !== '') { // it will check the path to pass value.
+					this.isRoot = false;
+					} else {
+					this.isRoot = true;
+					}
+				});
+				}
+				
 
 # ActivatedRoute - use this to get value from URL.
 		Eg: In component.ts,
 				import { ActivatedRoute } from '@angular/router'; // import this in a component where we value from URL.
 				constructor(private route: ActivatedRoute) { } // set instance variable for ActivatedRoute
 				this.id = this.route.snapshot.params['id']; // here we get value from URL and set to variable
+
