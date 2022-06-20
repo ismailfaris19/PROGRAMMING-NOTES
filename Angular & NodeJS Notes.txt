@@ -531,6 +531,9 @@
 		$ Eg: Google translate
 
 
+# We have to add all the files in assets folder for our project use. Eg, images, videos, documents, etc. We can't use other directory files in our project.
+
+
 # Angular Forms:
 	$ we have to import FormsModule and ReactiveFormsModule in the modules where we use forms and app.module.
 		@ FormControl - all input tags
