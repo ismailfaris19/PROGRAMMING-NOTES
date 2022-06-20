@@ -1,5 +1,18 @@
 /////////////////////////////////////////////////////////////////////////////////
 
+/////////////  VS CODE  ////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////
+
+# Removing all the console.logs from our project.
+	@ Open the global search and replace by pressing Ctrl+Shift+H (in Windows) or Cmd+Shift+H (in Mac).
+	@ Search for the regex – console.log.*$
+	@ Press Alt+R to select the Regular Expression mode or click on the “Use Regular Expression icon” and hit Enter. If there are console.log() in your project, the sidebar will get populate with them.
+	@ Leave the “Replace” input empty
+	@ Click on “Replace All”
+
+/////////////////////////////////////////////////////////////////////////////////
+
 /////////////  NODEJS  ////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -14,6 +27,9 @@
   4) create package.json: npm init (click enter for all)
   5) install all node modules: npm install
   6) install separate node module: npm i <module-name>
+
+# In existing project, if we need to install all the modules which is mentioned in the package.json file, just execute this command:
+	Eg: npm install (or) npm i --save
 
 # we have the vscode extension to check the APIs. That is "REST Client" extension is used to check the API. After installing the extension, we have to create "api.http" file inside our folder.
 
@@ -72,6 +88,43 @@
 # app.put('<path>', (req, res) => <response>) - to update the resource in server
 
 # app.delete('<path>', (req, res) => <response>) - to remove the resource from server
+
+# npm modules for hashing password: 
+	> cryptr - can encrypt and decrypt the password (npm i cryptr)
+		Eg: const Cryptr = require('cryptr');
+		 	const cryptr = new Cryptr('myTotalySecretKey');
+		 	exports.encodePassword = (formData) => {
+		    	let user = userController.userData[0];
+		    	return formData.password == "" ? {...formData, "password" : user.password} : {...formData, "password" : cryptr.encrypt(formData.password)}
+			}
+	> bcryptjs - can encrypt and compare the password but we can't decrypt (npm i bcryptjs)
+		Eg: const {hashSync, genSaltSync, compareSync} = require('bcryptjs');
+			exports.encodePassword = (formData) => {
+				let user = userController.userData[0];
+				const salt = genSaltSync(10);
+    			let hashedPassword = hashSync(formData.password, salt);
+				return formData.password == "" ? {...formData, "password" : user.password} : {...formData, "password" : hashedPassword}
+			}
+
+# npm modules for sent mail from backend:
+	> nodemailer - Nodemailer is a module for Node.js applications to allow easy as cake email sending (npm install nodemailer)
+		Eg: const nodemailer = require("nodemailer"); // import nodemailer
+			const dotenv = require('dotenv') // getting value from .env
+			dotenv.config({path: '../../.env'}); // we have to give path for .env when we have .env file in outside of this file's folder
+
+			var transporter = nodemailer.createTransport({
+				service: 'gmail', // mail service
+				host: "ismail.iqbal@atmecs.com", //for official mail by useing company  domain aspire.atmecs.online
+				port: 587,
+				secure: false, // true for 465, false for other ports like 587
+				auth: {
+					user: process.env.MAIL_USERNAME, // sender mail id
+					pass: process.env.MAIL_PASSWORD // sender mail password
+				},
+				tls: {
+					rejectUnauthorized: false // to remove security
+				}
+			});
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -226,29 +279,81 @@
 
 
 # In app-routing.module.ts, we don't need to import module for routing between modules.
-		Eg:	const routes: Routes = [
+		// module routing without multi layout	
+		Eg: const routes: Routes = [
 			{
-				path: 'module-one',
-				loadChildren: () =>
-				import(`./moduleOne/module-one.module`).then((m) => m.ModuleOneModule),
+			path: '',
+			loadChildren: () => import(`./login-and-signup/login-and-signup.module`).then((m) => m.LoginAndSignupModule)
 			},
 			{
-				path: 'module-two',
-				loadChildren: () =>
-				import(`./moduleTwo/module-two.module`).then((m) => m.ModuleTwoModule),
+			path: 'users',
+			loadChildren: () => import(`./users/users.module`).then((m) => m.UsersModule)
 			},
 			{
-				path: 'module-three',
-				loadChildren: () =>
-				import(`./moduleThree/module-three.module`).then(
-					(m) => m.ModuleThreeModule
-				),
+			path: 'skills',
+			loadChildren: () => import(`./skills/skills.module`).then((m) => m.SkillsModule)
 			},
-			{ path: '', redirectTo: 'module-one', pathMatch: 'full' }
+			{
+			path: 'offers',
+			loadChildren: () => import(`./offers/offers.module`).then((m) => m.OffersModule)
+			},
+			{
+			path: '**',
+			redirectTo: '/login', pathMatch: 'full'
+			}
+			// { 
+			//   path: '**', 
+			//   loadChildren: () => import(`./login-and-signup/login-and-signup.module`).then((m) => m.LoginAndSignupModule),  
+			// }
 			];
 
 
-# In <other-module-name>-routing-module.ts, we need to import modeules and components which we want to work with.
+		// multi layout with module routings.
+		Eg: const routes: Routes = [
+				{
+					path: '',
+					component: SiteLayoutComponent,
+					children: [
+					{
+						path: '',
+						loadChildren: () => AuthModule
+					}
+					]
+				},
+				{
+					path: '',
+					component: AppLayoutComponent,
+					children: [
+					{
+						path: 'dashboard',
+						loadChildren: () => DashboardModule
+					},  
+					{
+						path: 'users',
+						loadChildren: () => UsersModule
+					},
+					{
+						path: 'joiners',
+						loadChildren: () => JoinersModule
+					},
+					{
+						path: 'skills',
+						loadChildren: () => SkillsModule
+					},
+					{
+						path: 'offers',
+						loadChildren: () => OffersModule
+					},
+					{
+						path: 'filldata',
+						loadChildren: () => FilldataModule
+					}
+					]
+				},
+				{ path: '**', redirectTo: '/dashboard' }
+			];
+
+# In <other-module-name>-routing-module.ts, we need to import modules and components which we want to work with.
 		Eg: import { NgModule } from '@angular/core';
 			import { Routes, RouterModule } from '@angular/router';
 
@@ -414,7 +519,7 @@
 		$ Eg: <button (click)="functionClick()">
 		$ we can use e to get value and more details.
 			Eg: function functionClick(e: any) {
-				console.log(e)
+				
 			}
 
 
@@ -435,10 +540,10 @@
 					<input type="text" name="email" [formControl] = "email"> // this is variable name
 			> Inside FormGroup in HTML, it must be enter as formControlName instead of [formControl]
 			> Eg: in constructor, this.email.valueChanges.subscribe(data => {
-									console.log(data); // single value
+									
 								  }) // get values which we enter in a input field
 			> Eg: in constructor, this.email.statusChanges.subscribe(ValidOrInvalid => {
-									console.log(ValidOrInvalid);
+									
 								  }) // get invalid or valid status
 
 		@ FormGroup - form tag
@@ -460,15 +565,15 @@
 				Eg: (ngSubmit)="onSubmit()".
 			> We can the whole value and valid or invalid after submitting the form.
 				Eg: onSubmit() {
-						console.log(this.createForm.value);
-						console.log(this.createForm.valid);
+						
+						
 					}
 			> Eg: in constructor, this.createForm.valueChanges.subscribe(data => {
-									console.log(data); // value is object type
+									
 								  }) // get values which we enter in a input field of this form
 
 			> Eg: in constructor, this.createForm.statusChanges.subscribe(ValidOrInvalid => {
-									console.log(ValidOrInvalid);
+									
 								  }) // it check all the validators in a form and retire invalid or valid status
 			> patchValue() - set single value to the form group.
 				Syntax: this.<formgroup-name>.patchValue({
@@ -517,7 +622,7 @@
 							mobile: this.fb.array([]) // this is used to create form array
 							})
 							this.createForm.valueChanges.subscribe(data => {
-							console.log(data);
+							
 							})
 						}
 						get mobileArray(){
@@ -526,13 +631,13 @@
 						viewFormArray(){
 							const mobileController = this.fb.control('+91-', Validators.required)
 							this.mobileArray.push(mobileController);
-							console.log(
+							
 							this.mobileArray.controls
 							)
 						}
 						onSubmit() {
-							console.log(this.createForm.value);
-							console.log(this.createForm.valid);
+							
+							
 						}
 					In component.html,
 						<form class="form d-flex flex-column" [formGroup]="createForm" (ngSubmit)="onSubmit()">
@@ -558,7 +663,7 @@
 							address: this.fb.array([]) // this is used to create form array
 							})
 							this.createForm.valueChanges.subscribe(data => {
-							console.log(data); // print createForm object value changes
+							
 							})
 						}
 						get addressArray(){
@@ -570,7 +675,7 @@
 							street: ['', Validators.required]
 							})
 							this.addressArray.push(addressGroup); // add value
-							console.log(
+							
 							this.addressArray.controls // print the array
 							)
 						}
@@ -578,8 +683,8 @@
 							this.addressArray.removeAt(index) // remove value at this particular index
 						}
 						onSubmit() {
-							console.log(this.createForm.value);
-							console.log(this.createForm.valid);
+							
+							
 						}
 					In component.html, 
 						<form class="form d-flex flex-column" [formGroup]="createForm" (ngSubmit)="onSubmit()">
@@ -775,3 +880,59 @@
 				constructor(private route: ActivatedRoute) { } // set instance variable for ActivatedRoute
 				this.id = this.route.snapshot.params['id']; // here we get value from URL and set to variable
 
+
+# Session Storage : Data will remove when we close the browser. We can use the stored data in duplicate of that website or in other tabs but we can't use it in another window.
+		Eg: sessionStorage.setItem("name", "john"); // set 
+			sessionStorage.getItem("name"); // get
+			sessionStorage.removeItem("name"); // delete by key name
+			sessionStorage.clear(); // delete all
+
+
+# Local Storage : Data will remove when we clear all the catch data but not when we close the browser. We can use the stored data in duplicate of that website or same url in other tabs or same url in another window.
+		Eg: localStorage.setItem("name", "john"); // set
+			localStorage.getItem("name") // get
+
+
+# Angular - Wait until I receive data before loading template.
+		Eg: // in HTML template,
+			<div *ngIf="filtersLoaded | async">
+				<div [saJquiAccordion]="{active: group.value['collapsed']}" *ngFor="let group of filterGroupsTemplate | keysCheckDisplay;">
+					<div>
+						<h4>{{group.key | i18n}}</h4>
+						<form id="ibo-{{group.key}}" class="form-horizontal" autocomplete="off" style="overflow: initial">
+							<fieldset *ngFor="let field of group.value | keys">
+								<ng-container *ngComponentOutlet="fieldSets[field.value.template];
+												ngModuleFactory: smartadminFormsModule;"></ng-container>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			// in ts file,
+			// Declaring the Promise, yes! Promise!
+			filtersLoaded: Promise<boolean>;
+
+			// Later in the Component, where I gather the data, I set the resolve() of the Promise
+			this.getFiltersSubscription = this.getFilters().subscribe(
+				(filters) => {
+					this.filters = filters;
+					log.info('API CALL. getting filters');
+
+					this.filtersLoaded = Promise.resolve(true); // Setting the Promise as resolved after I have the needed data
+				}
+			);
+
+			// In this listener triggered by the dynamic components when instanced,
+			// I pass the data, knowing that is defined because of the template change
+
+			// Listens to field's init and creates the fieldset triggering a service call
+			// that will be listened by the field component
+			this.iboService.initIBOsFilters$.subscribe(
+				(fieldName) => {
+					if (fieldName === 'IBOsRankSelectorFieldComponent') {
+						log.data('inside initIBOsFilters$ subscription, calling updateIBOsFilters()', fieldName);
+						this.iboService.updateIBOsRankList(this.filters['iboRank'].data);
+					}
+				}
+			);
