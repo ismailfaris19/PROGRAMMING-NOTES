@@ -1,0 +1,167 @@
+//////////////////////////////////// ANGULAR LIFECYCLE HOOKS ////////////////////////////////////
+
+@ Angular lifecycle hooks are methods that Angular calls at specific stages of a component/directive's life — from creation → updates → destruction.
+
+@ Angular Hooks:
+    > constructor(): It is not an Angular lifecycle hook. It's a TypeScript/JavaScript class constructor. USES: Dependency injection, Basic initialization
+    > ngOnChanges(): Called when an Angular input property changes.
+    > ngOnInit(): Called once after Angular initializes the component's inputs. USES: API calls, Initial component setup, Initializing data
+    > ngDoCheck(): Called during Angular's change-detection cycle. 
+    > ngAfterContentInit(): Called once after Angular initializes content projected using <ng-content>.
+    > ngAfterContentChecked(): Runs after Angular checks the projected content.
+    > ngAfterViewInit(): Called once after Angular initializes the component's view and child views. Because the view needs to exist before you access the element.
+    > ngOnDestroy(): Called just before Angular destroys the component. USES: Cleanup subscriptions, Remove event listeners, Clear timers, Cleanup resources
+
+@ Hooks flow: Component Created => constructor() => ngOnChanges()[re-run during updates] => ngOnInit() => ngDoCheck() [re-run during updates] => ngAfterContentInit() => ngAfterContentChecked() => ngOnDestroy() => Component Destroyed
+
+
+//////////////////////////////////// ANGULAR BINDINGS ////////////////////////////////////
+
+@ Event binding (): Listens for user actions (like a button click, mouse movement, or keypress) and runs a function in your component.
+    > (click)="saveData()"
+    > (keyup.enter)="saveData($event)"
+
+@ Class binding []: Adds or removes CSS classes dynamically based on a true/false condition.
+    > [class.active]="isActive"
+    > [ngClass]="{ active: isActive, disabled: !isActive }"
+
+@ Style binding []: Sets inline CSS styles on an HTML element dynamically.
+    > [style.background-color]="backgroundColor", [style.color]="'red'"
+    > [style.font-size.px]="fontSize", [style.width.px]="200"
+
+
+//////////////////////////////////// SIGNALS ////////////////////////////////////
+
+@ In Angular, Signals are used to manage reactive state and automatically update the UI when that state changes.
+
+@ Signal as a smart variable that tells Angular: “My value changed — update the places that depend on me.”
+
+    > Import signals: import { signal } from '@angular/core'
+    > Declare and initiate: count = signal(0)
+    > Get: this.count()
+    > Set: this.count.set(10)
+    > Update based on the previous value: this.count.update(value => value + 1)
+    > Rerun when dependent signals update: total = computed(() => this.price() * this.quantity());
+    > Happen whenever a signal changes:   effect(() => { console.log('Name changed:', this.name())});
+
+
+//////////////////////////////////// NGRX SIGNAL STORE ////////////////////////////////////
+
+@ Think of NgRx with Signals (specifically the NgRx SignalStore) as a direct upgrade to the old way of handling state in Angular.
+
+@ NgRx SignalStore replaces traditional, complex NgRx boilerplate with a lightweight system. Powered by Angular Signals, it combines state, computed values, and async logic into a single, high-performance file with zero boilerplate.
+
+@ Steps to set, handle and compute the data in global store:
+    > Create the store file: 
+        >>  ./cart.store.ts
+    > Import necessary methods: 
+        >>  import { signalStore, withState, withComputed, withMethods, withHooks, patchState } from '@ngrx/signals';
+        >>  import { withEntities, addEntity, updateEntity, removeEntity, setAllEntities } from '@ngrx/signals/entities';
+    > Initialize the interface: 
+        >>  interface CartState { isLoading: boolean, couponCode: string, items: any } // for state management
+        >>  interface Photo  { id: number, title: string, url: string } // for entities management
+    > Declare the initial state value: 
+        >>  const initialCartState: CartState = { isLoading: false, couponCode: null, items: [] }
+    > Let's build the store: 
+        >>  export const CartStore = signalStore({ providedIn: 'root' }, withState(),...);
+    > Can be root-level singleton or component-scoped (if needed): 
+        >>  { providedIn: 'root' }
+    > Initialize the state by passing value: 
+        >>  withState(initialCartState)
+    > Initialize the entities by passing the type (if needed)
+        >>  withEntities<Photo>()
+    > To add extra properties/dependencies to the store (if needed):
+        >>  withProps(() => ({
+                photoService: inject(PhotoService)
+            }))
+    > Derived / Computed Values (auto-recalculated only when items change):
+        >>  withComputed((store) => ({
+                totalCount: computed(() => store.items().reduce((sum, item) => sum + item.quantity, 0)),
+            })),
+    > Methods (State Mutators & Async Calls):
+        >>  withMethods((store, cartApi = inject(CartApiService)) => ({
+                applyCoupon(code: string): void {
+                    // patchState() is an NgRx Signal Store utility used to update/modify the state.
+                    patchState(store, { couponCode: code });
+                },
+
+                // Reactive / Async API call using rxMethod and import it from '@ngrx/signals/rxjs-interop' (if needed)
+                loadCart: rxMethod<void>(
+                    pipe(
+                        tap(() => patchState(store, { isLoading: true })),
+                        switchMap(() => cartApi.fetchCart()),
+                        tap((items) => patchState(store, { items, isLoading: false }))
+                    )
+                ),
+            })),
+    > Use lifecycle hooks in store (if needed):
+        >>  withHooks({
+                onInit(store) {
+                    store.loadCart(); // Auto-fetch cart on app start
+                },
+            })
+
+@ Entity Management is used when your state contains a collection of similar objects, such as users, products, photos, orders, etc.
+
+@ List entity management methods:
+    > withEntities<Entity>(): Adds normalized entity state (entityMap, ids, and an entities() computed signal) to the store.
+        >>  withEntities<Photo>()
+
+    > setAllEntities(entities, config?): State updater function for patchState that replaces the entire entity collection with a new array.
+        >>  patchState(store, setAllEntities(photos));
+
+    > setEntities(entities, config?): Merges or inserts this batch array without deleting existing stored items
+        >>  patchState(store, setEntities(newPhotos));
+
+    > setEntity(entity, config?): State updater function that adds or replaces a single entity.
+        >>  patchState(store, setEntity(newPhoto));
+
+    > addEntities(entities, config?): State updater function that inserts multiple new entities into the collection without updating existing ones.
+        >>  patchState(store, addEntities(newPhotos));
+
+    > addEntity(entity, config?): State updater function that inserts a single new entity.
+        >>  patchState(store, addEntity(newPhoto));
+
+    > updateEntities(updates, config?): State updater function that applies partial updates to multiple existing entities.
+        >>  patchState( store, updateEntities({ id, changes: { title } }));
+
+    > updateEntity(update, config?): State updater function that applies a partial update to a single existing entity.
+        >>  patchState( store, updateEntity({ id, changes: { title } }));
+
+    > removeEntities(ids, config?): State updater function that deletes multiple entities from the collection by their IDs.
+        >>  patchState(store, removeEntities(id));
+
+    > removeEntity(id, config?): State updater function that deletes a single entity by its ID.
+        >>  patchState(store, removeEntity(id));
+
+    > removeAllEntities(config?): State updater function that clears all entities and IDs from the store.
+        >>  patchState(store, removeAllEntities());
+
+    > entities() or allEntities(): An array of all entity objects.
+        >>  this.store.entities();
+
+    > entityMap(): pull a single item out of the store efficiently, use store.entityMap() instead of looping through an array
+        >>  this.store.entityMap()[todoId]; // Returns the Todo object or undefined
+
+    > ids(): An array of just the primary keys and helps us to count the array length
+        >>  this.store.ids()
+        >>  this.store.ids().length
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
