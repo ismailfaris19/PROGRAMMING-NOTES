@@ -1,3 +1,65 @@
+//////////////////////////////////// ANGULAR FOLDER STRUCTURE ////////////////////////////////////
+
+my-angular-app/
+├── .vscode/                      # Editor configurations, extensions, and launch settings
+├── public/                       # Static assets served directly (favicons, robots.txt)
+├── src/
+│   ├── app/
+│   │   ├── core/                 # Singleton services & global infrastructure
+│   │   │   ├── auth/             # Authentication service, token handlers
+│   │   │   ├── guards/           # Functional route guards (auth.guard.ts)
+│   │   │   ├── interceptors/     # Functional HTTP interceptors (logging, auth, retry)
+│   │   │   ├── layout/           # App-wide shell components (header, sidebar, footer)
+│   │   │   └── models/           # App-wide global data types and interfaces
+│   │   │
+│   │   ├── shared/               # Reusable, domain-agnostic UI assets
+│   │   │   ├── components/       # Dumb/presentational UI primitives (buttons, modals, tables)
+│   │   │   ├── directives/       # Utility directives (focus-trap, click-outside)
+│   │   │   ├── pipes/            # Pure data transformation pipes (currency, time-ago)
+│   │   │   └── tokens/           # Injection tokens, design constants
+│   │   │
+│   │   ├── features/             # Business domain bounded contexts
+│   │   │   ├── auth/             # Login, signup, password reset
+│   │   │   │   ├── pages/        # Routed smart components (login.component.ts)
+│   │   │   │   └── auth.routes.ts
+│   │   │   │
+│   │   │   ├── dashboard/        # Dashboard metrics and summary
+│   │   │   │   ├── components/   # Domain-scoped UI pieces (kpi-card, revenue-chart)
+│   │   │   │   ├── pages/        # dashboard-home.component.ts
+│   │   │   │   └── dashboard.routes.ts
+│   │   │   │
+│   │   │   └── users/            # User management domain
+│   │   │       ├── components/   # Domain-specific components (user-card, user-avatar)
+│   │   │       ├── pages/        # Routed smart pages (user-list, user-details)
+│   │   │       ├── services/     # Feature API services (users-api.service.ts)
+│   │   │       ├── state/        # Feature state (users.store.ts using SignalStore)
+│   │   │       └── users.routes.ts
+│   │   │
+│   │   ├── app.config.ts         # Standalone root configuration & global providers
+│   │   ├── app.routes.ts         # Top-level application routing table
+│   │   └── app.component.ts      # Root shell component (<router-outlet />)
+│   │
+│   ├── environments/             # Environment configs (development, staging, production)
+│   │   ├── environment.ts
+│   │   └── environment.prod.ts
+│   │
+│   ├── styles/                   # Global styles & design system tokens
+│   │   ├── _tokens.css           # CSS variables (colors, typography, spacing)
+│   │   ├── _reset.css            # Base browser normalizations
+│   │   └── styles.css            # Global entry stylesheet
+│   │
+│   ├── index.html                # Application root HTML file
+│   └── main.ts                   # Angular application bootstrap entrypoint
+│
+├── .editorconfig
+├── .gitignore
+├── angular.json                  # Angular CLI build & workspace configurations
+├── package.json
+├── tsconfig.app.json             # App-specific TypeScript compiler options
+├── tsconfig.json                 # Base TypeScript configuration & path aliases
+└── tsconfig.spec.json            # Testing TypeScript configuration
+
+
 //////////////////////////////////// ANGULAR LIFECYCLE HOOKS ////////////////////////////////////
 
 @ Angular lifecycle hooks are methods that Angular calls at specific stages of a component/directive's life — from creation → updates → destruction.
@@ -40,10 +102,214 @@
     > Declare and initiate: count = signal(0)
     > Get: this.count()
     > Set: this.count.set(10)
-    > Update based on the previous value: this.count.update(value => value + 1)
+    > Read-only required input signal [input() / input.required()]: task = input.required<Task>();
+    > Modern event emitter: remove = output<string>();
+    > Two-way bound signal (parent can bind with [(selected)]="isSelected")
+    > Update based on the previous value: this.count.update(value => value + 1): selected = model<boolean>(false);
+    > Reactive DOM / component element reference [viewChild() / viewChildren()]: btn = viewChild<ElementRef>('saveBtn')
     > Rerun when dependent signals update: total = computed(() => this.price() * this.quantity());
     > Happen whenever a signal changes:   effect(() => { console.log('Name changed:', this.name())});
 
+
+//////////////////////////////////// ASYNCHRONOUS / REACTIVE PROGRAMMING ////////////////////////////////////
+
+@ The easiest way to understand them is:
+    
+    >   An Observable represents a stream of values that may arrive over time. 
+        >>  Observable = produces data
+        >>  subject$.subscribe(value => { console.log('A:', value); }); // manually created 
+        >>  this.http.get<User[]>('/api/users').subscribe(users => { this.users = users; }); // http requests return Observables
+
+    >   Subscribe() is how you listen to an Observable. 
+        >>  Subscribe = listens to data
+        >>  subject$.subscribe(value => { console.log('A:', value); });
+
+    >   A Subject is special because it can act as both an Observable and an Observer. 
+        >>  Subject = produces + listens to data
+        >>  const subject$ = new Subject<number>(); subject$.subscribe(value => { console.log('A:', value); }); subject$.next(10);
+        
+    >   a Promise is a standard JavaScript object used to handle a single asynchronous operation. 
+        >>  Promise = produces one future result
+        >>  const promise = new Promise(resolve => { setTimeout(() => { resolve('Data received'); }, 1000); });
+
+
+//////////////////////////////////// RXJS ////////////////////////////////////
+
+@ RxJS functions divide into two distinct categories: Creation Functions (which create Observables from various data sources) and Pipeable Operators (which transform, filter, or combine data within a .pipe() chain).
+
+@ Creation Functions:
+
+    > of: Emits the provided arguments in sequence and then completes immediately.
+        >>  of(10, 20, 30).subscribe(val => console.log(val)); // Output: 10, 20, 30
+
+    > from: Converts an Array, Promise, Iterable, or Observable-like object into an Observable.
+        >>  from([1, 2, 3]).subscribe(val => console.log(val)); // Output: 1, 2, 3
+
+    > fromEvent: Creates an Observable from DOM events or Node EventEmitter events.
+        >>  fromEvent(document, 'click').subscribe(event => console.log('Clicked!', event));
+
+    > interval: Emits sequential integers starting at 0 at a specified periodic time interval.
+        >>  interval(1000).subscribe(n => console.log(n)); // emits 0, 1, 2... every second and call sub.unsubscribe() to stop
+
+    > timer: Waits for an initial delay, emits 0, and optionally continues emitting sequential numbers at a given interval.
+        >>  timer(2000).subscribe(val => console.log('Fired after delay', val)); // Emits 0 after 2 seconds, then completes
+
+    > defer: Creates the Observable lazily only when a subscriber subscribes, allowing dynamic creation per subscriber.
+        >>  defer(() => of(Date.now())).subscribe(time => console.log(time));
+
+    > throwError: Creates an Observable that emits no items and immediately emits an error notification.
+        >>  throwError(() => new Error('Custom Error')).subscribe({ error: err => console.error(err.message) });
+
+    > EMPTY: An Observable that emits no items and completes immediately.
+        >>  EMPTY.subscribe({
+                next: () => console.log('Never runs'),
+                complete: () => console.log('Completed immediately')
+            });
+
+@ Combination Functions & Operators:
+
+    > combineLatest: Combines multiple Observables; whenever any source emits, it outputs the latest value from each source as an array (once all sources have emitted at least once).
+        >>  combineLatest([of('Hello'), of('World')]).subscribe(([first, second]) => {
+                console.log(`${first} ${second}`);
+            }); // Output: Hello World
+
+    > forkJoin: Waits for all source Observables to complete, then emits the last emitted value from each as an array or object (analogous to Promise.all).
+        >>  forkJoin({
+                user: of({ id: 1, name: 'Alex' }),
+                settings: of({ theme: 'dark' })
+            }).subscribe(res => console.log(res)); // Output: { user: { id: 1, name: 'Alex' }, settings: { theme: 'dark' } }
+
+    > concat: Subscribes to source Observables sequentially in order; it waits for each to complete before subscribing to the next.
+        >>  concat(of(1, 2), of(3, 4)).subscribe(val => console.log(val)); // Output: 1, 2, 3, 4
+
+    > merge: Flattens multiple Observables into a single Observable by forwarding emissions concurrently as they happen.
+        >>  merge(of('A', 'B'), of('C', 'D')).subscribe(val => console.log(val)); // // Output: A, B, C, D (order depends on arrival time)
+
+    > zip: Combines values from multiple Observables strictly index-by-index (1st with 1st, 2nd with 2nd).
+        >>  zip(of('A', 'B'), of(1, 2)).subscribe(val => console.log(val)); // // Output: ['A', 1], ['B', 2]
+
+    > withLatestFrom: Combines the source value with the latest value from other Observables only when the primary source emits.
+        >>  const source$ = of('event');
+            const state$ = of('active');
+            source$.pipe(withLatestFrom(state$)).subscribe(([evt, st]) => console.log(evt, st));
+
+    > startWith: Emits a specified initial value before emissions from the source Observable begin.
+        >>  of(1, 2, 3).pipe(startWith(0)).subscribe(val => console.log(val)); // Output: 0, 1, 2, 3
+
+@ Transformation Operators:
+
+    > map: Applies a projection function to each value emitted by the source Observable.
+        >>  of(1, 2, 3).pipe(map(x => x * 10)).subscribe(val => console.log(val)); // Output: 10, 20, 30
+
+    > switchMap: Projects each source value to an inner Observable, cancelling the previous inner Observable execution whenever a new source value arrives.
+        >>  of('query1', 'query2').pipe(
+                switchMap(q => of(`Result for ${q}`).pipe(delay(100)))
+            ).subscribe(res => console.log(res)); // Output: Result for query2 (query1 is cancelled)
+
+    > mergeMap (flatMap): Projects each source value to an inner Observable and merges all inner Observables concurrently without cancelling.
+        >>  of('User 1', 'User 2').pipe(
+                mergeMap(user => of(`${user} Profile Loaded`))
+            ).subscribe(val => console.log(val)); // Output: User 1 Profile Loaded, User 2 Profile Loaded
+
+    > concatMap: Projects each source value to an inner Observable, queuing subsequent inner Observables and running them strictly one after another.
+        >>  of(1, 2).pipe(
+                concatMap(x => of(`Processed ${x}`).pipe(delay(500)))
+            ).subscribe(val => console.log(val));
+
+    > exhaustMap: Projects to an inner Observable and ignores new incoming source values until the current inner Observable completes.
+        >>  of('click1', 'click2').pipe( // Useful for preventing double button clicks
+                exhaustMap(click => of(`Handled ${click}`).pipe(delay(1000)))
+            ).subscribe(val => console.log(val)); // Output: Handled click1 ('click2' is dropped while click1 is active)
+
+    > scan: Accumulates values over time, emitting each intermediate accumulated result (similar to Array.reduce with live emissions).
+        >>  of(1, 2, 3).pipe(
+                scan((total, n) => total + n, 0)
+            ).subscribe(sum => console.log(sum)); // Output: 1, 3, 6
+    
+    > reduce: Accumulates values over time, but only emits the single final aggregated value once the source completes.
+        >>  of(1, 2, 3).pipe(
+                reduce((acc, curr) => acc + curr, 0)
+            ).subscribe(total => console.log(total)); // Output: 6
+
+@ Filtering Operators:
+
+    > filter: Emits only those items that pass a predicate condition.
+        >>  of(1, 2, 3, 4, 5).pipe(
+                filter(x => x % 2 === 0)
+            ).subscribe(val => console.log(val)); // Output: 2, 4
+
+    > take: Emits only the first specified count of values and then completes.
+        >>  of(1, 2, 3, 4).pipe(
+                take(2)
+            ).subscribe(val => console.log(val)); // Output: 1, 2
+
+    > takeUntil: Emits values from the source until a secondary notifier Observable emits a value, then completes.
+        >>  const destroy$ = new Subject<void>();
+            interval(1000).pipe(
+                takeUntil(destroy$)
+            ).subscribe(val => console.log(val));
+            // When ready to clean up:
+            destroy$.next();
+            destroy$.complete();
+
+    > first: Emits only the very first value (or the first value matching a predicate) and then completes.
+        >>  of(10, 20, 30).pipe(
+                first(x => x > 15)
+            ).subscribe(val => console.log(val)); // Output: 20
+
+    > debounceTime: Discards emitted values that take place prior to the expiration of a quiet period between values
+        >>  const search$ = new Subject<string>();
+            search$.pipe(
+                debounceTime(300)
+            ).subscribe(query => console.log('Searching for:', query));
+
+    > throttleTime: Emits the first value, then ignores subsequent values for the specified duration.
+        >>  const clicks$ = new Subject<string>();
+            clicks$.pipe(
+                throttleTime(1000)
+            ).subscribe(evt => console.log('Click registered:', evt));
+
+    > distinctUntilChanged: Suppresses duplicate consecutive items emitted by the source.
+        >>  of(1, 1, 2, 2, 3, 1).pipe(
+                distinctUntilChanged()
+            ).subscribe(val => console.log(val)); // Output: 1, 2, 3, 1
+
+@ Utility & Error Handling Operators:
+
+    > tap: Performs side effects (logging, debugging) on emissions without altering the data stream.
+        >>  of(5).pipe(
+                tap(n => console.log('Incoming:', n)),
+                map(n => n * 2),
+                tap(n => console.log('Outgoing:', n))
+            ).subscribe(); // Output: Incoming: 5, Outgoing: 10
+
+    > catchError: Catches errors on the source Observable and returns a replacement Observable or throws a processed error.
+        >>  throwError(() => new Error('Server Down')).pipe(
+                catchError(err => of('Fallback Cache Data'))
+            ).subscribe(data => console.log(data)); // Output: Fallback Cache Data
+
+    > retry: Resubscribes to the source Observable if an error occurs, up to a specified count.
+        >>  let attempts = 0;
+            of(null).pipe(
+                mergeMap(() => {
+                    if (++attempts < 3) return throwError(() => new Error('Temporary failure'));
+                    return of('Success on retry!');
+                }),
+                retry(2)
+            ).subscribe(val => console.log(val)); // Output: Success on retry!
+
+    > finalize: Executes a callback function when the Observable terminates (either completes or errors).
+        >>  of(1, 2).pipe(
+                finalize(() => console.log('Stream ended - cleaning up'))
+            ).subscribe(val => console.log(val)); // Output: 1, 2, Stream ended - cleaning up
+
+    > shareReplay: shares one Observable execution between multiple subscribers and replays previously emitted values to new subscribers.
+        >>  const numbers$ = of(10, 20, 30).pipe(
+                shareReplay(1) // Remember/replay the latest 1 emitted value.
+            );
+            numbers$.subscribe(value => {
+                console.log('First:', value);
+            }); 
 
 //////////////////////////////////// NGRX SIGNAL STORE ////////////////////////////////////
 
