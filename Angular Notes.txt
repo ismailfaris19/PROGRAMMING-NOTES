@@ -92,6 +92,104 @@ my-angular-app/
     > [style.font-size.px]="fontSize", [style.width.px]="200"
 
 
+//////////////////////////////////// ANGULAR FORMS ////////////////////////////////////
+
+@ In Angular, forms fall into two distinct paradigms: Reactive Forms (model-driven, programmatic control in the TypeScript class) and Template-Driven Forms (directive-driven, configured in the HTML template).
+
+@ Because FormGroup, FormControl, and FormArray inherit from AbstractControl, the following methods apply to both Reactive models and Template-Driven form instances (NgForm / NgModel).
+
+@ Core Control Methods (Shared Across Both Paradigms):
+
+    > setValue(): Sets the value of a control/group. Strict: Requires values for all controls in a group.
+        >> this.form.setValue({...})
+
+    > patchValue(): Partially updates values. Ignores missing fields.
+        >> this.form.patchValue({...})
+
+    > reset(): Resets the value to initial/null and resets pristine/untouched flags.
+        >> this.form.reset()
+
+    > get(): Retrieves a child control by name or dot-delimited path.
+        >> this.form.get({...})
+
+    > disable() / enable(): Toggles disabled state and excludes/includes the control from validation & aggregate value.
+        >> this.form.get('...')?.disable();
+
+    > setValidators(): Programmatically sets or overwrites sync validators.
+        >> this.control.setValidators([...]);
+
+    > clearValidators(): Removes all sync validators from the control.
+        >> this.control.clearValidators();
+
+    > updateValueAndValidity(): Re-evaluates value and recalculates validity status (required after changing validators).
+        >> this.control.updateValueAndValidity()
+
+    > setErrors(): Manually injects custom validation error(s) onto a control.
+        >> this.control.setErrors({ customErr: true });
+
+    > hasError(): Checks if a specific error key exists on the control.
+        >> this.control.hasError('required')
+
+    > markAsTouched(): Marks the control as touched (triggers UI validation error displays).
+        >> this.form.markAllAsTouched();
+
+    > markAsDirty(): Marks the control as modified by the user.
+        >> this.control.markAsDirty();
+
+@ 1. Reactive Forms: Methods & Usage:
+
+    > Reactive Forms (ReactiveFormsModule) manage form state programmatically using Validators, FormBuilder, FormGroup, FormControl, and FormArray.
+
+    > Best For Complex forms, dynamic rows, strict validation.
+
+    > FormBuilder.group() / FormBuilder.control() / FormBuilder.array(): Factory methods to initialize form controls cleanly.
+
+    > FormArray.push() / FormArray.removeAt(): Dynamically adds or removes controls in a collection.
+
+    > FormGroup.addControl() / FormGroup.removeControl(): Dynamically attaches or detaches form fields at runtime.
+
+    > markAllAsTouched(): Recursively marks every nested control as touched (ideal upon submit button click).
+
+    > [formGroup]="userForm": binding the formGroup in DOM form.
+
+    > formControlName="name" / [formControlName]="i": binding static or dynamic formControl to interactive form elements
+
+    > formArrayName="skills": binding the formArray in parent of list of controls.
+
+    > @for (skill of skills.controls; track $index; let i = $index): loop over the formControls in formArray to render it in DOM.
+
+    > [disabled]="userForm.invalid": disable the submit button based on form validation.
+
+    > (ngSubmit)="onSubmit()": event binding for formGroup in DOM.
+
+@ 2. Template-Driven Forms: Methods & Usage:
+
+    > Template-Driven forms (FormsModule) delegate control creation and binding to Angular directives (ngForm, ngModel, ngModelGroup) in the HTML template. The component references them using @ViewChild or template reference variables (#form="ngForm").
+
+    > Best For Simple forms, search bars, single-input models.
+
+    > ngForm.resetForm(): Resets the internal control values and clears submission/dirty state (unlike standard form.reset(), resetForm() prevents validation errors from flashing immediately after submit).
+
+    > ngForm.setValue() / ngForm.form.patchValue(): Updates the form model programmatically via the form property (FormGroup).
+
+    > @ViewChild('loginForm') formRef!: NgForm: Gets a reference to the template-driven form named loginForm so we can access and control the form in the component's TypeScript code.
+
+    > #loginForm="ngForm": Binding the form reference in DOM form.
+
+    > [(ngModel)]="user.username": Binding the object property to access the form element value.
+
+    > #usernameCtrl="ngModel": Label the form control to access and use the elements
+
+    > usernameCtrl.touched / usernameCtrl.invalid: Access the status and value of the form control to make use of it.
+
+    > < ... required email>: Angular email validation directive and the way of mention the Validators in formControl. 
+
+    > [disabled]="loginForm.invalid": disable the submit button based on form validation.
+
+    > populateDefaults(loginForm) / populateDefaults(form: NgForm): Need to pass the form reference in methods to make use of it.
+
+    > (ngSubmit)="onSubmit(loginForm)": event binding for form submit in DOM.
+
 //////////////////////////////////// SIGNALS ////////////////////////////////////
 
 @ In Angular, Signals are used to manage reactive state and automatically update the UI when that state changes.
