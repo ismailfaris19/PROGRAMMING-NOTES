@@ -65,13 +65,21 @@ my-angular-app/
 @ Angular lifecycle hooks are methods that Angular calls at specific stages of a component/directive's life — from creation → updates → destruction.
 
 @ Angular Hooks:
+
     > constructor(): It is not an Angular lifecycle hook. It's a TypeScript/JavaScript class constructor. USES: Dependency injection, Basic initialization
+
     > ngOnChanges(): Called when an Angular input property changes.
+
     > ngOnInit(): Called once after Angular initializes the component's inputs. USES: API calls, Initial component setup, Initializing data
+
     > ngDoCheck(): Called during Angular's change-detection cycle. 
+
     > ngAfterContentInit(): Called once after Angular initializes content projected using <ng-content>.
+
     > ngAfterContentChecked(): Runs after Angular checks the projected content.
+
     > ngAfterViewInit(): Called once after Angular initializes the component's view and child views. Because the view needs to exist before you access the element.
+
     > ngOnDestroy(): Called just before Angular destroys the component. USES: Cleanup subscriptions, Remove event listeners, Clear timers, Cleanup resources
 
 @ Hooks flow: Component Created => constructor() => ngOnChanges()[re-run during updates] => ngOnInit() => ngDoCheck() [re-run during updates] => ngAfterContentInit() => ngAfterContentChecked() => ngOnDestroy() => Component Destroyed
@@ -190,6 +198,7 @@ my-angular-app/
 
     > (ngSubmit)="onSubmit(loginForm)": event binding for form submit in DOM.
 
+
 //////////////////////////////////// SIGNALS ////////////////////////////////////
 
 @ In Angular, Signals are used to manage reactive state and automatically update the UI when that state changes.
@@ -197,15 +206,25 @@ my-angular-app/
 @ Signal as a smart variable that tells Angular: “My value changed — update the places that depend on me.”
 
     > Import signals: import { signal } from '@angular/core'
+
     > Declare and initiate: count = signal(0)
+
     > Get: this.count()
+
     > Set: this.count.set(10)
+
     > Read-only required input signal [input() / input.required()]: task = input.required<Task>();
+
     > Modern event emitter: remove = output<string>();
+
     > Two-way bound signal (parent can bind with [(selected)]="isSelected")
+
     > Update based on the previous value: this.count.update(value => value + 1): selected = model<boolean>(false);
+
     > Reactive DOM / component element reference [viewChild() / viewChildren()]: btn = viewChild<ElementRef>('saveBtn')
+
     > Rerun when dependent signals update: total = computed(() => this.price() * this.quantity());
+    
     > Happen whenever a signal changes:   effect(() => { console.log('Name changed:', this.name())});
 
 
@@ -409,6 +428,7 @@ my-angular-app/
                 console.log('First:', value);
             }); 
 
+
 //////////////////////////////////// NGRX SIGNAL STORE ////////////////////////////////////
 
 @ Think of NgRx with Signals (specifically the NgRx SignalStore) as a direct upgrade to the old way of handling state in Angular.
@@ -418,30 +438,40 @@ my-angular-app/
 @ Steps to set, handle and compute the data in global store:
     > Create the store file: 
         >>  ./cart.store.ts
+
     > Import necessary methods: 
         >>  import { signalStore, withState, withComputed, withMethods, withHooks, patchState } from '@ngrx/signals';
         >>  import { withEntities, addEntity, updateEntity, removeEntity, setAllEntities } from '@ngrx/signals/entities';
+
     > Initialize the interface: 
         >>  interface CartState { isLoading: boolean, couponCode: string, items: any } // for state management
         >>  interface Photo  { id: number, title: string, url: string } // for entities management
+
     > Declare the initial state value: 
         >>  const initialCartState: CartState = { isLoading: false, couponCode: null, items: [] }
+
     > Let's build the store: 
         >>  export const CartStore = signalStore({ providedIn: 'root' }, withState(),...);
+
     > Can be root-level singleton or component-scoped (if needed): 
         >>  { providedIn: 'root' }
+
     > Initialize the state by passing value: 
         >>  withState(initialCartState)
+
     > Initialize the entities by passing the type (if needed)
         >>  withEntities<Photo>()
+
     > To add extra properties/dependencies to the store (if needed):
         >>  withProps(() => ({
                 photoService: inject(PhotoService)
             }))
+
     > Derived / Computed Values (auto-recalculated only when items change):
         >>  withComputed((store) => ({
                 totalCount: computed(() => store.items().reduce((sum, item) => sum + item.quantity, 0)),
             })),
+
     > Methods (State Mutators & Async Calls):
         >>  withMethods((store, cartApi = inject(CartApiService)) => ({
                 applyCoupon(code: string): void {
@@ -458,6 +488,7 @@ my-angular-app/
                     )
                 ),
             })),
+
     > Use lifecycle hooks in store (if needed):
         >>  withHooks({
                 onInit(store) {
