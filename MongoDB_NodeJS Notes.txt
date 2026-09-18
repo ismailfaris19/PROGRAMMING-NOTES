@@ -1,0 +1,318 @@
+//////////////////////////////////// MONGODB SCHEMA PROPERTIES ////////////////////////////////////
+
+@ 1. Common Properties (Works for most data types):
+
+    > type: Defines the data type (String, Number, Boolean, Date, ObjectId, Array, etc.).
+
+    > required: Can be a boolean (true) or an array with a custom error message: [true, 'Error message'].
+
+    > default: Sets a default value if none is provided (can be a static value or a function like Date.now).
+
+    > select: If set to false, this field will be hidden by default when you query the database (useful for passwords or sensitive tokens).
+
+    > immutable: If set to true, this field cannot be changed after the document is created.
+
+    > validate: A custom validation function where you can write custom logic and return true or false.
+
+
+@ 2. String-Specific Properties:
+
+    > If your type is String, you have access to these text-manipulation and validation rules:
+
+    > trim: Automatically removes whitespace from the beginning and end of the string (true).
+
+    > lowercase: Automatically converts the string to all lowercase letters before saving.
+
+    > uppercase: Automatically converts the string to all uppercase letters before saving.
+
+    > minlength: Minimum character length allowed, with an optional custom error message.
+
+    > maxlength: Maximum character length allowed (like in your example).
+
+    > match: A Regular Expression (RegExp) that the string must match (e.g., checking for a valid email format).
+
+    > enum: An array of allowed values. If a user tries to submit anything else, it throws an error. (Example: enum: ['pending', 'in-progress', 'completed'])
+
+
+@ 3. Indexing & Uniqueness:
+
+    > index: Set to true to build a B-Tree index on this specific field for faster queries.
+
+    > unique: Ensures no two documents can have the same value for this field (automatically creates an index).
+
+    > sparse: Allows multiple documents to have a null or missing value for a unique field without throwing a duplicate key error.
+
+
+@ Example with Multiple Properties Combined:
+
+    email: {
+        type: String,
+        required: [true, 'Email is required'],
+        unique: true,
+        lowercase: true,
+        trim: true,
+        match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address']
+    }
+
+
+
+//////////////////////////////////// MONGOOSE METHODS ////////////////////////////////////
+
+@ 1. Querying / Reading Methods:
+
+    > Model.find(filter): Returns an array of all products in the Electronics category
+        >>  const electronics = await Product.find({ category: 'Electronics' });
+
+    > Model.findOne(filter): Returns the first product matching the name
+        >>  const laptop = await Product.findOne({ name: 'Pro Laptop 15' });
+
+    > Model.findById(id): Returns a single document by its unique _id string
+        >>  const product = await Product.findById('651a2f9b1c9d440000a1b2c3');
+
+
+@ 2. Creation Methods:
+
+    > Model.create(doc(s)): Instantiates and saves a new document immediately
+        >>  const newProduct = await Product.create({
+                name: 'Wireless Mouse',
+                price: 29.99,
+                category: 'Accessories'
+            });
+
+    > Model.insertMany(docs): Efficiently inserts multiple documents in a single query
+        >>  const bulkProducts = await Product.insertMany([
+                { name: 'Keyboard', price: 49.99 },
+                { name: 'Monitor', price: 199.99 }
+            ]);
+
+
+@ 3. Updating Methods:
+
+    > Model.updateOne(filter, update): Updates the first match and returns a result summary (e.g., modifiedCount)
+        >>  const result = await Product.updateOne(
+                { name: 'Keyboard' },
+                { $set: { price: 44.99 } }
+            );
+
+    > Model.updateMany(filter, update):Updates all documents matching the filter criteria
+        >>  const result = await Product.updateMany(
+                { category: 'Electronics' },
+                { $set: { onSale: true } }
+            );
+
+    > Model.findOneAndUpdate(filter, update, options): Finds a document, updates it, and returns the newly updated document
+        >>  const updated = await Product.findOneAndUpdate(
+                { name: 'Wireless Mouse' },
+                { price: 24.99 },
+                { new: true, runValidators: true }
+            );
+
+    > Model.findByIdAndUpdate(id, update, options): // Finds a document by _id, updates it, and returns the updated document
+        >>  const updated = await Product.findByIdAndUpdate(
+                '651a2f9b1c9d440000a1b2c3',
+                { price: 19.99 },
+                { new: true }
+            );
+    
+
+@ 4. Deletion Methods:
+
+    > Model.deleteOne(filter): Deletes the first document that matches the filter condition
+        >>  const result = await Product.deleteOne({ name: 'Wireless Mouse' });
+
+    > Model.deleteMany(filter): Deletes all documents matching the condition (e.g., all out of stock items)
+        >>  const result = await Product.deleteMany({ inStock: false });
+
+    > Model.findOneAndDelete(filter, options): Finds the first matching document, deletes it, and returns the deleted object
+        >>  const deleted = await Product.findOneAndDelete({ name: 'Discontinued Item' });
+
+    > Model.findByIdAndDelete(id, options): Finds a document by its _id, deletes it, and returns the deleted object
+        >>  const deleted = await Product.findByIdAndDelete('651a2f9b1c9d440000a1b2c3');
+
+
+@ 5. Counting, Aggregation & Utility Methods: 
+
+    > Model.countDocuments(filter): Counts exact documents matching the criteria
+        >>  const count = await Product.countDocuments({ category: 'Electronics' });
+
+    > Model.estimatedDocumentCount(): Uses collection metadata for a fast estimate of total documents
+        >>  const totalCount = await Product.estimatedDocumentCount();
+
+    > Model.distinct(field, filter): Finds an array of all unique values for a specific field
+        >>  const categories = await Product.distinct('category');
+
+    > Model.exists(filter): Quick existence check; returns the document's {_id} if found, or null
+        >>  const exists = await Product.exists({ name: 'Pro Laptop 15' });
+
+    > Model.aggregate(pipeline):Runs a multi-stage aggregation pipeline (e.g., average price per category)
+        >>  const stats = await Product.aggregate([
+                {
+                    $group: {
+                        _id: '$category',
+                        averagePrice: { $avg: '$price' }
+                    }
+                }
+            ]);
+
+
+
+//////////////////////////////////// EXAMPLE SCENARIO ////////////////////////////////////
+
+@ Step 1: Project Setup
+
+// CMD
+mkdir task-manager
+cd task-manager
+npm init -y
+npm install express mongoose dotenv
+npm install --save-dev nodemon
+
+// package.json
+"scripts": {
+  "start": "nodemon server.js"
+}
+
+
+
+@ Step 2: Project Structure
+
+task-manager/
+├── models/
+│   └── Task.js
+├── .env
+├── server.js
+└── package.json
+
+
+
+@ Step 3: Environment Variable
+
+// .env
+PORT=5000
+MONGO_URI=mongodb://127.0.0.1:27017/taskmanager
+
+
+
+@ Step 4: Define the Mongoose Model
+
+// models/Task.js
+const mongoose = require('mongoose');
+
+const taskSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: [true, 'Please provide a task title'],
+        trim: true,
+        maxlength: [100, 'Title cannot exceed 100 characters']
+    },
+    description: {
+        type: String,
+        trim: true
+    },
+    completed: {
+        type: Boolean,
+        default: false
+    }
+}, {
+    timestamps: true // Automatically adds createdAt and updatedAt fields
+});
+
+module.exports = mongoose.model('Task', taskSchema);
+
+
+
+Step 5: Main Server & Express routes
+
+// server.js
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+const Task = require('./models/Task');
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware to parse incoming JSON requests
+app.use(express.json());
+
+// 1. CREATE a new task
+app.post('/api/tasks', async (req, res) => {
+    try {
+        const task = await Task.create(req.body);
+        res.status(201).json({ success: true, data: task });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+// 2. READ all tasks
+app.get('/api/tasks', async (req, res) => {
+    try {
+        const tasks = await Task.find({});
+        res.status(200).json({ success: true, count: tasks.length, data: tasks });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 3. READ a single task by ID
+app.get('/api/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findById(req.params.id);
+        if (!task) {
+            return res.status(404).json({ success: false, error: 'Task not found' });
+        }
+        res.status(200).json({ success: true, data: task });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 4. UPDATE a task by ID
+app.put('/api/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+            new: true, // Return the updated document
+            runValidators: true // Run schema validations on update
+        });
+        if (!task) {
+            return res.status(404).json({ success: false, error: 'Task not found' });
+        }
+        res.status(200).json({ success: true, data: task });
+    } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+    }
+});
+
+// 5. DELETE a task by ID
+app.delete('/api/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id);
+        if (!task) {
+            return res.status(404).json({ success: false, error: 'Task not found' });
+        }
+        res.status(200).json({ success: true, data: {} });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// Database Connection & Server Startup
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log('Connected to MongoDB successfully');
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error('Database connection error:', error);
+    });
+
+
+
+Step 6: How to Run and Test
+
+// CMD
+npm start

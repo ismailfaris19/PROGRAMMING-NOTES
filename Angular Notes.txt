@@ -199,6 +199,151 @@ my-angular-app/
     > (ngSubmit)="onSubmit(loginForm)": event binding for form submit in DOM.
 
 
+//////////////////////////////////// @defer (DEFERRABLE VIEWS) ////////////////////////////////////
+
+@ @defer (Deferrable Views) is an Angular template feature that enables declarative, component-level lazy loading.
+
+@ With @defer, Angular automatically splits whatever component, directive, pipe, or library is inside the block into a separate JavaScript bundle chunk. The browser downloads and renders that chunk only when a specific trigger occurs.
+
+@ The 4 Sub-Blocks of @defer:
+
+    > @defer: When the trigger condition evaluates to true. Wraps the heavy component to be chunked and lazy-loaded.
+
+    > @placeholder: Immediately on initial page render. Light static markup or skeleton shown while waiting for the trigger.
+
+    > @loading: During bundle download. Shown while the browser fetches the JavaScript bundle over the network.
+
+    > @error: On network failure. Fallback UI if the chunk fails to download (e.g., offline or 404).
+
+@ Triggers are prefixed with on (event-based) or when (expression-based):
+
+    > on viewport: Triggers when the placeholder enters the visible browser viewport (via IntersectionObserver).
+        >>  Typical Use Case: Content located below the fold (comments, charts, footers).
+
+    > on interaction(target?): Triggers when the user clicks or presses a key on the placeholder or a designated element reference.
+        >>  Typical Use Case: Modals, expandable accordions, tab panels.
+
+    > on hover(target?): Triggers when the cursor moves over the placeholder or element.
+        >>  Typical Use Case: Tooltips, popovers, quick-look previews.
+
+    > on idle: Triggers when the browser has free/idle time, start downloading the required code in advance.
+        >>  Typical Use Case: Non-critical widgets like feedback widgets or live chat popups.
+
+    > on timer(duration): Triggers after a specified duration (e.g., on timer(5s)). 
+        >>  Typical Use Case: Timed promotional banners, surveys.
+
+    > on immediate: Triggers immediately after client-side rendering completes without blocking the main thread.
+        >>  Typical Use Case: Components that should load right after the page shell.
+
+    > when booleanCondition: Custom signal/boolean expression. When it becomes true, the defer block activates.
+        >>  Typical Use Case: Triggering based on user permissions or state store flags.
+_______________________________________________________________________________________________________________
+<section class="ar-section">
+    @defer (on interaction(arTriggerBtn); prefetch on hover(arTriggerBtn)) { // starts fetching when hover button and to be visible when interaction with button
+
+      <app-heavy-3d-model-viewer [modelUrl]="product().model3dUrl" /> 
+
+    } @placeholder { // shows message before fetching data
+
+      <p class="hint">Click "Launch Interactive 3D Preview" above to examine in 3D.</p> 
+
+    } @loading (after 150ms; minimum 500ms) { // show loader while fetching data
+
+      <div class="spinner-overlay">
+        <span>Downloading 3D engine...</span>
+      </div>
+
+    } @error { // show error message while failed in fetching data
+
+      <div class="error-box">
+        <p>Unable to load 3D viewer. Check your internet connection.</p>
+      </div>
+
+    }
+  </section>
+_______________________________________________________________________________________________________________
+
+
+//////////////////////////////////// Auth Interceptor vs Auth Guard ////////////////////////////////////
+
+@ The Auth Guard protects Angular routes, while the Auth Interceptor automatically attaches the authentication token to outgoing API requests.
+
+@ Interceptor vs Guard:
+
+    > Difference in table:
+        -------------------------------------------------------------------------------
+        |               | Auth Guard                   | Auth Interceptor             |
+        | ------------- | ---------------------------- | ---------------------------- |
+        | Purpose       | Protect routes               | Modify HTTP requests         |
+        | Works with    | Router                       | HttpClient                   |
+        | Main question | "Can user access this page?" | "Should I attach the token?" |
+        | Example       | `/dashboard`                 | `GET /api/users`             |
+        -------------------------------------------------------------------------------
+
+    > Difference in diagram:
+                  LOGIN
+                    ↓
+                Token is stored
+                    ↓
+            ┌───────┴────────┐
+            ↓                ↓
+        Auth Guard      Auth Interceptor
+            ↓                ↓
+        Protect pages      Protect API calls
+            ↓                ↓
+        /dashboard       /api/users
+
+@ Auth Interceptor:
+
+    > Overall flow:
+
+        Login Page
+            ↓
+        AuthService.login()
+            ↓
+        POST /api/login
+            ↓
+        Backend
+            ↓
+        JWT Token
+            ↓
+        AuthService stores token
+            ↓
+        User opens Dashboard
+            ↓
+        Dashboard calls GET /api/users
+            ↓
+        AuthInterceptor ⭐
+            ↓
+        Adds Authorization header
+            ↓
+        Backend
+            ↓
+        Protected data
+
+    > Project structure:
+
+        src/app/
+        │
+        ├── auth/
+        │   ├── auth.service.ts
+        │   ├── auth.interceptor.ts
+        │   ├── auth.guard.ts
+        │   ├── login/
+        │   │   ├── login.component.ts
+        │   │   └── login.component.html
+        │
+        ├── dashboard/
+        │   ├── dashboard.component.ts
+        │   └── dashboard.component.html
+        │
+        ├── app.routes.ts
+        └── app.config.ts
+
+    > 
+
+
+
 //////////////////////////////////// SIGNALS ////////////////////////////////////
 
 @ In Angular, Signals are used to manage reactive state and automatically update the UI when that state changes.
