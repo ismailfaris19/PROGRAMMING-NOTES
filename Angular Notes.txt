@@ -98,6 +98,7 @@ my-angular-app/
 @ Style binding []: Sets inline CSS styles on an HTML element dynamically.
     > [style.background-color]="backgroundColor", [style.color]="'red'"
     > [style.font-size.px]="fontSize", [style.width.px]="200"
+    > [ngStyle]="{'color': customColor, 'font-size.px': isUrgent ? 24 : 16}"
 
 
 //////////////////////////////////// ANGULAR FORMS ////////////////////////////////////
@@ -199,6 +200,125 @@ my-angular-app/
     > (ngSubmit)="onSubmit(loginForm)": event binding for form submit in DOM.
 
 
+//////////////////////////////////// Directives ////////////////////////////////////
+
+@ In Angular, the @Directive decorator attaches custom behavior, modifies styles, or manipulates the structure of existing DOM elements without requiring its own template.
+
+@ No template, attaches to an existing DOM element, Reusable behavior, DOM modifications, validation, custom events and Multiple directives can be applied to a single DOM node.
+
+@ Directives are primarily divided into two main categories:
+    >   Attribute Directives: Change the appearance or behavior of an existing DOM element, component, or directive.
+
+    >   Structural Directives: Add or remove DOM elements using a template (e.g., custom *ngIf-like behavior via TemplateRef and ViewContainerRef).
+
+@ Key Building Blocks for Directives
+    > ElementRef: Direct access to the underlying native DOM element.
+
+    > Renderer2: Safe, platform-independent DOM manipulation (avoids direct DOM access issues in SSR/Web Workers).
+
+    > @HostListener / host object: Listens to native events (e.g., click, mouseenter, focus) on the host element.
+
+    > @HostBinding / host object: Binds a host element property, class, or style directly to a directive property.
+
+    > input() / @Input(): Accepts dynamic configuration values from the host template.
+
+@ 1. Attribute Directive: Dynamic Element Highlighting
+This directive changes an element's background color on hover, accepting an optional color input with a default fallback.
+-----------------------------------------------------------------------
+    // highlight.directive.ts
+    @Directive({
+        selector: '[appHighlight]',
+        standalone: true,
+        host: {
+            '(mouseenter)': 'onMouseEnter()',
+            '(mouseleave)': 'onMouseLeave()'
+        }
+    })
+    export class HighlightDirective {
+        private el = inject(ElementRef);
+        private renderer = inject(Renderer2);
+
+        // Signal input for the highlight color
+        highlightColor = input<string>('yellow', { alias: 'appHighlight' });
+
+        onMouseEnter(): void {
+            this.setColor(this.highlightColor() || 'yellow');
+        }
+
+        onMouseLeave(): void {
+            this.setColor('');
+        }
+
+        private setColor(color: string): void {
+            this.renderer.setStyle(this.el.nativeElement, 'backgroundColor', color);
+        }
+    }
+-----------------------------------------------------------------------
+    // Usage in Component Template
+    <!-- Uses default color (yellow) -->
+    <p appHighlight>Hover over this text to highlight.</p>
+
+    <!-- Pass custom color directly through the directive selector -->
+    <p [appHighlight]="'#a5d6a7'">Hover to highlight with a light green color.</p>
+-----------------------------------------------------------------------
+
+@ 2. Form/Behavioral Directive: Auto-Focus on Render: A behavioral directive that programmatically focuses an input when it renders in the DOM.
+-----------------------------------------------------------------------
+    // auto-focus.directive.ts
+    @Directive({
+        selector: '[appAutoFocus]',
+        standalone: true
+    })
+    export class AutoFocusDirective {
+    private el = inject(ElementRef);
+
+    constructor() {
+        afterNextRender(() => {
+            this.el.nativeElement.focus();
+        });
+    }
+    }
+-----------------------------------------------------------------------
+    // Usage in Component Template
+    <input type="text" placeholder="Search..." appAutoFocus />
+-----------------------------------------------------------------------
+
+@ 3. Structural Directive: Role-Based Display (*appHasRole): Structural directives require TemplateRef (the template contents) and ViewContainerRef (the location where the template is rendered or removed).
+-----------------------------------------------------------------------
+    // has-role.directive.ts
+    @Directive({
+        selector: '[appHasRole]',
+        standalone: true
+    })
+    export class HasRoleDirective {
+        private templateRef = inject(TemplateRef<unknown>);
+        private viewContainer = inject(ViewContainerRef);
+        private authService = inject(AuthService);
+
+        // Input for required roles
+        requiredRoles = input.required<string[]>({ alias: 'appHasRole' });
+
+        constructor() {
+            effect(() => {
+                const userRole = this.authService.currentRole();
+                const allowed = this.requiredRoles().includes(userRole);
+
+                this.viewContainer.clear();
+                if (allowed) {
+                    this.viewContainer.createEmbeddedView(this.templateRef);
+                }
+            });
+        }
+    }
+-----------------------------------------------------------------------
+    // Usage in Component Template
+    <!-- Asterisk (*) syntax designates structural directives -->
+    <div *appHasRole="['ADMIN', 'EDITOR']">
+        <button>Delete Page</button>
+    </div>
+-----------------------------------------------------------------------
+
+
 //////////////////////////////////// @defer (DEFERRABLE VIEWS) ////////////////////////////////////
 
 @ @defer (Deferrable Views) is an Angular template feature that enables declarative, component-level lazy loading.
@@ -293,6 +413,25 @@ ________________________________________________________________________________
             ↓                ↓
         /dashboard       /api/users
 
+    > Project structure:
+
+        src/app/
+        │
+        ├── auth/
+        │   ├── auth.service.ts
+        │   ├── auth.interceptor.ts
+        │   ├── auth.guard.ts
+        │   ├── login/
+        │   │   ├── login.component.ts
+        │   │   └── login.component.html
+        │
+        ├── dashboard/
+        │   ├── dashboard.component.ts
+        │   └── dashboard.component.html
+        │
+        ├── app.routes.ts
+        └── app.config.ts
+
 @ Auth Interceptor:
 
     > Overall flow:
@@ -321,32 +460,194 @@ ________________________________________________________________________________
             ↓
         Protected data
 
-    > Project structure:
+    > Code flow:
 
-        src/app/
-        │
-        ├── auth/
-        │   ├── auth.service.ts
-        │   ├── auth.interceptor.ts
-        │   ├── auth.guard.ts
-        │   ├── login/
-        │   │   ├── login.component.ts
-        │   │   └── login.component.html
-        │
-        ├── dashboard/
-        │   ├── dashboard.component.ts
-        │   └── dashboard.component.html
-        │
-        ├── app.routes.ts
-        └── app.config.ts
+        >>  auth.service.ts: This service handles login and the token.
+            -----------------------------------------------------------------
+            @Injectable({
+                providedIn: 'root'
+            })
+            export class AuthService {
+                private apiUrl = 'https://example.com/api';
 
-    > 
+                constructor(private http: HttpClient) {}
 
+                login(email: string, password: string): Observable<any> {
+                    return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
+                        tap(response => { localStorage.setItem('token', response.token); })
+                    );
+                }
+
+                getToken(): string | null {
+                    return localStorage.getItem('token');
+                }
+
+                logout(): void {
+                    localStorage.removeItem('token');
+                }
+
+                isLoggedIn(): boolean {
+                    return !!this.getToken();
+                }
+            }
+            -----------------------------------------------------------------
+
+        >>  auth.interceptor.ts: This is where the interceptor comes in.
+            -----------------------------------------------------------------
+            @Injectable()
+            export class AuthInterceptor implements HttpInterceptor {
+                constructor(private authService: AuthService) {}
+
+                intercept(req: HttpRequest<any>, next: HttpHandler) {
+                    const token = this.authService.getToken();
+
+                    if (token) {
+                    const authReq = req.clone({
+                        setHeaders: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+
+                    return next.handle(authReq);
+                    }
+
+                    return next.handle(req);
+                }
+            }
+            -----------------------------------------------------------------
+
+        >>  app.config.ts: If you're using standalone Angular, register it in.
+            -----------------------------------------------------------------
+            import { HTTP_INTERCEPTORS } from '@angular/common/http';
+            import { AuthInterceptor } from './auth/auth.interceptor';
+
+            export const appConfig: ApplicationConfig = {
+                providers: [
+                    provideHttpClient(
+                        withInterceptorsFromDi()
+                    ),
+                    {   // The important part is:
+                        provide: HTTP_INTERCEPTORS,
+                        useClass: AuthInterceptor,
+                        multi: true // multi: true allows multiple HTTP interceptors to exist.
+                    }
+                ]
+            };
+            ----------------------------------------------------------------
+
+        >>  login.component.ts: trigger the API call
+            -----------------------------------------------------------------
+            login(): void {
+                this.authService.login(this.email, this.password).subscribe({
+                    next: () => { this.router.navigate(['/dashboard']); },
+                    error: () => { console.log('Invalid credentials'); }
+                });
+            }
+            ----------------------------------------------------------------
+
+        >>  dashboard.component.ts: After login, the dashboard calls a protected API. We didn't manually add the token here.
+            -----------------------------------------------------------------
+            ngOnInit(): void {
+                this.http.get<any[]>('https://example.com/api/users').subscribe(data => {
+                    this.users = data;
+                });
+            }
+            ----------------------------------------------------------------
+
+@ Auth Guard:
+
+    > Overall flow:
+
+        User
+        │
+        ↓
+        /dashboard
+        │
+        ↓
+        Angular Router
+        │
+        ↓
+        AuthGuard
+        │
+        ├── Logged in? ── YES ──→ Dashboard
+        │
+        └── NO
+            ↓
+            /login
+
+    > Code flow:
+
+        >>  auth.service.ts: The service keeps track of whether the user is logged in.
+            -----------------------------------------------------------------
+            @Injectable({
+                providedIn: 'root'
+            })
+            export class AuthService {
+                login(): void {
+                    localStorage.setItem('isLoggedIn', 'true');
+                }
+
+                logout(): void {
+                    localStorage.removeItem('isLoggedIn');
+                }
+
+                isLoggedIn(): boolean {
+                    return localStorage.getItem('isLoggedIn') === 'true'; ------------------------->(4)
+                }
+            }
+            -----------------------------------------------------------------
+
+        >>  auth.guard.ts: This is the actual guard.
+            -----------------------------------------------------------------
+            @Injectable({
+                providedIn: 'root'
+            })
+            export class AuthGuard implements CanActivate {
+                constructor(private authService: AuthService, private router: Router) {}
+
+                canActivate(): boolean {
+                    if (this.authService.isLoggedIn()) { ------------------------->(3)
+                        return true;
+                    }
+                    this.router.navigate(['/login']); ------------------------->(5)
+                    return false;
+                }
+            }
+            -----------------------------------------------------------------
+
+        >>  app.routes.ts: Now we tell Angular which routes are protected.
+            -----------------------------------------------------------------
+            export const routes: Routes = [
+                {
+                    path: 'login',
+                    component: LoginComponent
+                },
+
+                {
+                    path: 'dashboard',
+                    component: DashboardComponent,
+                    canActivate: [AuthGuard] // most important line and Before opening /dashboard, execute AuthGuard. ------------------------->(2)
+                }
+            ];
+            -----------------------------------------------------------------
+
+        >>  login.component.ts: Trigger the API call and navigate to dashboard page
+            -----------------------------------------------------------------
+            login(): void {
+                // Normally this happens after successful API login
+                this.authService.login();
+                this.router.navigate(['/dashboard']); ------------------------->(1)
+            }
+            -----------------------------------------------------------------
 
 
 //////////////////////////////////// SIGNALS ////////////////////////////////////
 
 @ In Angular, Signals are used to manage reactive state and automatically update the UI when that state changes.
+
+@ Signals notify Angular precisely which piece of state changed. 
+
+@ Instead of scanning the entire tree of components, Angular can update only the exact template binding connected to that Signal, eliminating the overhead of full-tree checks.
 
 @ Signal as a smart variable that tells Angular: “My value changed — update the places that depend on me.”
 
@@ -362,14 +663,14 @@ ________________________________________________________________________________
 
     > Modern event emitter: remove = output<string>();
 
-    > Two-way bound signal (parent can bind with [(selected)]="isSelected")
+    > Two-way bound signal (parent can bind with: [(selected)]="isSelected") / selected = model<boolean>(false);
 
-    > Update based on the previous value: this.count.update(value => value + 1): selected = model<boolean>(false);
+    > Update based on the previous value: this.count.update(value => value + 1); 
 
     > Reactive DOM / component element reference [viewChild() / viewChildren()]: btn = viewChild<ElementRef>('saveBtn')
 
     > Rerun when dependent signals update: total = computed(() => this.price() * this.quantity());
-    
+
     > Happen whenever a signal changes:   effect(() => { console.log('Name changed:', this.name())});
 
 
@@ -393,6 +694,14 @@ ________________________________________________________________________________
     >   a Promise is a standard JavaScript object used to handle a single asynchronous operation. 
         >>  Promise = produces one future result
         >>  const promise = new Promise(resolve => { setTimeout(() => { resolve('Data received'); }, 1000); });
+    
+    >   BehaviorSubject stores the latest value and immediately gives it to a new subscriber.
+        >> BehaviorSubject = stores the latest value
+        >> const subject = new BehaviorSubject<number>(0); subject.subscribe(value => console.log('A:', value));
+
+    >   ReplaySubject can remember multiple previous values and replay them to a new subscriber.
+        >> ReplaySubject = remember multiple previous values
+        >> const subject = new ReplaySubject<number>(2); subject.subscribe(value => console.log(value));
 
 
 //////////////////////////////////// RXJS ////////////////////////////////////
@@ -445,10 +754,10 @@ ________________________________________________________________________________
         >>  concat(of(1, 2), of(3, 4)).subscribe(val => console.log(val)); // Output: 1, 2, 3, 4
 
     > merge: Flattens multiple Observables into a single Observable by forwarding emissions concurrently as they happen.
-        >>  merge(of('A', 'B'), of('C', 'D')).subscribe(val => console.log(val)); // // Output: A, B, C, D (order depends on arrival time)
+        >>  merge(of('A', 'B'), of('C', 'D')).subscribe(val => console.log(val)); // Output: A, B, C, D (order depends on arrival time)
 
     > zip: Combines values from multiple Observables strictly index-by-index (1st with 1st, 2nd with 2nd).
-        >>  zip(of('A', 'B'), of(1, 2)).subscribe(val => console.log(val)); // // Output: ['A', 1], ['B', 2]
+        >>  zip(of('A', 'B'), of(1, 2)).subscribe(val => console.log(val)); // Output: ['A', 1], ['B', 2]
 
     > withLatestFrom: Combines the source value with the latest value from other Observables only when the primary source emits.
         >>  const source$ = of('event');

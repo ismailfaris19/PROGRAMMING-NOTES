@@ -158,161 +158,198 @@
 
 //////////////////////////////////// EXAMPLE SCENARIO ////////////////////////////////////
 
-@ Step 1: Project Setup
+@ Step 1: Create a Database & Collection in MongoDB Atlas
 
-// CMD
-mkdir task-manager
-cd task-manager
-npm init -y
-npm install express mongoose dotenv
-npm install --save-dev nodemon
+    > Sign Up / Log In: Go to MongoDB Atlas and create a free account.
 
-// package.json
-"scripts": {
-  "start": "nodemon server.js"
-}
+    > Create a Free Cluster:
+        >> Follow the prompt to create a new project.
+        >> Build a Shared Cluster (choose the free M0 Sandbox tier, select a cloud provider/region near you, and click Create).
 
+    > Create a Database User (Credentials):
+        >> Under Security on the left sidebar, click Database Access.
+        >> Click Add New Database User.
+        >> Choose Password authentication, enter a username (e.g., admin) and a secure password. Note these down, as you need them for your Node.js app!
+        >> Under Database User Privileges, select Atlas admin or Read and write to any database. Click Add User.
 
+    > Whitelist Your IP Address:
+        >> Under Security, click Network Access.
+        >> Click Add IP Address.
+        >> Click Allow Access from Anywhere (0.0.0.0/0) for development convenience (or add your current IP address), and click Confirm.
 
-@ Step 2: Project Structure
-
-task-manager/
-├── models/
-│   └── Task.js
-├── .env
-├── server.js
-└── package.json
-
-
-
-@ Step 3: Environment Variable
-
-// .env
-PORT=5000
-MONGO_URI=mongodb://127.0.0.1:27017/taskmanager
+    > Create a Collection (Table):
+        >> Go back to Deployment -> Database.
+        >> Click Browse Collections on your cluster.
+        >> Click Create Database.
+        >> Enter your Database Name (e.g., taskmanager) and your Collection Name (e.g., tasks). Click Create. (Note: Mongoose will also automatically create collections and databases for you when you insert your first document, but creating it manually in Atlas is a great way to verify setup).
 
 
+@ Step 2: Observe and Obtain Your Credentials (Connection String)
 
-@ Step 4: Define the Mongoose Model
+    > To let Node.js talk to your Atlas database, you need a Connection URI string.
 
-// models/Task.js
-const mongoose = require('mongoose');
+    > In MongoDB Atlas, go to your Database deployment view.
 
-const taskSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: [true, 'Please provide a task title'],
-        trim: true,
-        maxlength: [100, 'Title cannot exceed 100 characters']
-    },
-    description: {
-        type: String,
-        trim: true
-    },
-    completed: {
-        type: Boolean,
-        default: false
+    > Click the Connect button next to your cluster name.
+
+    > Choose Drivers (Node.js).
+
+    > Look for the Connection string section. It will look like this:
+        >> mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+
+    > Copy this string. You will replace <username> and <password> with the database user credentials you created.
+
+
+@ Step 3: Project Setup
+
+    // CMD
+    mkdir task-manager
+    cd task-manager
+    npm init -y
+    npm install express mongoose dotenv
+    npm install --save-dev nodemon
+
+    // package.json
+    "scripts": {
+    "start": "nodemon server.js"
     }
-}, {
-    timestamps: true // Automatically adds createdAt and updatedAt fields
-});
-
-module.exports = mongoose.model('Task', taskSchema);
 
 
+@ Step 4: Project Structure
 
-Step 5: Main Server & Express routes
+    task-manager/
+    ├── models/
+    │   └── Task.js
+    ├── .env
+    ├── server.js
+    └── package.json
 
-// server.js
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
 
-const Task = require('./models/Task');
+@ Step 5: Environment Variable
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+    // .env
+    PORT=5000
+    MONGO_URI=mongodb+srv://admin:YourSecurePassword123@cluster0.xxxxx.mongodb.net/taskmanager?retryWrites=true&w=majority
 
-// Middleware to parse incoming JSON requests
-app.use(express.json());
 
-// 1. CREATE a new task
-app.post('/api/tasks', async (req, res) => {
-    try {
-        const task = await Task.create(req.body);
-        res.status(201).json({ success: true, data: task });
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-});
+@ Step 6: Define the Mongoose Model
 
-// 2. READ all tasks
-app.get('/api/tasks', async (req, res) => {
-    try {
-        const tasks = await Task.find({});
-        res.status(200).json({ success: true, count: tasks.length, data: tasks });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
+    // models/Task.js
+    const mongoose = require('mongoose');
 
-// 3. READ a single task by ID
-app.get('/api/tasks/:id', async (req, res) => {
-    try {
-        const task = await Task.findById(req.params.id);
-        if (!task) {
-            return res.status(404).json({ success: false, error: 'Task not found' });
+    const taskSchema = new mongoose.Schema({
+        title: {
+            type: String,
+            required: [true, 'Please provide a task title'],
+            trim: true,
+            maxlength: [100, 'Title cannot exceed 100 characters']
+        },
+        description: {
+            type: String,
+            trim: true
+        },
+        completed: {
+            type: Boolean,
+            default: false
         }
-        res.status(200).json({ success: true, data: task });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// 4. UPDATE a task by ID
-app.put('/api/tasks/:id', async (req, res) => {
-    try {
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
-            new: true, // Return the updated document
-            runValidators: true // Run schema validations on update
-        });
-        if (!task) {
-            return res.status(404).json({ success: false, error: 'Task not found' });
-        }
-        res.status(200).json({ success: true, data: task });
-    } catch (error) {
-        res.status(400).json({ success: false, error: error.message });
-    }
-});
-
-// 5. DELETE a task by ID
-app.delete('/api/tasks/:id', async (req, res) => {
-    try {
-        const task = await Task.findByIdAndDelete(req.params.id);
-        if (!task) {
-            return res.status(404).json({ success: false, error: 'Task not found' });
-        }
-        res.status(200).json({ success: true, data: {} });
-    } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-// Database Connection & Server Startup
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('Connected to MongoDB successfully');
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-    })
-    .catch((error) => {
-        console.error('Database connection error:', error);
+    }, {
+        timestamps: true // Automatically adds createdAt and updatedAt fields
     });
 
+    module.exports = mongoose.model('Task', taskSchema);
 
 
-Step 6: How to Run and Test
+@ Step 7: Main Server & Express routes
 
-// CMD
-npm start
+    // server.js
+    const express = require('express');
+    const mongoose = require('mongoose');
+    require('dotenv').config();
+
+    const Task = require('./models/Task');
+
+    const app = express();
+    const PORT = process.env.PORT || 5000;
+
+    // Middleware to parse incoming JSON requests
+    app.use(express.json());
+
+    // 1. CREATE a new task
+    app.post('/api/tasks', async (req, res) => {
+        try {
+            const task = await Task.create(req.body);
+            res.status(201).json({ success: true, data: task });
+        } catch (error) {
+            res.status(400).json({ success: false, error: error.message });
+        }
+    });
+
+    // 2. READ all tasks
+    app.get('/api/tasks', async (req, res) => {
+        try {
+            const tasks = await Task.find({});
+            res.status(200).json({ success: true, count: tasks.length, data: tasks });
+        } catch (error) {
+            res.status(500).json({ success: false, error: error.message });
+        }
+    });
+
+    // 3. READ a single task by ID
+    app.get('/api/tasks/:id', async (req, res) => {
+        try {
+            const task = await Task.findById(req.params.id);
+            if (!task) {
+                return res.status(404).json({ success: false, error: 'Task not found' });
+            }
+            res.status(200).json({ success: true, data: task });
+        } catch (error) {
+            res.status(500).json({ success: false, error: error.message });
+        }
+    });
+
+    // 4. UPDATE a task by ID
+    app.put('/api/tasks/:id', async (req, res) => {
+        try {
+            const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
+                new: true, // Return the updated document
+                runValidators: true // Run schema validations on update
+            });
+            if (!task) {
+                return res.status(404).json({ success: false, error: 'Task not found' });
+            }
+            res.status(200).json({ success: true, data: task });
+        } catch (error) {
+            res.status(400).json({ success: false, error: error.message });
+        }
+    });
+
+    // 5. DELETE a task by ID
+    app.delete('/api/tasks/:id', async (req, res) => {
+        try {
+            const task = await Task.findByIdAndDelete(req.params.id);
+            if (!task) {
+                return res.status(404).json({ success: false, error: 'Task not found' });
+            }
+            res.status(200).json({ success: true, data: {} });
+        } catch (error) {
+            res.status(500).json({ success: false, error: error.message });
+        }
+    });
+
+    // Database Connection & Server Startup
+    mongoose.connect(process.env.MONGO_URI)
+        .then(() => {
+            console.log('Connected to MongoDB successfully');
+            app.listen(PORT, () => {
+                console.log(`Server is running on port ${PORT}`);
+            });
+        })
+        .catch((error) => {
+            console.error('Database connection error:', error);
+        });
+
+
+@ Step 8: How to Run and Test
+
+    // CMD
+    npm start

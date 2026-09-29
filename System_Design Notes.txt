@@ -1,0 +1,455 @@
+////////////////////////// System Design //////////////////////////
+
+@ Suppose an interviewer says:
+
+    > "Design an e-commerce application like Amazon."
+
+    > They don't expect you to immediately write Angular components or Express controllers.
+
+
+@ They want to know:
+
+    > How will all the pieces of the application work together when thousands/millions of users use it?
+
+
+@ For example:
+
+    > This is System Design.
+
+                    USER
+                     |
+                     ↓
+                  Angular
+                  Frontend
+                     |
+                     ↓
+                HTTP / HTTPS
+                     |
+                     ↓
+              Node.js + Express
+                 Backend
+                     |
+          ┌──────────┼──────────┐
+          ↓          ↓          ↓
+       MySQL      Redis      File Storage
+       Database    Cache        S3
+
+
+
+////////////////////////// HLD vs LLD //////////////////////////
+
+@ HLD — High-Level Design:
+
+    > HLD answers: "What are the major components and how do they communicate?"
+
+    > Example:
+        Angular
+        ↓
+        Load Balancer
+        ↓
+        Node.js / Express
+        ↓
+        ┌───────────────┐
+        │               │
+        MySQL          Redis
+
+    > We discuss:
+        >> Architecture
+        >> Services
+        >> Databases
+        >> APIs
+        >> Load balancing
+        >> Caching
+        >> Scalability
+        >> Authentication
+        >> Communication between services
+        >> Message queues
+        >> Deployment
+        >> Generally don't write detailed classes/functions here.
+
+
+@ LLD — Low-Level Design:
+
+    > LLD answers: "How exactly will we implement those components?"
+
+    > Example:
+        UserController
+            ↓
+        UserService
+            ↓
+        UserRepository
+            ↓
+        MySQL
+
+    > We discuss:
+        >> Classes
+        >> Interfaces
+        >> Functions
+        >> Models
+        >> Database tables
+        >> Relationships
+        >> API request/response
+        >> Validation
+        >> Design patterns
+        >> Error handling
+        >> Code structure
+
+
+
+////////////////////////// Gathering Requirements //////////////////////////
+
+@ Functional requirements:
+
+    > What should the system do?
+
+    > Functional = WHAT the system does
+
+    > For our application:
+
+        1. User registration
+        2. User login
+        3. Create task
+        4. View tasks
+        5. Update task
+        6. Delete task
+        7. Mark task completed
+
+
+@ Non-functional requirements:
+
+    > How should the system behave?
+
+    > Non-functional = HOW well the system does it
+
+    > For example:
+
+        1. Secure
+        2. Fast
+        3. Scalable
+        4. Available
+        5. Maintainable
+
+
+
+////////////////////////// HLD Components //////////////////////////
+
+@ Angular
+
+    > UI
+    > Forms
+    > Routing
+    > State
+    > User interaction
+    > API calls
+
+
+@ Node.js
+
+    Angular
+    ↓
+    HTTP request
+    ↓
+    Node.js
+
+
+@ Express.js
+
+    > Routes
+    > Middleware
+    > Controllers
+    > Request/Response
+    > Authentication
+    > Error handling 
+
+
+
+////////////////////////// LLD Example //////////////////////////
+
+@ Backend Architecture:
+
+    > Instead of putting everything inside one file: server.js
+
+    > Layers: 
+
+        Backend
+        │
+        ├── controllers
+        │
+        ├── services
+        │
+        ├── repositories
+        │
+        ├── models
+        │
+        ├── routes
+        │
+        ├── middleware
+        │
+        └── config
+
+    > Flow: 
+
+        POST /tasks
+            ↓
+        Route
+            ↓
+        Controller
+            ↓
+        Service
+            ↓
+        Repository
+            ↓
+        MySQL
+
+
+@ Deep dive-in for LLD flow:
+
+    > API endpoint: 
+        >>  POST /api/tasks
+
+    > Route: 
+        >>  router.post('/tasks', taskController.createTask);
+
+    > Controller: 
+        >>  const createTask = async (req, res) => {
+                const task = await taskService.createTask(req.body);
+                res.status(201).json(task);
+            };
+
+    > Service: 
+        >>  const createTask = async (data) => {
+                // business logic
+                return taskRepository.create(data);
+            };
+
+    > Repository:
+        >>  const create = async (data) => {
+                // Insert into MySQL
+                const [result] = await db.execute(`INSERT INTO tasks (title, [data.title, data.description]);
+                return result;
+            };
+
+    > Tables in DB:
+
+        | id | name  | email                                     | password |
+        | -- | ----- | ----------------------------------------- | -------- |
+        | 1  | John  | [john@gmail.com](mailto:john@gmail.com)   | hashed   |
+        | 2  | David | [david@gmail.com](mailto:david@gmail.com) | hashed   |
+
+        | id | user_id | title         | description | status    |
+        | -- | ------- | ------------- | ----------- | --------- |
+        | 1  | 1       | Learn JS      | JavaScript  | pending   |
+        | 2  | 1       | Learn Angular | Angular     | completed |
+        | 3  | 2       | Learn Node    | Node.js     | pending   |
+
+
+
+////////////////////////// Scalability & Redis //////////////////////////
+
+@ Scalability:
+
+    > What if one Node server cannot handle all requests?
+        >>  The Load Balancer distributes requests.
+
+    > We can have multiple backend instances:
+
+        >>       Angular
+                    |
+                    ↓
+              Load Balancer
+             /      |      \
+            ↓       ↓       ↓
+         Node     Node     Node
+         API      API      API
+            \       |       /
+             \      |      /
+                  MySQL
+
+        >>  This is horizontal scaling.
+
+            Request 1 → Server 1
+            Request 2 → Server 2
+            Request 3 → Server 3
+            Request 4 → Server 1
+
+
+@ Redis:
+
+    > Suppose users repeatedly request:
+        >>  GET /api/tasks
+
+    > Every request goes to MySQL. With many requests, database load increases.
+        >>  User -> Node -> MySQL
+
+    > Here Redis play a game and Redis is commonly used as a cache.
+        >>  User
+            ↓
+            Node
+            ↓
+            Redis
+            ↓
+            Data available?
+            ├── YES → return data
+            │
+            └── NO
+                ↓
+                MySQL
+                ↓
+                Redis
+                ↓
+                User
+
+    
+
+////////////////////////// INTERVIEW QUESIONS //////////////////////////
+
+@ Suppose interviewer says:
+
+    > Design a task management application.
+
+
+@ HLD Answer: 
+
+    > I'll use Angular for the frontend and Node.js with Express for the REST API. MySQL will store users and tasks. For scalability, I can run multiple Node instances behind a load balancer. Redis can be introduced for frequently accessed data. JWT can handle authentication.
+
+    >   Angular
+        ↓
+        Load Balancer
+        ↓
+        Node/Express
+        ↓
+        Redis
+        ↓
+        MySQL
+
+
+@ LLD Answer:
+
+    > Then they may ask:
+        >> How would you implement task creation?
+
+    >   Route
+        ↓
+        Controller
+        ↓
+        Service
+        ↓
+        Repository
+        ↓
+        MySQL
+
+
+
+////////////////////////// LEARNING PATH //////////////////////////
+
+@ Phase 1 — Fundamentals
+
+    1. What is System Design?
+    2. HLD vs LLD
+    3. Client-server architecture
+    4. HTTP/HTTPS
+    5. REST APIs
+    6. DNS
+    7. Load Balancer
+    8. Database
+    9. SQL vs NoSQL
+    10. Cache
+
+
+@ Phase 2 — Backend Architecture
+
+    11. MVC
+    12. Controller-Service-Repository
+    13. Middleware
+    14. Authentication
+    15. Authorization
+    16. JWT
+    17. Sessions
+    18. API Gateway
+    19. Rate Limiting
+    20. Error Handling
+
+
+@ Phase 3 — Scalability
+
+    21. Vertical scaling
+    22. Horizontal scaling
+    23. Stateless servers
+    24. Database indexing
+    25. Database replication
+    26. Read replicas
+    27. Sharding
+    28. Caching
+    29. Redis
+    30. CDN
+
+
+Phase 4 — Distributed Systems
+
+    31. Microservices
+    32. Message queues
+    33. Kafka/RabbitMQ
+    34. Event-driven architecture
+    35. CAP theorem
+    36. Consistency
+    37. Availability
+    38. Fault tolerance
+    39. Retry
+    40. Circuit breaker
+
+
+@ Phase 5 — LLD
+
+    41. SOLID
+    42. Design patterns
+    43. Factory
+    44. Singleton
+    45. Strategy
+    46. Observer
+    47. Repository
+    48. Dependency Injection
+    49. Class diagrams
+    50. Sequence diagrams
+
+
+
+////////////////////////// RULE TO REMEMBER //////////////////////////
+
+@ When you see a System Design question, don't immediately start coding.
+
+             REQUIREMENTS
+                  ↓
+             ARCHITECTURE
+                  ↓
+              COMPONENTS
+                  ↓
+              DATA FLOW
+                  ↓
+             DATABASE DESIGN
+                  ↓
+                 APIs
+                  ↓
+              SCALABILITY
+                  ↓
+                SECURITY
+                  ↓
+             FAILURE CASES
+
+
+@ Flow model:  
+
+                    SYSTEM DESIGN
+                         |
+              ┌──────────┴──────────┐
+              ↓                     ↓
+             HLD                   LLD
+              |                     |
+       "Big picture"          "Implementation"
+              |                     |
+       ┌──────┼──────┐       ┌──────┼──────┐
+       ↓      ↓      ↓       ↓      ↓      ↓
+    Client  Server  DB    Classes  APIs   Tables
+       |      |      |       |      |      |
+    Angular Node   MySQL   Service Controller SQL
+
+
