@@ -270,13 +270,13 @@ This directive changes an element's background color on hover, accepting an opti
         standalone: true
     })
     export class AutoFocusDirective {
-    private el = inject(ElementRef);
+        private el = inject(ElementRef);
 
-    constructor() {
-        afterNextRender(() => {
-            this.el.nativeElement.focus();
-        });
-    }
+        constructor() {
+            afterNextRender(() => {
+                this.el.nativeElement.focus();
+            });
+        }
     }
 -----------------------------------------------------------------------
     // Usage in Component Template

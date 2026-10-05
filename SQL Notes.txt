@@ -1,0 +1,1087 @@
+@ What is SQL:
+
+    > SQL (Structured Query Language) is a language used to communicate with and manage relational databases.
+
+    > Create databases/tables, Insert data, Read data, Update data and Delete data.
+
+
+
+@ What is Schema:
+
+    > A schema is the blueprint or structure of a database.
+
+    > It tells us what tables exist, what columns they have, and how they are related.
+        >> Database = Actual data
+        >> Schema = Structure/blueprint of that data
+    
+    > Simple example:
+        Company Database
+        │
+        ├── Employees
+        │   ├── id
+        │   ├── name
+        │   └── department_id
+        │
+        ├── Departments
+        │   ├── id
+        │   └── name
+        │
+        └── Projects
+            ├── id
+            └── project_name
+
+
+
+@ Difference between SQL and MySQL:
+
+    | SQL                                                | MySQL                                 |
+    | -------------------------------------------------- | ------------------------------------- |
+    | SQL is a language                                  | MySQL is a database management system |
+    | Used to communicate with databases                 | Used to store and manage data         |
+    | SQL has commands like `SELECT`, `INSERT`, `UPDATE` | MySQL executes those SQL commands     |
+    | SQL is a standard                                  | MySQL is a specific DBMS              |
+
+
+
+@ DDL, DML, DQL, DCL, and TCL:
+
+    > DDL => Data Definition Language => CREATE, ALTER, DROP, TRUNCATE
+    > DML => Data Manipulation Language => INSERT, UPDATE, Delete
+    > DQL => Data Query Language => SELECT
+    > DCL => Data Control Language => GRANT, REVOKE
+    > TCL => Transaction Control Language => COMMIT, ROLLBACK, SAVEPOINT
+
+
+
+@ DB vs Table vs Column vs Row:
+
+    > A database is an organized collection of data that can be stored, accessed, and managed efficiently.
+
+        Company Database
+        │
+        ├── Employees
+        ├── Departments
+        ├── Projects
+        └── Salaries
+
+    > A table stores data in the form of rows and columns.
+
+        id | name  | salary
+        ---|-------|-------
+        1  | John  | 50000
+        2  | Alice | 60000
+        3  | Bob   | 55000
+
+    > A column represents a particular attribute/property.
+
+        id
+        name
+        salary
+
+    > A row represents one complete record.
+
+        1 | John | 50000
+
+
+
+@ CONSTRAINTS:
+
+    > Table:
+
+        | Constraint        | Example                                                 | Meaning                                                            |
+        | ----------------- | ------------------------------------------------------- | ------------------------------------------------------------------ |
+        | **PRIMARY KEY**   | `course_id INT PRIMARY KEY`                             | Uniquely identifies a course                                       |
+        | **COMPOSITE KEY** | `PRIMARY KEY (student_id, course_id)`                   | Combination of columns uniquely identifies a student-course record |
+        | **FOREIGN KEY**   | `FOREIGN KEY (course_id) REFERENCES courses(course_id)` | Links `students` to `courses`                                      |
+        | **UNIQUE**        | `email VARCHAR(100) UNIQUE`                             | No duplicate emails                                                |
+        | **NOT NULL**      | `name VARCHAR(100) NOT NULL`                            | Name must be provided                                              |
+        | **CHECK**         | `age INT CHECK (age >= 18)`                             | Age must be 18 or above                                            |
+        | **DEFAULT**       | `city VARCHAR(50) DEFAULT 'Chennai'`                    | Uses Chennai if city isn't provided                                |
+
+    > Query:
+
+        CREATE TABLE courses (
+            course_id INT PRIMARY KEY,
+            course_name VARCHAR(100) UNIQUE NOT NULL,
+            duration INT CHECK (duration > 0),
+            category VARCHAR(50) DEFAULT 'Programming'
+        );
+
+        CREATE TABLE students (
+            student_id INT NOT NULL,
+            course_id INT NOT NULL,
+            email VARCHAR(100) UNIQUE,
+            name VARCHAR(100) NOT NULL,
+            age INT CHECK (age >= 18),
+            city VARCHAR(50) DEFAULT 'Chennai',
+
+            -- COMPOSITE PRIMARY KEY
+            PRIMARY KEY (student_id, course_id),
+
+            -- FOREIGN KEY
+            FOREIGN KEY (course_id) REFERENCES courses(course_id)
+        );
+
+
+
+@ Study about NULL and AUTO_INCREMENT:
+
+    > NULL means there is no value / value is unknown or missing.
+
+        >> Retrieve data in the way "WHERE phone IS NULL" or "WHERE phone IS NOT NULL" instead of "WHERE phone = NULL"
+
+    > Difference between NULL, 0, and empty string:
+        
+        >> age = NULL means age is unknown/not provided.
+        >> age = 0 means age is actually zero.
+        >> name = '' means the string exists but contains no characters.
+
+    > AUTO_INCREMENT is a MySQL feature that automatically generates a new numeric value for a column, usually an id. Usually used with a PRIMARY KEY. AUTO_INCREMENT is not itself a constraint like PRIMARY KEY, UNIQUE, or CHECK.
+
+        >> CREATE TABLE users ( id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100) NOT NULL ); // Added AUTO_INCREMENT for id
+        >> INSERT INTO users (name) VALUES ('John'); // See we didn't insert id here because it is AUTO INCREMENT
+
+
+
+@ Normalization and Denormalization:
+
+    > Normalization means: “Let's organize this data so we don't repeat unnecessary information.”
+
+        >> 1NF → One value in one cell
+
+            => Bad: 
+                    Student | Phone
+                    --------|-------------
+                    John    | 9876, 8765
+
+            => Good:
+                    Student | Phone
+                    --------|------
+                    John    | 9876
+                    John    | 8765
+    
+        >> 2NF → Depend on the whole key
+            
+            => This is mainly important when you have a combined/composite key.
+
+            => Bad: 
+                    Student_ID | Course_ID | Student_Name | Course_Name
+                    -----------|-----------|--------------|------------
+                    1          | 101       | John         | Java
+                    1          | 102       | John         | React
+
+                    // Student_ID + Course_ID
+                    // But Student_Name only depends on Student_ID and Course_Name only depends on Course_ID.
+            
+            => Good:
+                    Students
+                    Student_ID | Student_Name
+                    -----------|------------
+                    1          | John
+
+                    Courses
+                    Course_ID | Course_Name
+                    ----------|------------
+                    101       | Java
+                    102       | React
+
+                    // So we separate them
+
+        >> 3NF → Don't depend on another non-key column
+
+            => Bad:
+                    Employee_ID | Employee_Name | Dept_ID | Dept_Name
+                    ------------|---------------|---------|----------
+                    1           | John          | 10      | IT
+                    2           | Alice         | 20      | HR
+
+                    // Employee_ID → Dept_ID → Dept_Name 
+                    // Dept_Name depends on Dept_ID, not directly on Employee_ID.
+
+            => Good:
+                    Employees
+                    Employee_ID | Employee_Name | Dept_ID
+                    ------------|---------------|--------
+                    1           | John          | 10
+                    2           | Alice         | 20
+
+                    Departments
+                    Dept_ID | Dept_Name
+                    --------|----------
+                    10      | IT
+                    20      | HR
+
+                    // So we separate them
+
+    > Denormalization means: “Intentionally keeping some duplicate data for easier or faster reading.”
+
+        => Now suppose we have:
+                Employees
+                Employee_ID | Employee_Name | Dept_ID
+
+                Departments
+                Dept_ID | Dept_Name
+
+                // To get the department name, we need a JOIN.
+
+        => Sometimes, for faster/easier reading, we may intentionally store:
+                Employee_ID | Employee_Name | Dept_ID | Dept_Name
+                ------------|---------------|---------|----------
+                1           | John          | 10      | IT
+                2           | Alice         | 20      | HR
+
+                // Now Dept_Name is repeated.
+
+
+
+@ CRUD Operations:
+
+    > INSERT: INSERT INTO employees (name, salary) VALUES ('John', 50000);
+
+    > SELECT: SELECT * FROM employees;
+
+    > UPDATE: UPDATE employees SET salary = 60000 WHERE id = 1;
+
+    > DELETE: DELETE FROM employees WHERE id = 1;
+
+    > DELETE ALL ROWS: TRUNCATE TABLE employees;
+
+    > DELETE TABLE: DROP TABLE employees;
+
+    > DELETE DB: DROP DATABASE company_db;
+
+
+
+@ SQL Clauses:
+
+    > SELECT: What columns/data do you want? => SELECT name
+
+    > FROM: Which table? => FROM employees
+
+    > WHERE: Filter individual rows => WHERE salary > 30000
+
+    > GROUP BY: Group similar rows together => GROUP BY department
+
+    > HAVING: Filter the groups => HAVING AVG(salary) > 50000
+
+    > ORDER BY: Sort the result => ORDER BY salary DESC
+
+    > LIMIT: Restrict number of rows returned => LIMIT 5
+
+    > DISTINCT: Remove duplicate results => SELECT DISTINCT department
+
+    > Example query:
+
+        SELECT department, AVG(salary) AS avg_salary // get department, average salary
+        FROM employees // from employees table
+        WHERE salary > 30000 // take the data based on salary > 3000
+        GROUP BY department // group by department
+        HAVING AVG(salary) > 50000 // check taken average salary > 50000
+        ORDER BY avg_salary DESC; // order by ascending order
+
+    > Flow:
+
+        employees
+            ↓
+        WHERE salary > 30000
+            ↓
+        GROUP BY department
+            ↓
+        AVG(salary)
+            ↓
+        HAVING AVG(salary) > 50000
+            ↓
+        ORDER BY avg_salary DESC
+            ↓
+        Final result
+
+
+
+@ Aggregate Functions:
+
+    > An aggregate function performs a calculation on multiple rows and returns one result.
+
+    > COUNT() = Number of rows
+        >> SELECT COUNT(*) AS total_employees FROM employees;
+
+    > SUM() = Total value
+        >> SELECT SUM(salary) AS total_salary FROM employees;
+
+    > AVG() = Average value
+        >> SELECT AVG(salary) AS average_salary FROM employees;
+
+    > MAX() = Highest value
+        >> SELECT MAX(salary) AS maximum_salary FROM employees;
+
+    > MIN() = Lowest value
+        >> SELECT MIN(salary) AS minimum_salary FROM employees;
+
+    > Example query:
+
+        SELECT 
+            COUNT(*) AS total_employees,
+            SUM(salary) AS total_salary,
+            AVG(salary) AS average_salary,
+            MAX(salary) AS maximum_salary,
+            MIN(salary) AS minimum_salary
+        FROM employees;
+
+    > Result:
+
+        total_employees | total_salary | average_salary | maximum_salary | minimum_salary
+        ----------------|--------------|----------------|----------------|---------------
+        4               | 220000       | 55000          | 70000          | 40000
+
+
+
+@ SQL JOINs:
+
+    > SAMPLE TABLES:
+
+        // employees table
+        id | name  | department_id
+        ---|-------|--------------
+        1  | John  | 10
+        2  | Alice | 20
+        3  | Bob   | 30
+        4  | David | NULL
+        5  | Sam   | 40
+
+        // departments table
+        id | department
+        ---|-----------
+        10 | IT
+        20 | HR
+        30 | Finance
+        50 | Sales
+
+
+    > INNER JOIN:
+        >> Return only records that have a match in both tables.
+
+        >> David and Sam are excluded because they don't have a matching department.
+
+        >> Sales is also excluded because it has no matching employee.
+
+        >> QUERY: 
+                SELECT e.name, d.department 
+                FROM employees e
+                INNER JOIN departments d
+                ON e.department_id = d.id;
+
+        >> RESULT: 
+                name  | department
+                ------|----------
+                John  | IT
+                Alice | HR
+                Bob   | Finance  
+
+
+    > LEFT JOIN:
+        >> Return ALL records from the left table + matching records from the right table.
+
+        >> All employees are returned, even if they don't have a department.
+
+        >> QUERY:
+                SELECT e.name, d.department
+                FROM employees e
+                LEFT JOIN departments d
+                ON e.department_id = d.id;        
+
+        >> RESULT: 
+                name  | department
+                ------|-----------
+                John  | IT
+                Alice | HR
+                Bob   | Finance
+                David | NULL
+                Sam   | NULL     
+
+
+    > RIGHT JOIN:
+        >> Return ALL records from the right table + matching records from the left table.
+
+        >> Sales appears even though it has no employee.
+
+        >> QUERY:
+                SELECT e.name, d.department
+                FROM employees e
+                RIGHT JOIN departments d
+                ON e.department_id = d.id;
+
+        >> RESULT:
+                name  | department
+                ------|-----------
+                John  | IT
+                Alice | HR
+                Bob   | Finance
+                NULL  | Sales
+
+
+    > FULL OUTER JOIN:
+        >> Return all records from both tables, whether they match or not.
+
+        >> QUERY:
+                // MySQL does not support FULL OUTER JOIN directly
+                SELECT e.name, d.department
+                FROM employees e
+                FULL OUTER JOIN departments d
+                ON e.department_id = d.id;
+
+                // For MySQL
+                SELECT e.name, d.department
+                FROM employees e
+                LEFT JOIN departments d
+                ON e.department_id = d.id
+                UNION
+                SELECT e.name, d.department
+                FROM employees e
+                RIGHT JOIN departments d
+                ON e.department_id = d.id;
+
+        >> RESULT:
+                name  | department
+                ------|-----------
+                John  | IT
+                Alice | HR
+                Bob   | Finance
+                David | NULL
+                Sam   | NULL
+                NULL  | Sales
+
+
+    > CROSS JOIN:
+        >> Every row from table A is combined with every row from table B.
+
+        >> No ON condition is required.
+
+        >> QUERY:
+            SELECT e.name, d.department
+            FROM employees e
+            CROSS JOIN departments d;    
+
+        >> RESULT:
+            John  | IT
+            John  | HR
+            John  | Finance
+            John  | Sales
+
+            Alice | IT
+            Alice | HR
+            Alice | Finance
+            Alice | Sales
+            ...
+
+    
+    > SELF JOIN:
+        >> A SELF JOIN is when a table is joined with itself.
+
+        >> Both refer to the same employees table.
+
+        >> TABLE:
+            // employees
+            id | name  | manager_id
+            ---|-------|-----------
+            1  | John  | NULL
+            2  | Alice | 1
+            3  | Bob   | 1
+            4  | David | 2
+
+        >> QUERY:
+            SELECT
+                e.name AS employee,
+                m.name AS manager
+            FROM employees e
+            LEFT JOIN employees m
+                ON e.manager_id = m.id;
+
+        >> RESULT:
+            Employee | Manager
+            ---------|--------
+            Alice    | John
+            Bob      | John
+            David    | Alice
+
+
+    > PROBLEM:   
+        >> Find employees without a department or records not existing another table:
+
+        >> QUERY:
+            SELECT e.name
+            FROM employees e
+            LEFT JOIN departments d
+                ON e.department_id = d.id
+            WHERE d.id IS NULL;
+
+        >> RESULT:
+            David
+            Sam
+
+
+    > JOIN Cheat Sheet 
+                         JOIN
+                           │
+            ┌──────────────┼──────────────┐
+            │              │              │
+          INNER           LEFT           RIGHT
+            │              │              │
+        Matching       All LEFT       All RIGHT
+        only           + match        + match
+                            │
+                          FULL
+                            │
+                  Everything from both
+                            │
+                          CROSS
+                            │
+                    Every combination
+                            │
+                           SELF
+                            │
+                    Table with itself
+
+
+
+@ Subqueries:
+
+    > SAMPLE TABLES:
+
+        // employees table
+        id | name  | department_id
+        ---|-------|--------------
+        1  | John  | 10
+        2  | Alice | 20
+        3  | Bob   | 30
+        4  | David | 40
+
+        // departments table
+        id | department
+        ---|-----------
+        10 | IT
+        20 | HR
+        30 | Finance
+
+
+    > Subquery OR Nested Query OR Normal Query:
+        >> A subquery is a query written inside another SQL query.
+
+        >> Normal or Nested query is another common name for a query containing a subquery.
+
+        >> Outer query → uses the result of → Inner query
+
+        >> QUERY:
+            SELECT * FROM employees
+            WHERE salary > (
+                SELECT AVG(salary)
+                FROM employees
+            );
+
+
+    > Correlated Subquery:
+        >> A correlated subquery is a subquery that depends on the outer query and is evaluated with reference to each outer row.
+
+        >> e1 comes from the outer query.
+
+        >> TABLE:
+                John   IT       40000
+                Alice  IT       60000
+                Bob    HR       50000
+                David  HR       70000            
+
+        >> QUERY:
+                SELECT e1.* FROM employees e1
+                WHERE salary > (
+                    SELECT AVG(e2.salary)
+                    FROM employees e2
+                    WHERE e2.department_id = e1.department_id
+                );
+
+        >> EVALUATION & RESULT:
+                For John:
+                    IT average = 50000
+                    John salary = 40000
+                    John is not returned.
+
+                For Alice:
+                    IT average = 50000
+                    Alice salary = 60000
+                    Alice is returned.
+
+                For Bob:
+                    HR average = 60000
+                    Bob salary = 50000
+                    Bob is not returned.
+
+                For David:
+                    HR average = 60000
+                    David salary = 70000
+                    David is returned.
+
+                Result:
+                    Alice
+                    David
+
+
+    > IN with Subquery:
+        >> IN is useful when the subquery returns multiple values.
+
+        >> QUERY:
+            SELECT * FROM employees
+            WHERE department_id IN (
+                SELECT id
+                FROM departments // 10, 20, 30
+            );
+
+        >> RESULT:
+            John
+            Alice
+            Bob
+
+
+    > EXISTS with SELECT 1:
+        >> EXISTS checks whether the subquery returns at least one row.
+
+        >> Return employees for whom a matching department exists.
+
+        >> SELECT 1: "I don't need any data from this query. I only want to know whether a row exists."
+
+        >> QUERY:
+            SELECT * FROM employees e
+            WHERE EXISTS (
+                SELECT 1
+                FROM departments d
+                WHERE d.id = e.department_id
+            );
+
+        >> RESULT:
+            John   → 10
+            Alice  → 20
+            Bob    → 30
+
+
+    > NOT EXISTS:
+        >> NOT EXISTS does the opposite.
+
+        >> It finds rows where no matching row exists.
+
+        >> QUERY:
+            SELECT * FROM employees e
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM departments d
+                WHERE d.id = e.department_id
+            );
+
+        >> RESULT:
+            David → 40
+
+
+    > PROBLEM:
+        >> Q1. Find second-highest salary
+
+            SELECT MAX(salary) FROM employees
+            WHERE salary < (
+                SELECT MAX(salary)
+                FROM employees
+            );   
+
+        >> Q2. Find employees earning above average 
+
+            SELECT * FROM employees
+            WHERE salary > (
+                SELECT AVG(salary)
+                FROM employees
+            );     
+
+        >> Q3. Find employees belonging to existing departments
+
+            SELECT * FROM employees
+            WHERE department_id IN (
+                SELECT id
+                FROM departments
+            );
+
+        >> Q4. Find employees whose department exists
+
+            SELECT * FROM employees e
+            WHERE EXISTS (
+                SELECT 1
+                FROM departments d
+                WHERE d.id = e.department_id
+            );
+
+        >> Q5. Find employees whose department doesn't exist
+
+            SELECT * FROM employees e
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM departments d
+                WHERE d.id = e.department_id
+            );
+
+        >> Q6. Find employees earning more than their department average
+
+            SELECT e1.* FROM employees e1
+            WHERE e1.salary > (
+                SELECT AVG(e2.salary)
+                FROM employees e2
+                WHERE e2.department_id = e1.department_id
+            );
+
+
+
+@ GROUP BY:
+
+    > GROUP BY is used to combine rows having the same value into groups, usually so we can apply aggregate functions like:
+
+        COUNT()  → count
+        SUM()    → total
+        AVG()    → average
+        MAX()    → highest
+        MIN()    → lowest
+    
+
+    > SAMPLE TABLES:
+
+        // employees table
+        id | name  | department_id | salary
+        ---|-------|----------------|-------
+        1  | John  | 10             | 40000
+        2  | Alice | 10             | 60000
+        3  | Bob   | 20             | 50000
+        4  | David | 20             | 70000
+        5  | Sam   | 30             | 30000
+
+        // GROUP BY department_id creates:
+        10 → John, Alice
+        20 → Bob, David
+        30 → Sam    
+
+
+    > PROBLEMS:
+
+        >> 1. Department-wise employee count
+
+            SELECT department_id, COUNT(*) AS employee_count
+            FROM employees
+            GROUP BY department_id;
+
+            department_id | employee_count
+            --------------|---------------
+            10            | 2
+            20            | 2
+            30            | 1
+
+        >> 2. Department-wise maximum salary
+
+            SELECT department_id, MAX(salary) AS max_salary
+            FROM employees
+            GROUP BY department_id;
+
+            department_id | max_salary
+            --------------|-----------
+            10            | 60000
+            20            | 70000
+            30            | 30000
+
+        >> 3. Department-wise average salary
+
+            SELECT
+                department_id,
+                AVG(salary) AS average_salary
+            FROM employees
+            GROUP BY department_id;
+
+            department_id | average_salary
+            --------------|---------------
+            10            | 50000
+            20            | 60000
+            30            | 30000
+
+        >> 4. Department-wise highest salary
+
+            SELECT
+                department_id,
+                MAX(salary) AS highest_salary
+            FROM employees
+            GROUP BY department_id;
+
+        >> 5. Departments having more than 5 employees
+
+            SELECT
+                department_id,
+                COUNT(*) AS employee_count
+            FROM employees
+            GROUP BY department_id
+            HAVING COUNT(*) > 5;
+
+
+
+@ Window Functions:
+
+    > Window functions calculate something across related rows without combining those rows into one row.
+
+
+    > ROW_NUMBER(): gives each row a unique sequential number.
+
+        >> QUERY: 
+                SELECT
+                    name,
+                    salary,
+                    ROW_NUMBER() OVER (
+                        ORDER BY salary DESC
+                    ) AS row_num
+                FROM employees;
+
+        >> TABLE: 
+                John    40000
+                Alice   60000
+                Bob     50000
+                David   70000
+
+        >> RESULT:
+                name  | salary | row_num
+                ------|--------|--------
+                David | 70000  | 1
+                Alice | 60000  | 2
+                Bob   | 50000  | 3
+                John  | 40000  | 4
+
+
+    > PARTITION BY: It divides the rows into separate groups for the window calculation.
+
+        >> QUERY: 
+                SELECT
+                    name,
+                    department,
+                    salary,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY department
+                        ORDER BY salary DESC
+                    ) AS row_num
+                FROM employees;
+
+        >> RESULT:
+                name  | department | salary | row_num
+                ------|------------|--------|--------
+                Alice | IT         | 60000  | 1
+                John  | IT         | 40000  | 2
+                David | HR         | 70000  | 1
+                Bob   | HR         | 50000  | 2
+
+
+    > RANK(): assigns the same rank to tied values.
+
+        >> QUERY: 
+                SELECT
+                    name,
+                    salary,
+                    RANK() OVER (
+                        ORDER BY salary DESC
+                    ) AS salary_rank
+                FROM employees;
+
+        >> TABLE: 
+                David   70000
+                Alice   60000
+                Bob     60000
+                John    40000
+
+        >> RESULT:
+                name  | salary | rank
+                ------|--------|-----
+                David | 70000  | 1
+                Alice | 60000  | 2
+                Bob   | 60000  | 2
+                John  | 40000  | 4
+
+
+    > DENSE_RANK(): also gives the same rank to ties, but doesn't skip the next rank.
+
+        >> QUERY: 
+                SELECT
+                    name,
+                    salary,
+                    DENSE_RANK() OVER (
+                        ORDER BY salary DESC
+                    ) AS salary_rank
+                FROM employees;
+
+        >> TABLE: 
+                David   70000
+                Alice   60000
+                Bob     60000
+                John    40000
+
+        >> RESULT:
+                name  | salary | dense_rank
+                ------|--------|-----------
+                David | 70000  | 1
+                Alice | 60000  | 2
+                Bob   | 60000  | 2
+                John  | 40000  | 3
+
+
+    > LAG(): gets a value from a previous row.
+
+        >> QUERY: 
+                SELECT
+                    name,
+                    salary,
+                    LAG(salary) OVER (
+                        ORDER BY salary
+                    ) AS previous_salary
+                FROM employees;
+
+        >> TABLE: 
+                John    40000
+                Bob     50000
+                Alice   60000
+                David   70000
+
+        >> RESULT:
+                name  | salary | previous_salary
+                ------|--------|----------------
+                John  | 40000  | NULL
+                Bob   | 50000  | 40000
+                Alice | 60000  | 50000
+                David | 70000  | 60000
+
+
+    > LEAD(): gets a value from the next row.
+
+        >> QUERY: 
+                SELECT
+                    name,
+                    salary,
+                    LEAD(salary) OVER (
+                        ORDER BY salary
+                    ) AS next_salary
+                FROM employees;
+
+        >> TABLE: 
+                John    40000
+                Bob     50000
+                Alice   60000
+                David   70000
+
+        >> RESULT:
+                name  | salary | next_salary
+                ------|--------|------------
+                John  | 40000  | 50000
+                Bob   | 50000  | 60000
+                Alice | 60000  | 70000
+                David | 70000  | NULL
+
+
+
+@ SQL Functions:
+
+    > String Functions:
+        >> UPPER() → Uppercase -> UPPER(name);
+        >> LOWER() → Lowercase -> UPPER(name);
+        >> CONCAT() → Combine strings -> CONCAT(first_name, ' ', last_name);
+        >> LENGTH() → String length -> LENGTH(name) AS name_length
+        >> SUBSTRING() → Extract part of string -> SUBSTRING(name, 1, 3)
+        >> TRIM() → Remove leading/trailing spaces -> TRIM(name);
+        >> REPLACE() → Replace text -> REPLACE(email, '@gmail.com', '@company.com')
+
+    > Numeric Functions:
+        >> ROUND() → Round number -> ROUND(AVG(salary), 2)
+        >> CEIL() → Round up -> CEIL(AVG(salary), 2)
+        >> FLOOR() → Round down -> FLOOR(AVG(salary), 2)
+        >> ABS() → Remove negative sign / absolute value -> ROUND(-100) = 100
+        >> MOD() → Remainder -> MOD(id, 2) = 0;
+
+    > Date Functions:
+        >> CURRENT_DATE → Today's date -> SELECT CURRENT_DATE;
+        >> CURRENT_TIMESTAMP → Current date + time -> SELECT CURRENT_TIMESTAMP;
+        >> YEAR() → Extract year -> YEAR(joining_date) = 2025;
+        >> MONTH() → Extract month -> MONTH(joining_date) = 10;
+        >> DAY() → Extract day -> DAY(joining_date) = 4;
+
+    > SAMPLE QUERY:
+        -- Employees who joined in 2025
+        SELECT * FROM employees
+        WHERE YEAR(joining_date) = 2025;
+    
+
+
+@ SQL Indexes:
+
+    > An index is a data structure created on one or more columns of a table to make data retrieval faster.
+
+    > Without an index, the database may need to check many rows to find the data.
+
+    > With an index, it can locate matching rows much faster but they consume storage and add write-maintenance overhead, so indexes should be created selectively based on actual query patterns.
+
+    > Clustered Index vs Non-Clustered Index
+
+        >> Table Difference:
+
+            | Clustered                                                 | Non-Clustered                                                             |
+            | --------------------------------------------------------- | ------------------------------------------------------------------------- |
+            | Organizes/accesses table data through the index structure | Separate index structure                                                  |
+            | In InnoDB, primary key is normally clustered              | Secondary indexes are separate structures                                 |
+            | Typically one clustered organization per table            | Multiple secondary indexes can exist                                      |
+            | Leaf pages contain row data in InnoDB                     | Leaf entries contain indexed values + row locator/primary-key information |
+
+        >> Query Difference:
+
+            => CREATE TABLE employees ( id INT PRIMARY KEY, name VARCHAR(100), salary INT ); // normally using the primary key
+
+            => CREATE INDEX idx_employee_name ON employees(name); // It's a row reference and it is point to the actual row/data
+
+    > Composite Index:
+
+        >> A composite index is an index created using multiple columns
+
+        >> A composite index is an index created using multiple columns
+
+        >> QUERY: 
+            => CREATE INDEX idx_dept_salary ON employees(department_id, salary);  // create index for data in 2 columns
+
+            => SELECT * FROM employees WHERE department_id = 10 AND salary > 50000;  // It can be useful for queries like this
+
+    > Covering Index:
+
+        >> A covering index contains all the columns required by a query, allowing the database to satisfy the query directly from the index without accessing the table data.
+
+        >> QUERY: 
+            => CREATE INDEX idx_employee_dept_name ON employees(department_id, name);  // create index for data in 2 columns
+
+            => SELECT * FROM employees WHERE department_id = 10 AND salary > 50000;  // It can be useful for queries like this
+
+        >> CONCEPT:
+            Query
+            ↓
+            Index
+            ├── department_id
+            └── name
+                ↓
+            No table-row lookup needed
+
+    > QUERY:
+        >> CREATE INDEX idx_employee_name ON employees(name); // create index for each data in name column
+
+        >> SELECT * FROM employees WHERE name = 'John';  
+
+    > Simple Analogy:
+        // Without an index
+        Start page 1
+        ↓
+        Check page 2
+        ↓
+        Check page 3
+        ↓
+        ...
+        ↓
+        Find the topic
+
+        // With an index
+        Index
+        ↓
+        Topic → Page 750
+        ↓
+        Go directly near page 750
+
