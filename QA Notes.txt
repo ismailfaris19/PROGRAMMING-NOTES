@@ -1,0 +1,890 @@
+//////////////////////////////////// TESTING NOTES ////////////////////////////////////
+
+
+
+//////////////////////////////////// Playwright Basics ////////////////////////////////////
+
+@ What is Playwright?
+
+    > Playwright is an open-source automation testing framework developed by Microsoft. It is mainly used for end-to-end testing of web applications.
+
+    > It can automate browsers such as Chromium, Firefox, and WebKit.
+
+
+@ Why do we use Playwright for automation testing?
+
+    > Playwright provides many useful features:
+
+        ✅ Cross-browser testing
+        ✅ Supports Chromium, Firefox and WebKit
+        ✅ Automatic waiting
+        ✅ Parallel test execution
+        ✅ API testing
+        ✅ Network interception
+        ✅ Screenshots and videos
+        ✅ Built-in assertions
+        ✅ Multiple tabs/pages support
+        ✅ Mobile/device emulation
+        ✅ Trace Viewer for debugging
+
+    > Playwright automatically waits for the button to be ready before clicking.
+
+
+@ Playwright vs Selenium?
+
+    | Playwright                          | Selenium                                                  |
+    | ----------------------------------- | --------------------------------------------------------- |
+    | Developed by Microsoft              | Selenium project                                          |
+    | Modern automation framework         | Older and widely adopted framework                        |
+    | Auto-waiting built in               | Usually requires more explicit waits                      |
+    | Supports Chromium, Firefox, WebKit  | Supports many browsers through WebDriver                  |
+    | Supports API testing                | API testing usually requires additional tools             |
+    | Parallel execution is built in      | Parallel execution usually uses Selenium Grid/TestNG etc. |
+    | Supports multiple pages/tabs easily | Requires more handling                                    |
+    | Has built-in trace viewer           | Debugging depends more on external tools                  |
+    | Supports modern browser automation  | Very mature ecosystem                                     |
+    ---------------------------------------------------------------------------------------------------
+
+
+@ What browsers does Playwright support?
+
+    > Playwright supports Chromium, Firefox, and WebKit, allowing us to perform cross-browser testing and allow us to local browsers also.
+
+    > You can configure them in playwright.config.ts
+
+    > Supported channels: 'chrome', 'chrome-beta', 'chrome-dev', 'chrome-canary', 'msedge', 'msedge-beta', 'msedge-dev'.
+
+    > "browserName: 'chromium'" represents Playwright's Chromium, "...devices['Desktop Chrome']" represents Desktop Chrome-like device settings and "channel: 'chrome'" represents Installed Google Chrome.
+
+    > CODE SNIPPET:
+
+        // playwright.config.ts
+
+        import { chromium, firefox, webkit } from 'playwright';
+
+        projects: [
+            // Standard bundled browsers
+            {
+                name: 'chromium',
+                use: { ...devices['Desktop Chrome'] } 
+            },
+            {
+                name: 'firefox',
+                use: { ...devices['Desktop Firefox'] }
+            },
+            {
+                name: 'webkit',
+                use: { ...devices['Desktop Safari'] } 
+            },
+
+            // 1. Local Google Chrome installed on your machine
+            {
+                name: 'Google Chrome',
+                use: {
+                    ...devices['Desktop Chrome'],
+                    channel: 'chrome', // Uses locally installed Google Chrome
+                }
+            },
+
+            // 2. Local Microsoft Edge installed on your machine
+            {
+                name: 'Microsoft Edge',
+                use: {
+                    ...devices['Desktop Edge'],
+                    channel: 'msedge', // Uses locally installed Microsoft Edge
+                }
+            },
+
+            // 3. Local Chrome Beta / Dev / Canary (if installed)
+            {
+                name: 'Chrome Beta',
+                use: {
+                    channel: 'chrome-beta',
+                }
+            },
+        ]
+
+
+@  What languages does Playwright support?
+
+    > Playwright officially supports:
+        >> TypeScript / JavaScript
+        >> Python
+        >> Java
+        >> .NET / C#
+
+
+@ What is the difference between Playwright and Playwright Test?
+
+    > Playwright is the browser automation library.
+        >> Playwright = Browser automation
+
+        >> It provides APIs like:
+            => page.goto()
+            => page.click()
+            => page.locator()
+            => browser.newContext()
+
+    > Playwright Test is the test runner built specifically for Playwright.
+        >> Playwright Test = Test runner + assertions + fixtures + reporting
+
+        >> It provides:
+            => test()
+            => expect()
+            => beforeEach()
+            => afterEach()
+            => beforeAll()
+            => afterAll()  
+
+
+@ How do you install Playwright?
+
+    > We can create a Playwright project using npm init playwright@latest. It installs Playwright Test and configures the project.
+
+        >> The easiest way is: npm init playwright@latest
+        >> This creates a Playwright project with the required configuration.
+
+                        (or)
+
+        >> Install the test package: npm install -D @playwright/test
+        >> Then install browsers: npx playwright install
+
+
+@ How do you create and run your first Playwright test?
+
+    > Create a file such as:
+
+        >>  tests/login.spec.ts
+
+    > Then:
+
+        >>  import { test, expect } from '@playwright/test';
+
+            test('Open website', async ({ page }) => {
+                await page.goto('https://example.com');
+                await expect(page).toHaveTitle('Example Domain');
+            });
+
+    > Run it:
+
+        >>  npx playwright test
+
+    > Run a specific file:
+
+        >>  npx playwright test tests/login.spec.ts
+
+    > Run in headed mode:
+
+        >>  npx playwright test tests/login.spec.ts --headed
+
+    > Debug mode:
+
+        >>  npx playwright test tests/login.spec.ts --debug
+
+
+@ What is playwright.config.ts?
+
+    > playwright.config.ts is the central configuration file where we define settings such as browser, base URL, timeout, retries, workers, screenshots, videos, traces, and reporters.
+
+    > Browser: Specifies which browser Playwright should run the tests in.
+
+        >>  {
+                name: 'chromium',
+                use: { browserName: 'chromium' }
+            }
+
+    > Base URL: Defines the common URL of your application.
+
+        >>  baseURL: 'https://example.com'
+
+    > Timeout: Defines how long Playwright should wait for a test or action.
+
+        >>  timeout: 30 * 1000 // Each test can run for a maximum of 30 seconds.
+
+        >>  actionTimeout: 10 * 1000 // Actions like click/fill can wait up to 10 seconds.
+
+    > Retries: Defines how many times a failed test should be retried.
+
+        >>  retries: 2
+
+    > Workers: Defines how many tests can run in parallel.
+
+        >>  workers: 4
+
+    > Screenshots: Take a screenshot when a test fails.
+
+        >>  screenshot: 'off' (or) 'on' (or) 'only-on-failure'
+
+    > Videos: Record the test execution, especially useful for debugging failures.
+
+        >>  video: 'off' (or) 'on' (or) 'retain-on-failure'
+
+    > Trace: Capture detailed execution information when a test is retried.
+
+        >>  In config file:- trace: 'on-first-retry'
+
+        >>  You can view it using:- npx playwright show-trace trace.zip
+
+    > Reporter: Reporter controls how Playwright displays and generates test results.
+
+        >> In config file:- reporter: 'html' (or) reporter: [['list'], ['html']]
+    
+        >> After running tests:- npx playwright test
+
+        >> Open the report:- npx playwright show-report
+
+    > Test Directory: Tells Playwright where to find the test files.
+
+        >> testDir: './tests'
+
+    > CODE SNIPPET:
+
+        import { defineConfig, devices } from '@playwright/test';
+
+        export default defineConfig({
+
+            // Test directory
+            testDir: './tests',
+
+            // Test timeout
+            timeout: 30 * 1000,
+
+            // Retry failed tests
+            retries: 2,
+
+            // Parallel workers
+            workers: 4,
+
+            // Test reporter
+            reporter: 'html',
+
+            // Browser projects
+            projects: [
+                {
+                    name: 'chromium',
+                    use: {
+                        ...devices['Desktop Chrome'],
+                        baseURL: 'https://example.com',
+
+                        // Action timeout
+                        actionTimeout: 10 * 1000,
+
+                        // Screenshot
+                        screenshot: 'only-on-failure',
+
+                        // Video
+                        video: 'retain-on-failure',
+
+                        // Trace
+                        trace: 'on-first-retry'
+                    }
+                },
+                {
+                    name: 'firefox',
+                    use: {
+                        browserName: 'firefox',
+                        baseURL: 'https://example.com'
+                    }
+                }
+            ]
+        });
+
+
+@ What is the purpose of test() and expect()?
+
+    > These are two of the most important Playwright Test APIs.
+
+    > test(): defines a test case and What am I testing?
+
+        >>  test('Login functionality', async ({ page }) => {
+                await page.goto('/login');
+            });
+
+    > expect(): is used for assertions and it verifies whether the actual result matches what we expect.
+
+        >>  await expect(page).toHaveTitle('Dashboard');
+        >>  await expect(page.getByRole('button', { name: 'Login' })).toBeVisible();
+        >>  await expect(page.locator('#username')).toHaveValue('admin');
+
+
+
+//////////////////////////////////// Browser vs Context vs Page ////////////////////////////////////
+
+@ Browser → BrowserContext → Page
+
+    > The relationship is:
+
+        Browser
+        ↓
+        BrowserContext
+        ↓
+        Page
+
+    > Think of it like:
+
+        Browser = The whole browser application
+        Context = A separate browser session
+        Page = A tab inside that session
+
+
+@ What is Browser?
+
+    > A Browser represents the actual browser engine.
+
+    > Playwright supports:
+
+        >> Chromium
+        >> Firefox
+        >> WebKit
+
+    > Here, browser represents a running Chromium browser.
+
+    > You can then create contexts inside it.
+
+    > Simple example:
+
+        >> const browser = await chromium.launch({ headless: false });
+
+
+@ What is BrowserContext?
+
+    > A BrowserContext is an isolated browser session.
+
+    > Each context has its own:
+
+        >> Cookies
+        >> Local storage
+        >> Session storage
+        >> Cache
+        >> Login/session information
+
+    > You can create multiple independent contexts.
+
+    > Flow chart:
+
+        Browser
+        │
+        ├── Context 1 → User A
+        │
+        └── Context 2 → User B
+
+    > Simple example:
+
+        >> const context = await browser.newContext();
+
+
+@ What is Page?
+
+    > A Page represents a browser tab.
+
+    > You can also create multiple pages in the same context.
+
+    > Flow chart:
+
+        Browser
+        │
+        └── Context
+            │
+            ├── Page 1 → Tab 1
+            └── Page 2 → Tab 2
+
+    > Simple example:
+
+        >> const page1 = await context.newPage();
+        >> const page2 = await context.newPage();
+
+
+@ Table:
+
+    | Component             | Simple meaning                         |
+    | --------------------- | -------------------------------------- |
+    | **Browser**           | Browser instance                       |
+    | **BrowserContext**    | Isolated browser session               |
+    | **Page**              | Browser tab                            |
+    | **Browser → Context** | One browser can have multiple sessions |
+    | **Context → Page**    | One session can have multiple tabs     |
+    ------------------------------------------------------------------
+
+
+@ Complete Example:
+
+    > Code snippet:
+
+        import { chromium } from '@playwright/test';
+        const browser = await chromium.launch();
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        await page.goto('https://example.com');
+        await browser.close();
+
+    > Flow:
+
+        chromium.launch()
+        ↓
+        Browser
+        ↓
+        browser.newContext()
+        ↓
+        BrowserContext
+        ↓
+        context.newPage()
+        ↓
+        Page
+        ↓
+        page.goto()
+
+
+@ Interview Questions:
+
+    Q1. Can one Browser have multiple BrowserContexts?
+
+        Yes.
+
+    Q2. Can one BrowserContext have multiple Pages?
+
+        Yes, they represent two tabs in the same browser session.
+
+    Q3. Why is BrowserContext useful in testing?
+
+        It provides test isolation. Each test can have its own cookies, storage, authentication state, and session without affecting other tests.
+
+    Q4. Is BrowserContext the same as Incognito mode?
+
+        Conceptually, it is similar in terms of isolation, but Playwright contexts are specifically designed as lightweight isolated browser sessions for automation. You normally use:
+
+        const context = await browser.newContext();
+
+        rather than trying to configure an incognito option.
+
+
+
+//////////////////////////////////// Locators ////////////////////////////////////
+
+@ Playwright locators:
+
+    > Playwright Locator methods used to find elements on a web page. They are very commonly asked in interviews.
+
+    > I prefer user-facing locators such as getByRole(), getByLabel(), and getByText() because they are generally more readable and resilient. I use getByTestId() when a stable test ID is intentionally provided, and locator() when I need CSS/XPath or more complex element selection.
+
+    > Preference order:
+
+        getByRole()
+            ↓
+        getByLabel()
+            ↓
+        getByPlaceholder()
+            ↓
+        getByText()
+            ↓
+        getByTestId()
+            ↓
+        locator()
+
+    > Table:
+
+        | Method               | Simple meaning                      |
+        | -------------------- | ----------------------------------- |
+        | `locator()`          | Find element using CSS/XPath        |
+        | `getByRole()`        | Find element by its accessible role |
+        | `getByText()`        | Find element by visible text        |
+        | `getByLabel()`       | Find form element by its label      |
+        | `getByPlaceholder()` | Find input using placeholder text   |
+        | `getByTestId()`      | Find element using `data-testid`    |
+
+
+@ List of locator methods:
+
+    > page.locator(): Used to locate an element using CSS selector, XPath, or other supported selector syntax.
+
+        >> page.locator('.login-btn')
+
+    > page.getByRole(): finds an element based on what the element represents to the user.
+
+        >> Example roles such as button, textbox, link, checkbox, heading, radio and combobox.
+
+        >> page.getByRole('button', { name: 'Login' })
+
+    > getByText(): finds an element by the text displayed on the page.
+
+        >> page.getByText('Login successful')
+
+    > getByLabel(): finds a form control using its associated label.
+
+        >> page.getByLabel('Email')
+
+    > getByPlaceholder(): finds an input using its placeholder.
+
+        >> page.getByPlaceholder('Enter your email')
+
+    > page.getByTestId(): finds an element using a dedicated test ID means data-testid attribute.
+
+        >> age.getByTestId('login-button')
+
+
+
+//////////////////////////////////// Trigger Event Methods ////////////////////////////////////
+
+@ List of methods:
+
+    > click(): Click the element.
+
+        >>  await loginButton.click();
+
+    > fill(): Fills an input with text. It is usually preferred for normal form filling
+
+        >> await username.fill('John');
+
+    > type(): is mainly useful when you specifically want keyboard-like typing behavior.
+
+        >> await username.type('John');
+
+    > press(): Press a keyboard key while the element is focused.
+
+        >> await username.press('ArrowDown');
+
+    > check(): Checks a checkbox or radio button.
+
+        >> await checkbox.check();
+
+    > uncheck(): It is for checkboxes, not radio buttons.
+
+        >> await checkbox.uncheck();
+
+    > selectOption(): Compare with value attribute and select an option from a native HTML <select>.
+
+        >> await country.selectOption('in');
+
+    > hover(): Move the mouse over the element.
+
+        >> await menu.hover();
+
+    > focus(): Give keyboard focus to the element.
+
+        >> await username.focus();
+
+    > clear(): Remove the existing input text.
+
+        >> await username.clear();
+
+    > getAttribute(): Read an attribute from the element.
+
+        >> await username.getAttribute('placeholder');
+
+    > textContent(): Get the text inside the element.
+
+        >> await message.textContent();
+
+
+
+//////////////////////////////////// Playwright Assertions ////////////////////////////////////
+
+@ Assertions:
+
+    > Assertions are used to verify that something is true or matches the expected result.
+
+    > Playwright provides assertions through expect().
+
+    > CODE SNIPPET:
+
+        import { test, expect } from '@playwright/test';
+
+        test('Login test', async ({ page }) => {
+            await page.goto('/login');
+            const username = page.locator('#username');
+            await username.fill('John');
+            await expect(username).toHaveValue('John');
+        }); 
+
+    > FLOW:
+
+        Action
+        ↓
+        click / fill / navigate
+        ↓
+        Assertion
+        ↓
+        expect(...)
+        ↓
+        Verify expected result
+
+
+@ Locator Assertions:
+
+    > toBeVisible(): Checks whether an element is visible.
+
+        >> await expect(page.locator('#login')).toBeVisible();
+
+    > toBeHidden(): Checks that an element is hidden.
+
+        >>  await expect(page.locator('#loader')).toBeHidden();
+
+    > toBeEnabled(): Checks that an element is enabled.
+
+        >> await expect(page.locator('#login')).toBeEnabled();
+
+    > toBeDisabled(): Checks that an element is disabled.
+
+        >> await expect(page.locator('#login')).toBeDisabled();
+
+    > toBeEditable(): Checks whether an input can be edited.
+
+        >> await expect(page.locator('#username')).toBeEditable();
+
+    > toBeEmpty(): Checks that an input or element is empty.
+
+        >> await expect(page.locator('#username')).toBeEmpty();
+
+    > toBeFocused(): Checks whether an element currently has focus.
+
+        >> await expect(page.locator('#username')).toBeFocused();
+
+    > toBeAttached(): Checks that an element is attached to the DOM.
+
+        >> await expect(page.locator('#username')).toBeAttached();
+
+    > toBeInViewport(): Checks whether an element is inside the viewport.
+
+        >> await expect(page.locator('#login')).toBeInViewport();
+
+
+@ Text Assertions:
+
+    > toHaveText(): Checks the exact text/content.
+
+        >> await expect(page.locator('#message')).toHaveText('Login successful'); // for single text
+
+        >> await expect(page.locator('.item')).toHaveText(['Apple', 'Orange', 'Mango']); // for multiple text
+
+    > toContainText(): Checks whether the element contains specific text.
+
+        >> await expect(page.locator('#message')).toContainText('successful');
+
+
+@ Input Assertions:
+
+    > toHaveValue(): Checks the value of an input.
+
+        >> await expect(page.locator('#username')).toHaveValue('John');
+
+    > toHaveValues(): Checks values of a multi-select element.
+
+        >> await expect(page.locator('#languages')).toHaveValues(['js', 'ts']);
+
+
+@ Attribute Assertions:
+
+    > toHaveAttribute(): Checks an HTML attribute.
+
+        >> <button id="login" type="submit">Login</button>
+        >> await expect(page.locator('#login')).toHaveAttribute('type', 'submit');
+
+    > toHaveClass(): Checks CSS class.
+
+        >> await expect(page.locator('#login')).toHaveClass('btn-primary'); // with class name
+
+        >> await expect(page.locator('#login')).toHaveClass(/primary/); // with regex
+
+    > toHaveId(): Checks element ID.
+
+        >> await expect(page.locator('button')).toHaveId('login');
+
+
+@ CSS Assertions:
+
+    > toHaveCSS(): Checks a CSS property.
+
+        >> await expect(page.locator('#login')).toHaveCSS('display', 'block');
+
+        >> await expect(page.locator('#login')).toHaveCSS('font-size', '16px');
+
+
+@ Count Assertions:
+
+    > toHaveCount(): Checks the number of must matching elements.
+
+        >> await expect(page.locator('.product')).toHaveCount(5);
+
+
+@ Screenshot Assertion:
+
+    > toHaveScreenshot(): Compares the current page/element screenshot against a stored screenshot.
+
+        >> await expect(page).toHaveScreenshot('homepage.png');
+
+        >> await expect(page.locator('#header')).toHaveScreenshot('header.png');
+
+
+@ Page Assertions:
+
+    > toHaveTitle(): Checks the page title.
+
+        >> await expect(page).toHaveTitle('Login Page');
+
+    > toHaveURL(): Checks the current URL.
+
+        >> await expect(page).toHaveURL('https://example.com/dashboard'); // for full URL
+
+        >> await expect(page).toHaveURL(/dashboard/); // for regex
+
+    
+@ Generic Assertions:
+
+    > toBe(): Checks exact equality.
+
+        >> expect(count).toBe(5);
+
+    > toEqual(): Checks equality of values/objects.
+
+        >> expect(user).toEqual({ name: 'John', age: 25 });
+
+    > toStrictEqual(): Performs a stricter equality check.
+
+        >> expect(user).toStrictEqual({ name: 'John', age: 25 });
+
+    > toContain(): Checks whether a value exists inside an array/string.
+
+        >> expect(fruits).toContain('Apple');
+
+    > toContainEqual(): Checks whether an array contains an object/value matching the expected value.
+
+        >> expect(users).toContainEqual({ name: 'John', age: 25 });
+
+    > toBeTruthy(): Checks whether a value is truthy.
+
+        >> expect(true).toBeTruthy();
+
+    > toBeFalsy(): Checks whether a value is falsy.
+
+        >> expect(false).toBeFalsy();
+
+    > toBeNull(): Checks whether a null or not.
+
+        >> expect(null).toBeNull();
+
+    > toBeUndefined(): Checks whether a undefined or not.
+
+        >> expect(undefined).toBeUndefined();
+
+    > toBeDefined(): Checks whether a defined or not.
+
+        >> expect(name).toBeDefined();
+
+    > toBeGreaterThan(): Checks whether value is greater than or not.
+    
+        >> expect(10).toBeGreaterThan(5);
+
+    > toBeGreaterThanOrEqual(): Checks whether value is greater than or equal.
+
+        >> expect(10).toBeGreaterThanOrEqual(10);
+
+    > toBeLessThan(): Checks whether value is less than or not.
+
+        >> expect(5).toBeLessThan(10);
+
+    > toBeLessThanOrEqual(): Checks whether value is less than or equal.
+
+        >> expect(5).toBeLessThanOrEqual(5);
+
+    > toBeCloseTo(): Useful for decimal/floating-point values.
+
+        >> expect(0.1 + 0.2).toBeCloseTo(0.3);
+
+    > toMatch(): Checks a string against a regular expression.
+
+        >> expect('Playwright Testing').toMatch(/Playwright/);
+
+    > toHaveLength(): Checks the length of an array/string.
+
+        >> expect([1, 2, 3]).toHaveLength(3);
+
+
+
+//////////////////////////////////// Page & Navigations ////////////////////////////////////
+
+@ How do you navigate?
+
+    > We use page.goto() to navigate to a URL.
+
+        >> await page.goto('https://example.com');
+
+    > You can also use a relative URL when baseURL is configured:
+
+        >> await page.goto('/login'); // in spec file
+
+        >> use: { baseURL: 'https://example.com' } // in config file
+
+
+@ How do you go back?
+
+    > We use page.goBack() to navigate to previous page.
+
+        >> await page.goBack();
+    
+    > We can also wait for a specific load state:
+
+        >> await page.goBack({ waitUntil: 'load' }); 
+
+
+@ How do you go forward?
+
+    > We use page.goForward() to navigate forward in the browser history.
+
+        >> await page.goForward();
+
+    > FLOW:
+
+        >> Home -> Login -> goBack() -> Home -> goForward() -> Login
+
+
+@ How do you reload the page?
+
+    > We use page.reload() to reload page.
+
+        >> await page.reload();
+
+    > We can also specify when Playwright should consider the navigation complete:
+
+        >> await page.reload({ waitUntil: 'load' }); 
+
+
+@ How do you get the current URL?
+
+    > We use page.url() to get current page URL.
+
+        >> console.log(page.url());
+
+    > We can also assert the URL:
+
+        >> await expect(page).toHaveURL('https://example.com/login');
+
+
+@ How do you handle multiple pages?
+
+    > A BrowserContext can contain multiple pages/tabs. We can get all currently open pages:
+
+        >> const page1 = await context.newPage();
+        >> const page2 = await context.newPage();
+        >> console.log(context.pages().length);
+
+@ How to handle a new tab opened by a click?
+
+    > Suppose clicking a link opens a new tab from one page:
+
+        Main Page
+        │
+        │ click "Open Report"
+        ↓
+        New Tab Opens
+        ↓
+        context.waitForEvent('page')
+        ↓
+        newPage      
+
+    > CODE SNIPPET:
+
+        const [newPage] = await Promise.all([
+            context.waitForEvent('page'),
+            page.getByText('Open Report').click()
+        ]);
+        await newPage.waitForLoadState();
+        console.log(newPage.url());
