@@ -1,5 +1,374 @@
 //////////////////////////////////// TESTING NOTES ////////////////////////////////////
 
+@ What is software testing?
+
+    > Software testing is the process of checking whether an application works as expected and identifying defects before the application reaches end users.
+
+    > Example: In a login page, we test whether valid credentials allow a user to log in and invalid credentials display an appropriate error message.
+
+    > Interview answer: Software testing helps verify that an application meets its requirements, works correctly, and delivers quality to users.
+
+
+@ What is the difference between manual testing and automation testing?
+
+    > Manual testing	
+        >> Test cases are executed by a person.	
+        >> Usually takes more time for repetitive tests.	
+        >> No automation code is required.	
+        >> Useful for exploratory and usability testing.	
+        >> Can be more prone to human execution errors.	
+
+    > Automation testing
+        >> Test cases are executed using scripts and tools.
+        >> Faster for repetitive tests.
+        >> Requires programming or scripting skills.
+        >> Useful for regression and repetitive testing.
+        >> Provides consistent execution when scripts are reliable.
+
+    > Example:
+        >> Manual: A tester checks the login page by entering credentials.
+        >> Automation: A Playwright script enters credentials, clicks Login, and verifies the dashboard.
+
+
+@ What is the difference between QA, QC, and testing?
+
+    > QA: Establishing coding standards and a testing process.
+
+    > QC: Reviewing whether the delivered application meets quality requirements.
+
+    > Testing: Checking whether the login functionality works correctly.
+
+    > Interview answer: QA focuses on preventing defects through better processes, QC focuses on checking product quality, and testing is an activity used to evaluate the software and identify defects.
+
+
+@ What is the Software Testing Life Cycle (STLC)?
+
+    > STLC is a sequence of activities performed by the testing team to ensure software quality.
+
+    > The main phases are:
+
+        1) Requirement Analysis: Understand requirements and identify what can be tested.
+
+        2) Test Planning: Define scope, resources, tools, schedule, and approach.
+
+        3) Test Case Development: Prepare test scenarios, test cases, and test data.
+
+        4) Test Environment Setup: Prepare the required hardware, software, browsers, and data.
+
+        5) Test Execution: Execute tests, compare actual and expected results, and log defects.
+
+        6) Test Closure: Summarize results, defect status, coverage, and lessons learned.
+
+
+@ What are the different levels of testing?
+
+    > There are four main testing levels:
+
+        >> Unit Testing: Tests an individual function or component.
+            - Example: Testing a function that calculates a discount.
+
+        >> Integration Testing: Tests whether multiple modules or services work together.
+            - Example: Verifying that the frontend sends data correctly to an API.
+
+        >> System Testing: Tests the complete application as a whole.
+            - Example: Testing an end-to-end shopping flow.
+
+        >> Acceptance Testing: Checks whether the software meets business requirements and is ready for acceptance.
+            - Example: A business user verifies the checkout process before release.
+
+
+@ What is the difference between severity and priority?
+
+    > Severity:	
+        
+        >> Measures the impact of a defect on the system.	
+        
+        >> Usually assessed by QA with technical and business input.	
+        
+        >> Focuses on impact.	
+
+    > Priority:
+        
+        >> Measures how urgently the defect should be fixed.
+        
+        >> Usually agreed with product, development, and business stakeholders.
+        
+        >> Focuses on urgency.
+
+    > Interview answer: Severity tells us how serious a defect is, while priority tells us how soon it needs to be fixed. They are related, but they are not the same.
+
+
+@ What is the difference between verification and validation?
+
+    > Verification	
+        
+        >> Checks whether we are building the product correctly.	
+        
+        >> Focuses on requirements, design, specifications, and implementation artifacts.	
+        
+        >> Often includes reviews and inspections without executing the software.	
+
+    > Validation
+        
+        >> Checks whether we are building the correct product.
+        
+        >> Focuses on whether the actual software meets user needs.
+        
+        >> Commonly includes executing tests on the software.
+
+
+@ What is a test case, test scenario, and test plan?
+
+    > Test scenario: A high-level feature or situation to test.	
+        >> Verify login functionality.
+
+    > Test case: Detailed steps, preconditions, test data, and expected result.	
+        >> Enter valid credentials, click Login, and verify the dashboard.
+
+    > Test plan: Document describing the overall testing scope, approach, resources, schedule, and risks.
+        >> Plan testing for the upcoming release.
+
+    > A sample test case:
+        - Test Case ID: LOGIN_001
+        - Scenario: Login with valid credentials.
+        - Precondition: User account exists.
+        - Steps: Open login page, enter valid credentials, click Login.
+        - Expected result: User is redirected to the dashboard.
+
+
+@ What is a test strategy?
+
+    > A test strategy is a high-level approach that defines how testing will be performed to achieve quality objectives.
+
+    > It can cover:
+        - Testing levels and types.
+        - Manual and automation approaches.
+        - Tools and frameworks.
+        - Test environments and data.
+        - Risk management.
+        - Entry and exit criteria.
+        - Reporting and defect management.
+
+    > Example: A strategy might specify using Playwright for browser-based regression tests, API tests for service validation, and performance testing tools for load testing.
+
+    > Test plan vs. test strategy: A test strategy describes the overall testing approach; a test plan explains how testing will be organized and executed for a particular project or release. In practice, terminology and document structure vary by organization.
+
+
+@ What is the difference between positive and negative testing?
+
+    > Positive testing	
+        
+        >> Checks expected behavior with valid inputs.
+        
+        >> Confirms valid operations succeed.
+
+    > Negative testing
+        
+        >> Checks how the application handles invalid or unexpected inputs.
+        
+        >> Confirms invalid operations are rejected or handled safely.
+
+    > Example — Login:
+        - Positive: Enter a valid email and password; verify successful login.
+        - Negative: Enter an invalid password; verify an appropriate error message.
+        - Additional negative cases: Empty fields, invalid email format, or expired session.
+
+
+@ What is Boundary Value Analysis (BVA)?
+
+    > Boundary Value Analysis is a test design technique that focuses on values at the edges of an allowed range because defects often occur at boundaries.
+
+    > Example: An age field accepts values from 18 to 60 inclusive.
+
+        Test value	Expected result
+        17	        Invalid
+        18	        Valid
+        19	        Valid
+        59	        Valid
+        60	        Valid
+        61	        Invalid
+
+    > Interview answer: BVA helps identify boundary-related defects by testing values at, just below, and just above the allowed limits.
+
+
+@ What is Equivalence Partitioning?
+
+    > Equivalence Partitioning divides input data into groups expected to behave similarly. Instead of testing every possible value, we select representative values from each group.
+
+    > Example: An age field accepts values from 18 to 60.
+
+        Equivalence partition
+        Below 18 — invalid
+        18–60 — valid
+        Above 60 — invalid
+
+    > Difference from BVA:
+        - Equivalence Partitioning tests representative values from each group.
+        - Boundary Value Analysis tests values near the group edges.
+
+
+@ Types of Software Testing:
+
+    1. Smoke Testing:	
+
+        > Checks whether the main features of a new build are working.	
+
+        > After deploying an application, check whether it opens, login works, and the dashboard loads.
+
+    2. Sanity Testing:
+
+        > Checks whether a specific change or bug fix works correctly.	
+
+        > After fixing a password-reset bug, test the password-reset functionality.
+
+    3. Regression Testing:	
+
+        > Checks whether existing features still work after code changes.	
+
+        > After updating the checkout page, verify that login, cart, coupon, and payment features still work.
+
+    4. Exploratory Testing:	
+
+        > Tests the application freely without following predefined test cases, using experience and curiosity to find defects.	
+
+        > Try different inputs, click buttons in unusual sequences, and navigate quickly to discover unexpected issues.
+
+    5. Functional Testing:	
+
+        > Checks whether features work according to the requirements.	
+
+        > Enter valid login credentials and verify that the user reaches the dashboard.
+
+    6. Performance Testing or Non-Functional Testing:	
+
+        > Checks the application's speed, stability, and responsiveness under different workloads.	
+
+        > Simulate 1,000 users accessing a website at the same time and check response times and errors.
+
+
+@ What is risk-based testing?
+
+    > Risk-based testing prioritizes testing based on the likelihood of a failure and the impact that failure would have.
+
+    > Example: In an e-commerce application:
+        - Payment processing — high priority because failures can cause financial loss.
+        - Login and authentication — high priority because failures can block users or create security risks.
+        - A minor decorative icon — usually lower priority.
+
+    > Interview answer: Risk-based testing helps us focus testing effort on the features most likely to fail or cause serious business impact, especially when time is limited.
+
+
+@ When should a test case be automated?
+
+    > A test case is a good candidate for automation when it is:
+        - Repeated frequently.
+        - Part of the regression suite.
+        - Stable enough to automate reliably.
+        - Time-consuming to execute manually.
+        - Data-driven and needs many input combinations.
+        - Important to business operations.
+        - Required across multiple browsers or environments.
+        - Suitable for repeatable, objective verification.
+
+    > Example: Automating login, registration, checkout, and frequently repeated regression scenarios can save significant execution time.
+
+    > Automation may be less suitable for one-time tests, highly unstable features, subjective usability checks, or exploratory testing that requires human judgment.
+
+
+@ What types of automation frameworks do you know?
+
+    > Common automation framework approaches include:
+
+        >> Linear / record-and-playback =>	Executes recorded or sequential steps.
+        >> Modular => Divides tests into reusable modules.
+        >> Data-driven => Runs the same test with different data sets.
+        >> Keyword-driven => Uses keywords to represent actions.
+        >> Hybrid => Combines multiple approaches.
+        >> BDD => Organizes scenarios around business-readable Given/When/Then steps.
+        >> Page Object Model (POM) => Separates page locators and page actions from test cases.
+
+    > Interview answer: I am familiar with data-driven, modular, hybrid, BDD, and Page Object Model approaches. With Playwright, I can use POM, fixtures, reusable utilities, and parameterized tests to build a maintainable framework.
+
+
+@ Explain your current automation framework architecture.
+
+    > My automation framework is built using Playwright, TypeScript, and Playwright Test. It follows a modular structure with reusable page objects, test data, utilities, and configuration files.
+
+    > Tests: Contain test scenarios and assertions.
+
+        >> Page Objects: Contain page locators and reusable UI actions.
+
+        >> Fixtures: Provide reusable setup, teardown, and shared test dependencies.
+
+        >> Test Data: Stores input data and test scenarios.
+
+        >> API Utilities: Handle API requests or backend setup where needed.
+
+        >> Configuration: Manages environments, browsers, timeouts, and retries.
+
+        >> Reports: Generate HTML reports, screenshots, videos, and traces.
+
+    > The framework supports reusable code, maintainability, parallel execution, and integration with CI/CD pipelines.
+
+    > Example folder structure:
+
+        >>  playwright-project/
+
+                playwright.config.ts
+                Configuration and projects
+
+                tests/
+                Test scenarios
+
+                pages/
+                Page Object Model classes
+
+                fixtures/
+                Reusable setup and teardown
+
+                utils/
+                Common helper methods and API utilities
+
+                test-data/
+                Input data and test fixtures
+
+                playwright/.auth/
+                Saved authentication state (ignored by Git)
+
+                playwright-report/
+                Generated HTML report
+
+    > 
+
+
+@ Important scenario: How do you decide which test cases to automate?
+
+    > Sample interview answer:
+
+        “I decide which test cases to automate based on business risk, execution frequency, stability, complexity, and expected return on investment.
+
+        First, I identify critical business workflows such as login, registration, payment, and data submission. Then I prioritize test cases that run frequently, especially regression tests, and those that need to be executed across multiple browsers or with different test data.
+
+        I also check whether the feature is stable and whether the expected result can be verified reliably. I generally avoid automating one-time tests, highly unstable functionality, or tests that require subjective human judgment.
+
+        Finally, I estimate the effort required to create and maintain the automation compared with the time saved during repeated execution. I prioritize high-value tests first and integrate them into CI/CD where appropriate.”
+
+    > Suppose you are testing an e-commerce application:
+
+        Test case | Automation decision | Reason
+
+        Login with valid credentials | Automate	| Frequently used, critical workflow
+
+        Login with invalid credentials | Automate | Repeatable validation and regression coverage
+
+        Checkout and payment workflow | High priority to automate | Business-critical; use a safe test payment environment
+
+        Search with many input combinations | Automate | Data-driven and repetitive
+
+        Verify a minor one-time UI change | Depends	| Low repetition may not justify automation effort
+
+        Explore whether a page feels intuitive | Primarily manual | Requires human judgment
+
 
 
 //////////////////////////////////// Playwright Basics ////////////////////////////////////
@@ -105,7 +474,7 @@
         ]
 
 
-@  What languages does Playwright support?
+@ What languages does Playwright support?
 
     > Playwright officially supports:
         >> TypeScript / JavaScript
@@ -524,6 +893,13 @@
 
 //////////////////////////////////// Trigger Event Methods ////////////////////////////////////
 
+@ What is auto-waiting:
+
+    > Auto-waiting means Playwright automatically waits for an element to meet the necessary conditions before performing an action, such as clicking a button.
+
+    > Playwright waits for the button to be actionable, including being visible, stable, enabled, and able to receive events.
+
+
 @ List of methods:
 
     > click(): Click the element.
@@ -575,12 +951,135 @@
         >> await message.textContent();
 
 
+@ Drag and drop:
+
+    > Using dragTo() — Recommended:
+
+        >> In Playwright, you can perform drag and drop using dragTo() or by using mouse actions for more complex scenarios.
+
+        >> CODE SNIPPET:
+
+            import { test, expect } from '@playwright/test';
+
+            test('Drag and drop an item', async ({ page }) => {
+                await page.goto('https://example.com');
+
+                const source = page.locator('#source');
+                const target = page.locator('#target');
+
+                await source.dragTo(target);
+
+                await expect(target).toContainText('Dropped item');
+            });
+
+        >> How it works:
+
+            > source — the element you want to drag.
+            > target — the element where you want to drop it.
+            > dragTo() — performs the drag-and-drop action.
+
+    > Using mouse actions:
+
+        >> Use this approach when dragTo() doesn't work or you need more control over the mouse movement.
+
+        >> CODE SNIPPET:
+
+            const source = page.locator('#source');
+            const target = page.locator('#target');
+
+            const sourceBox = await source.boundingBox();
+            const targetBox = await target.boundingBox();
+
+            if (!sourceBox || !targetBox) {
+                throw new Error('Source or target element not found');
+            }
+
+            await page.mouse.move(
+                sourceBox.x + sourceBox.width / 2,
+                sourceBox.y + sourceBox.height / 2
+            );
+
+            await page.mouse.down();
+
+            await page.mouse.move(
+                targetBox.x + targetBox.width / 2,
+                targetBox.y + targetBox.height / 2,
+                { steps: 10 }
+            );
+
+            await page.mouse.up();
+
+
+        >> steps: 10 moves the mouse gradually toward the target.
+
+    > How do you drag an element to the left side of a target?
+
+        >> If the drop zone is on the left side, calculate a position inside the target near its left edge.
+
+        >> CODE SNIPPET:
+
+            const source = page.locator('#source');
+            const target = page.locator('#target');
+
+            await source.dragTo(target, {
+                targetPosition: { x: 5, y: 20 }
+            });
+
+
+        >> Here, x: 5 means five pixels from the target's left edge, and y: 20 means 20 pixels from its top edge.
+
+    > Interview answer: “I use Playwright's dragTo() method for standard drag-and-drop operations. If the application requires a specific drop position or custom mouse movement, I use boundingBox() with page.mouse.move(), mouse.down(), and mouse.up().”
+
+
+@ Upload and Download:
+
+    > Playwright provides setInputFiles() for uploads and download events for downloads.
+
+    > Upload example:
+
+        >>  await page.getByLabel('Upload file').setInputFiles(
+                'tests/fixtures/sample.pdf'
+            );
+
+    > Set up the download event listener before clicking the download button to avoid missing the event.
+
+    > Download example:
+
+        >>  const downloadPromise = page.waitForEvent('download');
+            await page.getByRole('button', { name: 'Download' }).click();
+            const download = await downloadPromise;
+            await download.saveAs(`downloads/${download.suggestedFilename()}`);
+
+
+@ Handle alerts and dialogs:
+
+    > Playwright handles JavaScript dialogs such as alert, confirm, and prompt using the dialog event.
+
+    > Useful methods:
+
+        - dialog.accept() — accepts the dialog.
+        - dialog.dismiss() — cancels or dismisses it.
+        - dialog.message() — gets the dialog message.
+        - dialog.accept('text') — supplies text to a prompt.
+
+    > CODE SNIPPET:
+
+        >>  page.on('dialog', async dialog => {
+                console.log(dialog.message());
+                await dialog.accept();
+            });
+
+            await page.getByRole('button', { name: 'Delete' }).click();
+
+
 
 //////////////////////////////////// Playwright Assertions ////////////////////////////////////
 
 @ Assertions:
 
     > Assertions are used to verify that something is true or matches the expected result.
+
+    > Web-first assertions automatically retry until the expected condition is met or the assertion timeout expires.
 
     > Playwright provides assertions through expect().
 
@@ -866,6 +1365,7 @@
         >> const page2 = await context.newPage();
         >> console.log(context.pages().length);
 
+
 @ How to handle a new tab opened by a click?
 
     > Suppose clicking a link opens a new tab from one page:
@@ -888,3 +1388,752 @@
         ]);
         await newPage.waitForLoadState();
         console.log(newPage.url());
+
+
+@ Switch from second tab to first tab:
+
+    > In Playwright, each browser tab is represented by a Page object. I retain references to both tabs and use the required page object to perform actions. 
+
+    > If I need to bring a tab to the foreground, I use bringToFront(). The other tab remains open.
+
+    > CODE SNIPPET:
+
+        // Move to the first tab
+        await page.bringToFront();
+        await page.getByRole('button', { name: 'Submit' }).click();
+
+        // Move back to the second tab
+        await secondTab.bringToFront();
+        await secondTab.getByRole('button', { name: 'Continue' }).click();
+
+
+
+//////////////////////////////////// Custom Fixtures ////////////////////////////////////
+
+@ Definition:
+
+    > In Playwright, custom fixtures allow you to create reusable setup and teardown logic that can be shared across multiple spec files.
+
+    > For example, you can create a custom fixture that automatically opens your application and provides a logged-in page to your tests.
+
+
+@ Create a custom fixture:
+
+    > Project structure:
+
+        playwright-project/
+        ├── fixtures/
+        │   └── custom-fixtures.ts
+        ├── tests/
+        │   └── dashboard.spec.ts
+        └── playwright.config.ts
+
+    > Define fixtures 
+
+        // fixtures/custom-fixtures.ts
+        >>  import { test as base, expect, Page } from '@playwright/test';
+
+            type MyFixtures = {
+                appPage: Page;
+            };
+
+            export const test = base.extend<MyFixtures>({
+                appPage: async ({ page }, use) => {
+                    // Setup: runs before the test
+                    await page.goto('https://example.com');
+
+                    // Provide the page to the test
+                    await use(page);
+
+                    // Teardown: runs after the test
+                    console.log('Test completed');
+                },
+            });
+
+            export { expect };
+
+    > How it works:
+
+        >> base.extend() — creates a custom fixture.
+        >> appPage — the name of your custom fixture.
+        >> page — Playwright's built-in page fixture.
+        >> await use(page) — provides the page to the test.
+        >> Code after await use(page) — runs during teardown.
+
+
+@ Fixture execution flow:
+
+    Test starts
+    ↓
+    Fixture setup
+    (Navigate to application)
+    ↓
+    await use(page)
+    (Run the test using appPage)
+    ↓
+    Fixture teardown
+    (Execute cleanup code)
+
+
+@ Exercise: Custom fixture with automatic login:-
+
+    > You can also create a fixture that logs in before every test.
+
+        >>  import { test as base, expect, Page } from '@playwright/test';
+
+            type MyFixtures = {
+                loggedInPage: Page;
+            };
+
+            export const test = base.extend<MyFixtures>({
+                loggedInPage: async ({ page }, use) => {
+                    await page.goto('https://example.com/login');
+
+                    await page.getByLabel('Email').fill('john@example.com');
+                    await page.getByLabel('Password').fill(process.env.TEST_PASSWORD ?? '');
+
+                    await page.getByRole('button', { name: 'Login' }).click();
+                    await page.waitForURL('**/dashboard');
+
+                    await use(page);
+                },
+            });
+
+            export { expect };
+
+    > Use it in your spec:
+
+        >>  import { test, expect } from '../fixtures/custom-fixtures';
+
+            test('verify logged-in dashboard', async ({ loggedInPage }) => {
+                await expect(loggedInPage).toHaveURL(/dashboard/);
+            });        
+
+
+
+//////////////////////////////////// Authentication & Storage State ////////////////////////////////////
+
+@ Interview Answer:
+
+    > In Playwright, authentication and storage state let you log in once and reuse the authenticated session across multiple tests instead of logging in before every test.
+
+    > I use Playwright's storageState to reuse authentication across tests. First, I create a setup test that logs into the application and saves cookies and local storage to a JSON file. Then I configure the main test project to use that file. Playwright creates authenticated browser contexts, allowing tests to access protected pages without repeating the login process. I keep the authentication file out of version control because it can contain sensitive session data.
+
+    > If the session is invalid or expired, your application may redirect to the login page. In that case, check whether the setup login succeeded, whether the state file was created, and whether the authentication session has expired.
+
+    > Q&A:
+
+        >> What is storage state?	
+            => A saved snapshot of browser authentication data.
+
+        >> What does it save?	
+            => Cookies and local storage; IndexedDB can also be included when configured and supported.
+
+        >> Why use it?	
+            => Avoid repeating login steps in every test.
+
+        >> Does it save the whole browser?	
+            => No. It saves selected storage data, not the entire browser session.
+
+        >> Does it include sessionStorage by default?	
+            => No. It requires a separate implementation if your app relies on it.
+
+        >> Is the same session shared between tests?	
+            => Tests can start with the same saved state, but normally use separate browser contexts.
+
+        >> What if authentication expires?	
+            => Reauthenticate and regenerate the storage state.
+
+
+@ 1. Understand the flow: 
+
+    1. Login setup
+    (Open app → Enter credentials → Log in)
+        ↓
+    2. Save storage state
+    (Save cookies and local storage to auth.json)
+        ↓
+    3. Reuse the session
+    (Tests load auth.json and access protected pages)
+
+
+@ 2. Project structure:
+
+    > Create these files in your Playwright project:
+
+        playwright-project/
+        ├── tests/
+        │   └── dashboard.spec.ts
+        ├── tests-examples/        (optional)
+        ├── playwright/
+        │   └── .auth/
+        │       └── user.json      (generated)
+        ├── playwright.config.ts
+        └── package.json
+
+    > The user.json file is generated by Playwright and contains authentication data. Do not commit it to Git, because it may contain session credentials. So, Add this to .gitignore:
+
+        >> playwright/.auth/
+
+
+@ 3. Create playwright.config.ts
+
+    > This configuration runs the login setup first, then runs your tests using the saved session.
+
+        >>  import { defineConfig, devices } from '@playwright/test';
+
+            const authFile = 'playwright/.auth/user.json';
+
+            export default defineConfig({
+                testDir: './tests',
+
+                use: {
+                    baseURL: 'https://your-app.com',
+                    trace: 'on-first-retry',
+                },
+
+                projects: [
+                    {
+                        name: 'setup',
+                        testMatch: /auth\.setup\.ts/,
+                    },
+                    {
+                        name: 'chromium',
+                        use: {
+                            ...devices['Desktop Chrome'],
+                            storageState: authFile,
+                        },
+                        dependencies: ['setup']
+                    }
+                ]
+            });
+
+
+@ 4. Create setup.ts and gitignore files:
+
+    > This file logs in and saves the authenticated browser state.
+
+    > Update the labels, button name, login URL, and dashboard URL pattern to match your application. The ! tells TypeScript to treat the environment variable as defined; it does not check whether the variable actually exists.
+
+    > Create tests/auth.setup.ts:
+
+        >>  import { test as setup, expect } from '@playwright/test';
+            import fs from 'node:fs';
+            import path from 'node:path';
+
+            const authFile = 'playwright/.auth/user.json';
+
+            setup('authenticate', async ({ page }) => {
+                // Create the folder if it doesn't exist
+                fs.mkdirSync(path.dirname(authFile), { recursive: true });
+
+                // Open the login page
+                await page.goto('/login');
+
+                // Enter credentials
+                await page.getByLabel('Email').fill(process.env.E2E_USERNAME!);
+
+                await page.getByLabel('Password').fill(process.env.E2E_PASSWORD!);
+
+                // Submit the login form
+                await page.getByRole('button', { name: 'Sign in' }).click();
+
+                // Verify that login succeeded
+                await expect(page).toHaveURL(/dashboard/);
+
+                // Save cookies and local storage
+                await page.context().storageState({ path: authFile });
+            });
+
+    > Set the credentials in your environment before running the tests. Use dedicated test credentials, not your personal account:
+
+    > Create .gitignore:
+
+        >>  $env:E2E_USERNAME="your-test-user"
+            $env:E2E_PASSWORD="your-test-password"
+
+
+@ 5. Create tests/dashboard.spec.ts:
+
+    > Now write a test that uses the saved login state. You do not need to enter credentials again.
+
+    > Because the Chromium project in playwright.config.ts specifies storageState, each test receives a new browser context initialized with the saved authentication state.
+
+    > Create spec file:
+
+        >>  import { test, expect } from '@playwright/test';
+
+            test('open dashboard without logging in again', async ({ page }) => {
+                await page.goto('/dashboard');
+                await expect(
+                    page.getByRole('heading', { name: 'Dashboard' })
+                ).toBeVisible();
+            });
+
+            test('navigate to profile', async ({ page }) => {
+                await page.goto('/profile');
+                await expect(page).toHaveURL(/profile/);
+            });
+
+
+@ 6. Run the test case and understand the flow:
+
+    > Command to run the test case:
+
+        >>  npx playwright test
+
+    > Playwright will:
+
+        1. Run auth.setup.ts.
+        2. Log in and create playwright/.auth/user.json.
+        3. Start the Chromium project after setup completes.
+        4. Reuse the saved authentication state for the dashboard tests.
+
+
+
+//////////////////////////////////// API Testing ////////////////////////////////////
+
+@ Important API testing concepts:
+
+    > HTTP methods: Define the operation performed by an API.	
+        >> GET, POST, PUT, PATCH, DELETE
+
+    > Status codes:	Indicate the result of an HTTP request.	
+        >> 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 500 Internal Server Error
+
+    > Headers: Provide additional request or response information.	
+        >> Content-Type: application/json
+
+    > Request body: Data sent to the server.	
+        >> Sending name and email during registration.
+
+    > Response body: Data returned by the server.	
+        >> User details in JSON format.
+
+    > Authentication: Verifies who the user is.	
+        >> Bearer token, API key, OAuth
+
+    > Authorization: Determines what the user is allowed to do.	
+        >> A normal user cannot delete an admin account.
+
+    > Schema validation: Checks response structure and data types.	
+        >> id should be a number and email a string.
+    
+    > Negative testing:	Checks how APIs handle invalid requests.	
+        >> Missing required email returns 400.
+
+    > Response time: Measures how long the API takes to respond.	
+        >> Verify a request finishes within an acceptable threshold.
+
+
+@ HTTP methods you must know:
+
+    > GET: Retrieve data	
+        >> Get all users
+
+    > POST: Create data or trigger an operation	
+        >> Register a user
+
+    > PUT: Replace a resource	
+        >> Replace a user's profile
+
+    > PATCH: Partially update a resource	
+        >> Update only the user's name
+
+    > DELETE: Delete a resource	
+        >> Delete a user
+
+
+@ Important HTTP status codes:
+
+    > 200: OK => Data retrieved successfully
+
+    > 201: Created => User created successfully
+
+    > 204: No Content => Successful deletion with no response body
+
+    > 400: Bad Request => Invalid request data
+
+    > 401: Unauthorized	=> Missing or invalid authentication
+
+    > 403: Forbidden => User lacks permission
+
+    > 404: Not Found => Requested resource doesn't exist
+
+    > 409: Conflict => Duplicate email or conflicting resource state
+
+    > 422: Unprocessable Content => Request content fails validation, depending on API design
+
+    > 429: Too Many Requests => Rate limit exceeded
+
+    > 500: Internal Server Error => Unexpected server failure
+
+
+@ What should you validate in API testing?
+
+    > Whenever you test an API, consider these checks:
+
+        1. Status code: Is the correct HTTP status returned?
+
+        2. Response body: Are the returned values correct?
+
+        3. Headers: Is the content type correct? Are required security or caching headers present?
+
+        4. Schema: Do fields have the expected names and data types?
+
+        5. Authentication: Does the API reject missing or invalid credentials?
+
+        6. Authorization: Can users access only permitted resources?
+        
+        7. Negative cases: What happens with missing, invalid, or malformed input?
+        
+        8. Data integrity: Was the data correctly created, updated, or deleted?
+
+        9. Response time: Is the response within the agreed performance threshold?
+
+        10. Error handling: Are errors handled consistently without exposing sensitive information?
+
+
+@ Important API testing scenarios: 
+
+    > Consider a user registration API.
+    
+    > List of scenarios	with expected result.
+
+        >> Register with valid data	=> User is created
+
+        >> Register with an existing email => Duplicate registration is rejected
+
+        >> Submit without an email => Validation error
+
+        >> Submit an invalid email => Validation error
+
+        >> Send a request without authentication, if required => 401
+
+        >> Access a resource without permission => 403
+
+        >> Request a nonexistent user => 404
+
+        >> Send an unsupported HTTP method => Usually 405, if defined by the API
+
+        >> Submit a very large payload => Handled according to documented size limits
+
+        >> Send many requests rapidly => Rate limiting is applied if configured
+
+
+@ API testing vs. UI testing:
+
+    > API testing	
+        
+        >> Tests endpoints and backend behavior directly.	
+        
+        >> Usually faster for validating business logic.	
+        
+        >> Checks status codes, headers, and response data.	
+        
+        >> Playwright's request fixture is useful.	
+
+    > UI testing:
+        
+        >> Tests the application through its user interface.
+        
+        >> Validates visible behavior and user interactions.
+        
+        >> Checks buttons, forms, navigation, and displayed results.
+        
+        >> Playwright's page fixture is useful.
+
+
+@ API requests using 'request' fixture:
+
+    > Here are simple Playwright API testing examples using the built-in request fixture for GET, POST, PUT, PATCH, and DELETE with TypeScript.
+    
+    > Assume the API endpoint is https://api.example.com/users 
+
+    > 1. GET — Retrieve users:
+
+        >>  import { test, expect } from '@playwright/test';
+
+            test('GET - Get user', async ({ request }) => {
+                const response = await request.get(
+                    'https://api.example.com/users/1'
+                );
+
+                expect(response.status()).toBe(200);
+
+                const body = await response.json();
+
+                expect(body.id).toBe(1);
+                expect(body.name).toBeTruthy();
+            });
+
+    > 2. POST — Create a new user:
+
+        >>  test('POST - Create user', async ({ request }) => {
+                const response = await request.post(
+                    'https://api.example.com/users',
+                    {
+                        data: {
+                            name: 'John',
+                            email: 'john@example.com'
+                        }
+                    }
+                );
+
+                expect(response.status()).toBe(201);
+
+                const body = await response.json();
+
+                expect(body.name).toBe('John');
+                expect(body.email).toBe('john@example.com');
+                expect(body.id).toBeTruthy();
+            });
+
+    > 3. PUT — Replace an existing user:
+
+        >>  PUT generally replaces the resource representation, so include all required fields.
+
+        >>  test('PUT - Replace user', async ({ request }) => {
+                const response = await request.put(
+                    'https://api.example.com/users/1',
+                    {
+                        data: {
+                            name: 'John Smith',
+                            email: 'johnsmith@example.com'
+                        }
+                    }
+                );
+
+                expect(response.status()).toBe(200);
+
+                const body = await response.json();
+
+                expect(body.name).toBe('John Smith');
+                expect(body.email).toBe('johnsmith@example.com');
+            });
+
+    > 4. PATCH — Update specific fields:
+
+        >>  PATCH updates only the specified fields, depending on the API's implementation.
+
+        >>  test('PATCH - Update user email', async ({ request }) => {
+                const response = await request.patch(
+                    'https://api.example.com/users/1',
+                    {
+                        data: {
+                            email: 'newemail@example.com'
+                        }
+                    }
+                );
+
+                expect(response.status()).toBe(200);
+
+                const body = await response.json();
+
+                expect(body.email).toBe('newemail@example.com');
+            });
+
+    > 5. DELETE — Delete a user
+
+        >>  A successful DELETE can return 204 No Content or another documented success status. 
+        
+        >>  If the response is 204, don't try to parse a JSON response body.
+
+        >>  test('DELETE - Delete user', async ({ request }) => {
+                const response = await request.delete(
+                    'https://api.example.com/users/1'
+                );
+
+                expect(response.status()).toBe(204);
+            });
+
+    > HTTP methods with possible success status:
+        
+        >> GET => request.get(url) => 200
+        
+        >> POST => request.post(url, { data }) => 201
+        
+        >> PUT => request.put(url, { data }) => 200 or 204
+        
+        >> PATCH => request.patch(url, { data }) => 200 or 204
+        
+        >> DELETE => request.delete(url) => 200 or 204
+
+
+@ Intercept and mock API requests:
+
+    > Use page.route() to intercept requests and provide mock responses, or modify and block requests.
+
+    > Common methods:
+        - route.fulfill() — returns a mock response.
+        - route.continue() — sends the request onward, optionally modified.
+        - route.abort() — blocks the request.
+
+    > SCENARIO: Test UI behavior with predictable API data without depending on a real backend response.
+
+    > CODE SNIPPET: 
+
+        >>  test('dynamically toggle route mocking on and off', async ({ page }) => {
+                const handler = async (route) => {
+                    await route.fulfill({
+                        status: 200,
+                        body: JSON.stringify({ status: 'MOCKED' }),
+                    });
+                };
+
+                // Apply mock handler
+                await page.route('**/api/status', handler);
+                await page.goto('https://example.com/status');
+                await expect(page.getByTestId('status-box')).toHaveText('MOCKED');
+
+                // Remove the mock; subsequent requests hit the real network
+                await page.unroute('**/api/status', handler);
+                await page.reload();
+                await expect(page.getByTestId('status-box')).toHaveText('LIVE');
+            });
+
+
+
+//////////////////////////////////// Database Testing ////////////////////////////////////
+
+@ Automating Database Testing with Playwright:
+
+    > Playwright is mainly used for browser automation and API testing. It does not have a built-in database testing API, but you can connect to a database using Node.js libraries and verify database records during your tests.
+
+    > For example, you can use Playwright with MySQL, PostgreSQL, or SQL Server.
+
+
+@ How does database testing work?
+
+    > Suppose you register a new user through your application.
+
+            Playwright Test
+        (Enter user details and click Register)
+                ↓
+        Frontend → Backend API
+        (Angular / React → Node.js / Express)
+                ↓
+            Database
+        (MySQL stores the new user)
+
+    > Playwright verifies the saved record using a database query.
+
+
+@ Install the MySQL package:
+
+    > If you're using TypeScript with Playwright Test:
+
+        >>  npm install mysql2
+        >>  npm install --save-dev @types/node  
+
+    > mysql2 is a Node.js library that allows your test code to connect to MySQL.
+
+
+@ Create a database connection:
+
+    > Create a file named db.ts.
+
+        >>  import mysql from 'mysql2/promise';
+            export const connection = await mysql.createConnection({
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME
+            });
+
+    > Store your database credentials in environment variables instead of hardcoding them in your test.
+
+
+@ Fetch data from the database:
+
+    > Suppose you have a users table.
+
+        id	name	email
+        1	John	john@example.com
+        2	Mike	mike@example.com
+
+    > You can query the database:
+
+        >>  import { connection } from './db';
+            const [rows] = await connection.execute(
+                'SELECT * FROM users WHERE email = ?',
+                ['john@example.com']
+            );
+            console.log(rows);
+
+    > The ? placeholder safely passes the email as a parameter.
+
+
+@ Complete example: UI + Database testing
+
+    > Suppose your application has a registration form.
+
+        >> import { test, expect } from '@playwright/test';
+            import { connection } from './db';
+
+            test('Register user and verify database', async ({ page }) => {
+                const email = `john${Date.now()}@example.com`;
+
+                await page.goto('http://localhost:4200/register');
+
+                await page.getByLabel('Name').fill('John');
+                await page.getByLabel('Email').fill(email);
+
+                await page.getByRole('button', { name: 'Register' }).click();
+
+                await expect(page.getByText('Registration successful')).toBeVisible();
+
+                const [rows] = await connection.execute(
+                    'SELECT * FROM users WHERE email = ?',
+                    [email]
+                );
+
+                const users = rows as { name: string; email: string }[];
+
+                expect(users).toHaveLength(1);
+                expect(users[0].name).toBe('John');
+                expect(users[0].email).toBe(email);
+            });
+
+    > What are we verifying?
+        - The user exists.
+        - Exactly one matching record is returned.
+        - The user's name and email match the expected values.
+
+    > This test verifies both the UI behavior and the database result.
+
+    > Close the database connection after the tests finish, using an appropriate test-suite teardown such as test.afterAll().
+
+        >>  afterAll(async () => {
+                await connection.end(); // Or connection.disconnect() / mongoose.connection.close()
+            });
+
+
+@ What database operations can you test?
+
+    > TABLE:
+        Operation	SQL example	                What to verify
+        Create	    INSERT INTO users ...	    Record was created
+        Read	    SELECT * FROM users	        Correct data was returned
+        Update	    UPDATE users SET ...	    Changes were saved
+        Delete	    DELETE FROM users WHERE ...	Record was removed
+
+    > For destructive operations such as UPDATE and DELETE, use a dedicated test database and test records.   
+
+
+@ Important interview questions
+
+    Q1. Can Playwright connect directly to a database?
+        Playwright doesn't provide a built-in database client. We can use Node.js database drivers, such as mysql2, to execute queries and validate database records.
+
+    Q2. Why do we perform database testing?
+        To verify data integrity, confirm that UI/API operations are persisted correctly, and ensure that database records match the expected results.
+
+    Q3. Should every Playwright test query the database?
+        No. Most UI tests should verify user-visible behavior. Database queries are useful when we specifically need to validate persistence or backend data integrity.
+
+    Q4. What is the difference between API testing and database testing?
+        - API testing: Verifies HTTP requests, status codes, response headers, and response data.
+        - Database testing: Verifies stored records, relationships, constraints, and data integrity.
+
+    > Interview summary: Playwright can be integrated with database drivers such as mysql2 to validate records created, updated, or deleted through the UI or API. This enables end-to-end verification across the frontend, backend, and database.
