@@ -995,22 +995,3 @@ ________________________________________________________________________________
     > ids(): An array of just the primary keys and helps us to count the array length
         >>  this.store.ids()
         >>  this.store.ids().length
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
