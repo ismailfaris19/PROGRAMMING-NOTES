@@ -524,3 +524,53 @@
 
 ~ Steps to view the values which is stored in a localStorage:
   inspect -> application tab -> under Storage tab(local Storage) -> to view the values
+
+~ EVENT LOOP:
+
+    const fs = require('node:fs');
+
+    console.log('1. Call Stack - Start');
+
+    process.nextTick(() => {
+      console.log('2. process.nextTick()');
+    });
+
+    Promise.resolve().then(() => {
+      console.log('3. Promise Microtask');
+    });
+
+    queueMicrotask(() => {
+      console.log('3. queueMicrotask()');
+    });
+
+    setTimeout(() => {
+      console.log('4. Timers Phase - setTimeout()');
+    }, 0);
+
+    fs.readFile(__filename, () => {
+      console.log('5. Poll Phase - I/O Callback');
+
+      setTimeout(() => {
+        console.log('4. Timer scheduled inside I/O');
+      }, 0);
+
+      setImmediate(() => {
+        console.log('6. Check Phase - setImmediate()');
+      });
+
+      const socket = require('node:net').createServer();
+
+      socket.on('close', () => {
+        console.log('7. Close Callback');
+      });
+
+      socket.listen(0, () => {
+        socket.close();
+      });
+    });
+
+    setImmediate(() => {
+      console.log('6. Check Phase - Top-level setImmediate()');
+    });
+
+    console.log('1. Call Stack - End');

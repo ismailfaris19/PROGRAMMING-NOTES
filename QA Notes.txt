@@ -417,7 +417,7 @@
 
 @ What browsers does Playwright support?
 
-    > Playwright supports Chromium, Firefox, and WebKit, allowing us to perform cross-browser testing and allow us to local browsers also.
+    > Playwright supports Chromium, Firefox, and WebKit, allowing us to perform cross-browser testing and allow us to use local browsers also.
 
     > You can configure them in playwright.config.ts
 
@@ -562,6 +562,8 @@
                 use: { browserName: 'chromium' }
             }
 
+        >> To run: npx playwright test --project=chromium
+
     > Base URL: Defines the common URL of your application.
 
         >>  baseURL: 'https://example.com'
@@ -633,6 +635,7 @@
                     name: 'chromium',
                     use: {
                         ...devices['Desktop Chrome'],
+
                         baseURL: 'https://example.com',
 
                         // Action timeout
@@ -1647,7 +1650,7 @@
 
     > Set the credentials in your environment before running the tests. Use dedicated test credentials, not your personal account:
 
-    > Create .gitignore:
+    > Create .env file:
 
         >>  $env:E2E_USERNAME="your-test-user"
             $env:E2E_PASSWORD="your-test-password"

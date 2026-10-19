@@ -46,7 +46,7 @@
 @ DDL, DML, DQL, DCL, and TCL:
 
     > DDL => Data Definition Language => CREATE, ALTER, DROP, TRUNCATE
-    > DML => Data Manipulation Language => INSERT, UPDATE, Delete
+    > DML => Data Manipulation Language => INSERT, UPDATE, DELETE
     > DQL => Data Query Language => SELECT
     > DCL => Data Control Language => GRANT, REVOKE
     > TCL => Transaction Control Language => COMMIT, ROLLBACK, SAVEPOINT
@@ -242,6 +242,8 @@
 
     > UPDATE: UPDATE employees SET salary = 60000 WHERE id = 1;
 
+    > ALTER: ALTER TABLE employees ADD COLUMN email VARCHAR(100);
+    
     > DELETE: DELETE FROM employees WHERE id = 1;
 
     > DELETE ALL ROWS: TRUNCATE TABLE employees;
