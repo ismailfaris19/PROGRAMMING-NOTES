@@ -290,6 +290,55 @@
     > Interview answer: I am familiar with data-driven, modular, hybrid, BDD, and Page Object Model approaches. With Playwright, I can use POM, fixtures, reusable utilities, and parameterized tests to build a maintainable framework.
 
 
+@ The Defect Life Cycle:
+
+    > The Defect Life Cycle (also known as the Bug Life Cycle) is the specific sequence of states that a defect passes through from its initial discovery until it is resolved, verified, and officially closed.
+
+    > Standard Defect Life Cycle Flow:
+
+        Plaintext
+        [NEW] ───▶ [ASSIGNED] ───▶ [OPEN] ───▶ [FIXED] ───▶ [PENDING RETEST] ───▶ [RETEST]
+                        │                           │                                  │
+                        ▼                           │                                  ├──▶ [VERIFIED] ──▶ [CLOSED]
+              ┌───────────────────┐                 │                                  │
+              │ Rejected /        │                 │                                  └──▶ [REOPENED] ──┐
+              │ Duplicate /       │                 │                                          ▲         │
+              │ Deferred /        │                 └──────────────────────────────────────────┴─────────┘
+              │ Not a Defect      │
+              └───────────────────┘
+
+
+    > Step-by-Step Defect States:
+
+        1. New: When a tester identifies an anomaly, unexpected behavior, or discrepancy against acceptance criteria, they log the bug in a tracking tool (e.g., Jira, Azure DevOps). The defect is assigned the status New.
+
+        2. Assigned: The QA Lead or Engineering Manager reviews the new defect and assigns it to the relevant developer or development squad for investigation.
+
+        3. Open: The assigned developer starts analyzing the defect. At this stage, the developer determines whether the issue is valid:
+
+            => Rejected: The developer believes the behavior matches the expected design or functional specification.
+
+            => Duplicate: The issue is already logged under another existing defect ID.
+
+            => Deferred: The defect is acknowledged as valid, but prioritized for a future release or sprint due to low severity or schedule constraints.
+
+            => Not a Defect (Works as Designed): The observed behavior is intentional, or there was a misunderstanding of requirements.
+
+            => If the defect is valid and in scope for the current cycle, the developer keeps the status as Open and writes code to fix it.
+
+        4. Fixed: The developer implements the code change, runs unit tests, commits the fix, and deploys it to a test or preview environment. The status changes to Fixed.
+
+        5. Pending Retest: The fix has been committed, but the build containing the fix has not yet been deployed to the QA environment. Once the build is deployed and ready for verification, the status moves to Retest.
+
+        6. Retest: The QA engineer executes the exact reproduction steps against the deployed build to ensure the problem no longer occurs. They also execute surrounding regression tests to confirm no secondary breaks were introduced.
+
+        7. Verified: The tester confirms that the issue is resolved and all related regression checks pass.
+
+        8. Closed: After reaching the Verified stage, the QA engineer or Test Lead marks the ticket as Closed. The defect is completely resolved and its life cycle ends.
+
+        9. Reopened: If the bug still reproduces during the Retest phase, the tester documents the failure, attaches new logs or screenshots, and sets the status to Reopened, sending it back to the developer.
+
+
 @ Explain your current automation framework architecture.
 
     > My automation framework is built using Playwright, TypeScript, and Playwright Test. It follows a modular structure with reusable page objects, test data, utilities, and configuration files.
@@ -337,8 +386,6 @@
 
                 playwright-report/
                 Generated HTML report
-
-    > 
 
 
 @ Important scenario: How do you decide which test cases to automate?
@@ -2140,3 +2187,87 @@
         - Database testing: Verifies stored records, relationships, constraints, and data integrity.
 
     > Interview summary: Playwright can be integrated with database drivers such as mysql2 to validate records created, updated, or deleted through the UI or API. This enables end-to-end verification across the frontend, backend, and database.
+
+
+
+//////////////////////////////////// Accessiblity Testing ////////////////////////////////////
+
+@ AxeBuilder methods in Playwright:
+
+    > AxeBuilder is provided by @axe-core/playwright. It helps you configure and run automated accessibility scans on a webpage. Its methods are chainable, so you can configure the scan and then call .analyze() to execute it.
+
+    > Installation and basic setup:
+
+        >>  npm install -D @axe-core/playwright
+
+        >>  import { test, expect } from '@playwright/test';
+            import AxeBuilder from '@axe-core/playwright';
+
+            test('accessibility scan', async ({ page }) => {
+                await page.goto('/');
+                const results = await new AxeBuilder({ page }).analyze();
+                expect(results.violations).toEqual([]);
+            });
+
+    > Main methods at a glance:
+
+        Method          |   Purpose
+        include()	    |   Scan specific page regions
+        exclude()	    |   Exclude specific page regions
+        withTags()	    |   Run rules associated with selected tags, such as WCAG criteria
+        withRules()	    |   Run only specific accessibility rules
+        disableRules()	|   Skip specific accessibility rules
+        options()	    |   Pass configuration options directly to axe-core
+        analyze()	    |   Execute the scan and return results
+
+
+@ List of AxeBuilder methods:
+
+    > include() — scan a specific section
+        >>  const results = await new AxeBuilder({ page }).include('#login-form').analyze();
+
+    > exclude() — skip a specific section
+        >>  const results = await new AxeBuilder({ page }).exclude('#third-party-widget').analyze();
+
+    > withTags() — scan rules associated with WCAG tags
+        >>  const results = await new AxeBuilder({ page }).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa']).analyze();
+
+    > withRules() — run specific rules
+        >>  const results = await new AxeBuilder({ page }).withRules(['image-alt','button-name','link-name','label']).analyze();
+
+    > disableRules() — skip selected single or multiple rules
+        >>  const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
+
+    > options() — customize axe-core settings and options() can override rule selection configured with withRules() or withTags()
+        >>  const results = await new AxeBuilder({ page }).options({ resultTypes: ['violations'] }).analyze();
+
+    > analyze() — execute the accessibility scan
+        >>  const results = await new AxeBuilder({ page }).analyze();
+            console.log('Violations:', results.violations); // returns list of violations
+            console.log('Passed checks:', results.passes); // returns list of passes
+            console.log('Needs review:', results.incomplete); // returns list of incomplete results
+            console.log('Not applicable:', results.inapplicable); // returns list of not applicable things
+
+    > violations - return the list of violations if captured in page
+        >>  expect(results.violations).toEqual([]);
+            for (const violation of results.violations) {
+                console.log('Rule:', violation.id);
+                console.log('Impact:', violation.impact);
+                console.log('Description:', violation.description);
+                console.log('Affected elements:', violation.nodes.map(
+                    node => node.target
+                ));
+            }
+
+
+@ What should you test?
+
+    > Keyboard accessibility: Can users navigate with Tab, Shift+Tab, Enter, Space, and Escape without a mouse?
+
+    > Screen reader support: Do buttons, inputs, images, and dialogs have meaningful accessible names and roles?
+
+    > Visual accessibility: Are text and controls readable, with sufficient color contrast and visible focus indicators?
+
+    > Automated accessibility rules: Are there detectable issues such as missing form labels, invalid ARIA attributes, or insufficient contrast?
+
+    > The commonly used standard is WCAG (Web Content Accessibility Guidelines). WCAG 2.2 Level AA is a useful target for many web applications.
